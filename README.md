@@ -8,3 +8,5 @@ In diesen Git Repository handelt es sich, um ein Forschungsprojekt der Masterstu
 ## Beteiligte
 
 Johannes Schiel "hallo wie geht es euch!"
+
+Sandra Kleß MIM
