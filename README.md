@@ -9,5 +9,6 @@ In diesen Git Repository handelt es sich, um ein Forschungsprojekt der Masterstu
 
 Johannes Schiel "hallo wie geht es euch!"
 Lukas Scheuerle
+Patrick Schmid
 
 Sandra Kleß MIM
