@@ -11,5 +11,4 @@ Johannes Schiel "hallo wie geht es euch!"
 Lukas Scheuerle
 Patrick Schmid
 Kathrin Fuhrer MIM 256343
-
 Sandra Kleß MIM
