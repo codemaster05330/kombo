@@ -8,3 +8,4 @@ In diesen Git Repository handelt es sich, um ein Forschungsprojekt der Masterstu
 ## Beteiligte
 
 Johannes Schiel
+Lukas Scheuerle
