@@ -9,4 +9,4 @@ In diesen Git Repository handelt es sich, um ein Forschungsprojekt der Masterstu
 
 Johannes Schiel
 
-Sandra Kleß
+Sandra Kleß MIM
