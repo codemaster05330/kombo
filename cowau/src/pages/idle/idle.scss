@@ -1,0 +1,11 @@
+page-idle {
+	.change-view-container{
+		.change-view {
+			.change-view-element{
+				background-color: map-get($colors, primary);
+				margin: $cube/2;
+				@extend .test;
+			}
+		}
+	}
+}
