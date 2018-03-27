@@ -1,5 +1,2 @@
-![Status](https://img.shields.io/badge/Status-Develop-red.svg?style=for-the-badge)
-![Release](https://img.shields.io/badge/Stable-None-red.svg?style=for-the-badge)
-
 # Forschungsprojekt Cowau 2018
 In diesen Git Repository handelt es sich, um ein Forschungsprojekt der Masterstudiengänge des WS2017 und SS2018.
