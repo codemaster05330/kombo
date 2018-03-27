@@ -1,35 +1,35 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
-*~
-*.sw[mnpcod]
-*.log
-*.tmp
-*.tmp.*
-log.txt
-*.sublime-project
-*.sublime-workspace
-.vscode/
-npm-debug.log*
+cowau/*~
+cowau/*.sw[mnpcod]
+cowau/*.log
+cowau/*.tmp
+cowau/*.tmp.*
+cowau/log.txt
+cowau/*.sublime-project
+cowau/*.sublime-workspace
+cowau/.vscode/
+cowau/npm-debug.log*
 
-.idea/
-.sourcemaps/
-.sass-cache/
-.tmp/
-.versions/
-coverage/
-dist/
-node_modules/
-tmp/
-temp/
-hooks/
-platforms/
-plugins/
-plugins/android.json
-plugins/ios.json
-www/
-$RECYCLE.BIN/
+cowau/.idea/
+cowau/.sourcemaps/
+cowau/.sass-cache/
+cowau/.tmp/
+cowau/.versions/
+cowau/coverage/
+cowau/dist/
+cowau/node_modules/
+cowau/tmp/
+cowau/temp/
+cowau/hooks/
+cowau/platforms/
+cowau/plugins/
+cowau/plugins/android.json
+cowau/plugins/ios.json
+cowau/www/
+cowau/$RECYCLE.BIN/
 
-.DS_Store
-Thumbs.db
-UserInterfaceState.xcuserstate
+cowau/.DS_Store
+cowau/Thumbs.db
+cowau/UserInterfaceState.xcuserstate
