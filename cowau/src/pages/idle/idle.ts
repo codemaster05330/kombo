@@ -7,7 +7,6 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'idle.html',
 })
 
-
 export class IdlePage {
     constructor(public navCtrl: NavController, public navParams: NavParams) {
     }
@@ -18,58 +17,96 @@ export class IdlePage {
 
 }
 
+// ###############################################################
+// Circle Animation Function
+// This function creates the Background Animation
 function canvasIdleBackground() {
 
-    const ratio = 4;
-
     // Define a few important var/const for the following scripts
-    const canvas : any  = document.getElementById('canvas');
-    var canvasWidth = window.innerWidth;
-    var canvasHeight = window.innerHeight;
-    var ctx = canvas.getContext('2d',{
-        antialias: false
-    });
+    const cvs : any = document.getElementById('canvas');    // Define the Canvas Element
+    const ctx = cvs.getContext('2d');                       // Setup the Canvas to 2D
+    const speed = 5;                                        // Define the Speed of the animaiton
+    const ratio = 2;                                        // Define the DPI of the Screen
+
+
+    // This are imporatent var for the Script,
+    // but here you don't have to change something
+    var canvasWidth = window.innerWidth;                    // Hight of the Canvas
+    var canvasHeight = window.innerHeight;                  // Width of the Canvas
+    var circles = [];                                       // Array of all circles
 
     // Create a canvas with the max size of the device
-    // and make everything sharp as fuck
-    canvas.width = canvasWidth * ratio;
-    canvas.height = canvasHeight * ratio;
-    canvas.style.width = canvasWidth + 'px';
-    canvas.style.height = canvasHeight + 'px';
-    canvasWidth = canvasWidth * ratio;
-    canvasHeight = canvasHeight * ratio;
+    // and create a canvas with a higher DPI as the "Max-Size"
+    // so everything is sharp as fuck
+    cvs.width = canvasWidth * ratio;                        // Multiply the width, with the DPI Scale
+    cvs.height = canvasHeight * ratio;                      // Multiply the width, with the DPI Scal
+    cvs.style.width = canvasWidth + 'px';                   // Set the width in the canvas
+    cvs.style.height = canvasHeight + 'px';                 // Set the hight in the canvas
+    canvasWidth = canvasWidth * ratio;                      // Set the widdth of the canvas
+    canvasHeight = canvasHeight * ratio;                    // Set the hight of the canvas
 
-    const x = canvasWidth/2;
-    const y = canvasHeight/2;
-    const objects = [];
-    var radius = 50 * ratio;
+    // ###############################################################
+    // ###############################################################
+    // Test Trigger of the Circle animaiton
 
-    // Trigger of the Main Animaitonfunction to do stuff every Frame (60FPS)
-    draw();
+    setTimeout(function(){
+        setupCircles(10,canvasWidth/2,canvasHeight/2);
+    },200);
 
-    // The Main Animationfunction to pulse the white ellipse
-    function draw() {
-        if(radius <= 3000) {
-            radius += canvasWidth/25;
-        } else {
-            radius = 0;
+    setTimeout(function(){
+        setupCircles(10,canvasWidth/2,canvasHeight/2);
+    },500);
+
+    setTimeout(function(){
+        setupCircles(10,canvasWidth/2,canvasHeight/2);
+    },2000);
+
+    // ###############################################################
+    // ###############################################################
+
+
+    // Function to draw Circles into the Canvas
+    function Circle(radius,xPos,yPos) {
+        this.radius = radius;       // Radius of this object
+        this.xPos = xPos;           // x position of this object
+        this.yPos = yPos;           // y position of this object
+
+        // Update the radius of the circle every frame,
+        // indipendent from other Circles
+        this.update = function(){
+            this.radius+=(speed*ratio); // Update the radus of this Circle
+            let gradient = ctx.createRadialGradient(this.xPos,this.yPos,0,this.xPos,this.yPos,this.radius);
+            gradient.addColorStop(0.8, 'rgba(255, 255, 255, 0)');
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0.2)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(this.xPos,this.yPos,this.radius,0,Math.PI*2,true);
+            ctx.fill();
+            if(this.radius >= canvasWidth && this.radius >= canvasHeight) {
+                circles.splice(circles.indexOf(this),1); // Delete old Circlces
+            }
         }
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        drawCircle(ctx,x,y,radius);
-        drawCircle(ctx,x,y,radius+500);
-        drawCircle(ctx,x,y,radius+800);
-        requestAnimationFrame(draw);
 
     }
 
-    // Function to draw an ellipse in an html canvas element
-    function drawCircle(ctx ,x, y, r) {
-        let gradient = ctx.createRadialGradient(x,y,0,x,y,r);
-        gradient.addColorStop(0.8, 'rgba(255, 255, 255, 0)');
-        gradient.addColorStop(1, 'rgba(255, 255, 255, 0.2)');
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(x,y,r,0,Math.PI*2, true);
-        ctx.fill();
+    // Function to create new Circles
+    function setupCircles(r,x,y) {
+        var circle = new Circle(r,x,y);     // Create new Circle Object
+        circles.push(circle);               // Add Circle Object to the array
+        drawAndUpdate();
+    }
+
+    // Function that get triggert 60 times every second
+    // so this function creaetes the animation in the background
+    function drawAndUpdate() {
+        // This line clear the canvas every Frame,
+        // without this line, every circles would stay
+        ctx.clearRect(0,0,canvasWidth,canvasHeight);
+        for(var i = 0; i< circles.length;i++) {
+            var newCircle = circles[i];
+            newCircle.update();
+        }
+        // this line request this function every frame
+        requestAnimationFrame(drawAndUpdate);
     }
 }
