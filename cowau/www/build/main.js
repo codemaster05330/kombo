@@ -76,7 +76,7 @@ var EmojiPage = /** @class */ (function () {
     };
     EmojiPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-emoji',template:/*ion-inline-start:"C:\Users\Sandra Kleß\Documents\GitKraken\cowau-2018\cowau\src\pages\emoji\emoji.html"*/'<div class="headline">\n\n  Who are you?\n\n</div>\n\n\n\n<div class="subline">\n\n  Pick your Emoji. \n\n</div>\n\n\n\n<div class="video"></div>\n\n\n\n<div class="bottom-bar"></div>\n\n\n\n<div class="background-pattern-dark"></div>\n\n'/*ion-inline-end:"C:\Users\Sandra Kleß\Documents\GitKraken\cowau-2018\cowau\src\pages\emoji\emoji.html"*/,
+            selector: 'page-emoji',template:/*ion-inline-start:"C:\Users\Sandra Kleß\Documents\GitKraken\cowau-2018\cowau\src\pages\emoji\emoji.html"*/'<div class="headline">\n\n  Who are you?\n\n</div>\n\n\n\n<div class="subline">\n\n  Pick your Emoji. \n\n</div>\n\n\n\n<canvas id="canvas" class="canvas-emoji"></canvas>\n\n\n\n<div class="bottom-bar"></div>\n\n\n\n<div class="background-pattern-dark"></div>\n\n'/*ion-inline-end:"C:\Users\Sandra Kleß\Documents\GitKraken\cowau-2018\cowau\src\pages\emoji\emoji.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]])
     ], EmojiPage);
