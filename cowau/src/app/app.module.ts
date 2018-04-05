@@ -11,7 +11,7 @@ import { IdlePage } from '../pages/idle/idle';
 @NgModule({
   declarations: [
     MyApp,
-    FlipitPage
+    FlipitPage,
     IdlePage
   ],
   imports: [
@@ -21,7 +21,7 @@ import { IdlePage } from '../pages/idle/idle';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    FlipitPage
+    FlipitPage,
     IdlePage
   ],
   providers: [

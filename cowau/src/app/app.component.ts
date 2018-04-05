@@ -10,7 +10,7 @@ import { IdlePage } from '../pages/idle/idle';
 })
 
 export class MyApp {
-  rootPage:any = IdlePage;
+  rootPage:any = FlipitPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
