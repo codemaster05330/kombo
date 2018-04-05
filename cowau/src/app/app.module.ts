@@ -9,6 +9,7 @@ import { MyApp } from './app.component';
 import { FlipitPage } from '../pages/flipit/flipit';
 import { IdlePage } from '../pages/idle/idle';
 import { EmojiPage } from '../pages/emoji/emoji';
+import { ServerPage } from '../pages/server/server';
 
 //services
 import { GesturesService } from '../services/gestures.service';
@@ -18,7 +19,8 @@ import { GesturesService } from '../services/gestures.service';
     MyApp,
     EmojiPage,
     FlipitPage,
-    IdlePage
+    IdlePage,
+    ServerPage
   ],
   imports: [
     BrowserModule,
@@ -29,7 +31,8 @@ import { GesturesService } from '../services/gestures.service';
     MyApp,
     EmojiPage,
     FlipitPage,
-    IdlePage
+    IdlePage,
+    ServerPage
   ],
   providers: [
     StatusBar,
