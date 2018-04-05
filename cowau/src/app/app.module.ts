@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 
 //components
 import { MyApp } from './app.component';
+import { FlipitPage } from '../pages/flipit/flipit';
 import { IdlePage } from '../pages/idle/idle';
 
 //services
@@ -14,6 +15,7 @@ import { GesturesService } from '../services/gestures.service';
 @NgModule({
   declarations: [
     MyApp,
+    FlipitPage,
     IdlePage
   ],
   imports: [
@@ -23,6 +25,7 @@ import { GesturesService } from '../services/gestures.service';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    FlipitPage,
     IdlePage
   ],
   providers: [
