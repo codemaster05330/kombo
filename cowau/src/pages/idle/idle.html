@@ -1,21 +1,7 @@
-<ion-header>
-	<ion-navbar>
-		<ion-title>
-			{{title}}
-		</ion-title>
-	</ion-navbar>
-</ion-header>
+<div id="call-to-action" class="call-to-aktion">
+    <div class="call-to-action-title">
+        Pick me up!
+    </div>
+</div>
 
-<ion-content padding>
-	<input type="text" [(ngModel)]="author" (click)="appendString()"> {{author}}
-	<p>
-		Hello
-	</p>
-	<div class ="change-view-container">
-		<div class= "change-view">
-			<div class = "change-view-element" (click)="nextScreen()">
-				CHANGE PAGE
-			</div>
-		</div>
-	</div>
-</ion-content>
+<canvas id="canvas" class="canvas-idle"></canvas>

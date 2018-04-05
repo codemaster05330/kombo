@@ -11,7 +11,6 @@ $font-path: "../assets/fonts";
 // http://ionicframework.com/docs/theming/rtl-support/
 $app-direction: ltr;
 
-
 @import "ionic.globals";
 
 
@@ -22,8 +21,9 @@ $app-direction: ltr;
 // To view all the possible Ionic variables, see:
 // http://ionicframework.com/docs/theming/overriding-ionic-variables/
 
-
-
+body, html {
+    font-size: 10px;
+}
 
 // Named Color Variables
 // --------------------------------------------------
@@ -33,41 +33,12 @@ $app-direction: ltr;
 // colors so you can add, rename and remove colors as needed.
 // The "primary" color is the only required color in the map.
 
-$colors: (
-  primary:    #fff000,
-  secondary:  #32db64,
-  danger:     #f53d3d,
-  light:      #f4f4f4,
-  dark:       #222
-);
-
-
-.test {
-	color: #fff;
-}
-
-$cube: 3rem;
-
-// App iOS Variables
-// --------------------------------------------------
-// iOS only Sass variables can go here
-
-
-
-
-// App Material Design Variables
-// --------------------------------------------------
-// Material Design only Sass variables can go here
-
-
-
-
-// App Windows Variables
-// --------------------------------------------------
-// Windows only Sass variables can go here
-
-
-
+$primary: #fe8965;
+$secondary: #ff65a5;
+$text: #FE7982;
+$light: #ffffff;
+$dark: #24242F;
+$bggradient: linear-gradient(to bottom right, $primary 0%, $secondary 100%);
 
 // App Theme
 // --------------------------------------------------
@@ -92,3 +63,12 @@ $cube: 3rem;
 
 @import "roboto";
 @import "noto-sans";
+
+// Typografy
+// --------------------------------------------------
+// All informaitons for the used typography are stored here
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}

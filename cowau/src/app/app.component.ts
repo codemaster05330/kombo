@@ -4,9 +4,12 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { IdlePage } from '../pages/idle/idle';
+
+
 @Component({
   templateUrl: 'app.html'
 })
+
 export class MyApp {
   rootPage:any = IdlePage;
 
@@ -19,4 +22,3 @@ export class MyApp {
     });
   }
 }
-

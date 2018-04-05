@@ -1,11 +1,44 @@
-page-idle {
-	.change-view-container{
-		.change-view {
-			.change-view-element{
-				background-color: map-get($colors, primary);
-				margin: $cube/2;
-				@extend .test;
-			}
-		}
-	}
+.background-pattern {
+    background: $bggradient;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.call-to-aktion {
+    width: 17rem;
+    height: 17rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    transform: translate(-50%,-50%);
+    background-color: $dark;
+    border-radius: 50%;
+    opacity: 1;
+    .call-to-action-title {
+        color: $text;
+        text-transform: uppercase;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        text-align: center;
+        transform: translate(-50%,-50%);
+        width: 100%;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+}
+
+.canvas-idle {
+    background: $bggradient;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
