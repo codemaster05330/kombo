@@ -50,7 +50,7 @@ function canvasIdleBackground() {
     // Test Trigger of the Circle animaiton
 
     setTimeout(function(){
-        setupCircles(10,canvasWidth/2,canvasHeight/2);
+        setupCircles(100,canvasWidth/2,canvasHeight/2);
     },200);
 
     setTimeout(function(){

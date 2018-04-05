@@ -49,6 +49,16 @@ $bggradient: linear-gradient(to bottom right, $primary 0%, $secondary 100%);
 
 @import "ionic.theme.default";
 
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 10;
+    height: 1.5vh;
+    background: $bggradient;
+}
 
 // Ionicons
 // --------------------------------------------------
@@ -56,7 +66,6 @@ $bggradient: linear-gradient(to bottom right, $primary 0%, $secondary 100%);
 // http://ionicframework.com/docs/ionicons/
 
 @import "ionic.ionicons";
-
 
 // Fonts
 // --------------------------------------------------
@@ -68,7 +77,26 @@ $bggradient: linear-gradient(to bottom right, $primary 0%, $secondary 100%);
 // --------------------------------------------------
 // All informaitons for the used typography are stored here
 
-h1, h2, h3, h4, h5, h6 {
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
+.headline {
+    position: absolute;
+    top: 10vh;
+    left: 0;
+    width: 100%;
+    color: $text;
+    font-size: 5rem;
+    text-align: center;
+    font-weight: bold;
+    z-index: 10;
+}
+
+.subline {
+    position: absolute;
+    top: 19vh;
+    left: 0;
+    width: 100%;
+    color: $light;
+    font-size: 2rem;
+    text-align: center;
+    font-weight: bold;
+    z-index: 10;
 }
