@@ -8,9 +8,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 
 export class IdlePage {
-    constructor(public navCtrl: NavController, public navParams: NavParams) {
-
-    }
+    constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
     ionViewDidLoad() {
         initCircle();
@@ -26,9 +24,8 @@ function initCircle(){
     // Define a few important var/const for the following scripts
     const cvs : any = document.getElementById('canvas');    // Define the Canvas Element
     const ctx = cvs.getContext('2d');                       // Setup the Canvas to 2D
-    const speed = 20;                                        // Define the Speed of the animaiton
-    const ratio = 2;                                        // Define the DPI of the Screen
-
+    const speed = 4;                                        // Define the Speed of the animaiton
+    const ratio = window.devicePixelRatio                   // Define the DPI of the Screen
 
     // This are imporatent var for the Script,
     // but here you don't have to change something
@@ -55,8 +52,6 @@ function initCircle(){
         setupCircles(10,canvasWidth/2,canvasHeight/2)
     });
 
-    setupCircles(10,canvasWidth/2,canvasHeight/2);
-
     // ###############################################################
     // ###############################################################
 
@@ -70,7 +65,6 @@ function initCircle(){
         // indipendent from other Circles
         this.update = function(){
             this.radius += (speed*ratio); // Update the radus of this Circle
-            console.log(this + ': ' + this.radius);
             let gradient = ctx.createRadialGradient(this.xPos,this.yPos,0,this.xPos,this.yPos,this.radius);
             gradient.addColorStop(0.8, 'rgba(255, 255, 255, 0)');
             gradient.addColorStop(1, 'rgba(255, 255, 255, 0.2)');
