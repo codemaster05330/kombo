@@ -5,17 +5,14 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
-// import: import { pageClass } from 'path to .ts file';
-import { HomePage } from '../pages/home/home';
-import { IdlePage } from '../pages/idle/idle';
 import { FlipitPage } from '../pages/flipit/flipit';
+import { IdlePage } from '../pages/idle/idle';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    IdlePage,
     FlipitPage
+    IdlePage
   ],
   imports: [
     BrowserModule,
@@ -24,9 +21,8 @@ import { FlipitPage } from '../pages/flipit/flipit';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    IdlePage,
     FlipitPage
+    IdlePage
   ],
   providers: [
     StatusBar,
