@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { GesturesService } from '../../services/gestures.service';
+// import { GesturesService } from '../../services/gestures.service';
 
 @Component({
   selector: 'page-idle',
@@ -8,8 +8,7 @@ import { GesturesService } from '../../services/gestures.service';
 })
 
 export class IdlePage {
-    constructor(public navCtrl: NavController, public navParams: NavParams, private gestureService:GesturesService) {
-    	//gestureService.isFlipItGesture();
+    constructor(public navCtrl: NavController, public navParams: NavParams) {
     }
 
     ionViewDidLoad() {

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
+import { GesturesService } from '../../services/gestures.service';
 
 /**
  * Generated class for the FlipitPage page.
@@ -8,18 +9,18 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
  * Ionic pages and navigation.
  */
 
-@IonicPage()
 @Component({
-  selector: 'page-flipit',
-  templateUrl: 'flipit.html',
+	selector: 'page-flipit',
+	templateUrl: 'flipit.html',
 })
+
 export class FlipitPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
+	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService) {
+	}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad FlipitPage');
-  }
+	ionViewDidLoad() {
+		this.gesturesService.isFlipItGesture();
+	}
 
 }
