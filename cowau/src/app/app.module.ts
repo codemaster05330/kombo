@@ -8,6 +8,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { MyApp } from './app.component';
 import { FlipitPage } from '../pages/flipit/flipit';
 import { IdlePage } from '../pages/idle/idle';
+import { EmojiPage } from '../pages/emoji/emoji';
 
 //services
 import { GesturesService } from '../services/gestures.service';
@@ -15,6 +16,7 @@ import { GesturesService } from '../services/gestures.service';
 @NgModule({
   declarations: [
     MyApp,
+    EmojiPage,
     FlipitPage,
     IdlePage
   ],
@@ -25,6 +27,7 @@ import { GesturesService } from '../services/gestures.service';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    EmojiPage,
     FlipitPage,
     IdlePage
   ],
