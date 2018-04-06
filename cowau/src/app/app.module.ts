@@ -5,6 +5,7 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Gyroscope } from '@ionic-native/gyroscope';
+import { HTTP } from '@ionic-native/http';
 
 import './rxjs-extensions';
 
@@ -51,6 +52,7 @@ import { GesturesService } from '../services/gestures.service';
     SplashScreen,
     Gyroscope,
     GesturesService,
+    HTTP,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
