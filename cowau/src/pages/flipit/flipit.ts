@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
+import { Popover } from '../../popover/popover';
+import { PopoverController } from 'ionic-angular';
 
 /**
  * Generated class for the FlipitPage page.
@@ -8,7 +10,6 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
  * Ionic pages and navigation.
  */
 
-@IonicPage()
 @Component({
   selector: 'page-flipit',
   templateUrl: 'flipit.html',
@@ -22,4 +23,6 @@ export class FlipitPage {
     console.log('ionViewDidLoad FlipitPage');
   }
 
+  @Component({})
+  
 }
