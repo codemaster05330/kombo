@@ -17,7 +17,7 @@ export class ServerPage {
 
 	repeatMe(){
 		console.log("repeat");
-		this.http.get('http://192.168.0.102:8080/posts', {}, {}).then(
+		this.http.get('http://141.28.131.171:8080/posts', {}, {}).then(
 				(data) => {
 					console.log(data.data);
 				}
