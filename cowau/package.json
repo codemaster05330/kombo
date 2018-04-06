@@ -22,13 +22,21 @@
     "@angular/platform-browser": "5.2.9",
     "@angular/platform-browser-dynamic": "5.2.9",
     "@ionic-native/core": "4.5.3",
+    "@ionic-native/device-motion": "^4.6.0",
     "@ionic-native/gyroscope": "^4.6.0",
     "@ionic-native/http": "^4.6.0",
     "@ionic-native/splash-screen": "4.5.3",
     "@ionic-native/status-bar": "4.5.3",
     "@ionic/storage": "2.1.3",
     "cordova-plugin-advanced-http": "^1.11.1",
+    "cordova-plugin-device": "^2.0.1",
+    "cordova-plugin-device-motion": "^1.2.5",
+    "cordova-plugin-file": "^6.0.1",
     "cordova-plugin-gyroscope": "^0.1.4",
+    "cordova-plugin-ionic-keyboard": "^2.0.5",
+    "cordova-plugin-ionic-webview": "^1.1.16",
+    "cordova-plugin-splashscreen": "^5.0.2",
+    "cordova-plugin-whitelist": "^1.3.3",
     "ionic-angular": "3.9.2",
     "ionic-native": "^2.9.0",
     "ionicons": "3.0.0",
@@ -44,7 +52,13 @@
   "description": "An Ionic project",
   "cordova": {
     "plugins": {
-      "cordova-plugin-gyroscope": {}
+      "cordova-plugin-gyroscope": {},
+      "cordova-plugin-device-motion": {},
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-device": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-ionic-webview": {},
+      "cordova-plugin-ionic-keyboard": {}
     }
   }
 }

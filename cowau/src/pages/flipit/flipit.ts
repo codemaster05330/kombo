@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, Platform } from 'ionic-angular';
 import { GesturesService } from '../../services/gestures.service';
 
+
 /**
  * Generated class for the FlipitPage page.
  *
@@ -11,7 +12,7 @@ import { GesturesService } from '../../services/gestures.service';
 
 @Component({
 	selector: 'page-flipit',
-	templateUrl: 'flipit.html',
+	templateUrl: 'flipit.html'
 })
 
 export class FlipitPage {
