@@ -10,16 +10,16 @@ import { NavController, NavParams } from 'ionic-angular';
 
 
 @Component({
-	selector: 'page-emoji',
-	templateUrl: 'emoji.html',
+	selector: 'page-edit',
+	templateUrl: 'edit.html',
 })
-export class EmojiPage {
+export class EditPage {
 
 	constructor(public navCtrl: NavController, public navParams: NavParams) {
 	}
 
 	ionViewDidLoad() {
-		console.log('ionViewDidLoad EmojiPage');
+		console.log('ionViewDidLoad EditPage');
 	}
 
 }
