@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, Platform } from 'ionic-angular';
 import { GesturesService } from '../../services/gestures.service';
 
 /**
@@ -16,11 +16,16 @@ import { GesturesService } from '../../services/gestures.service';
 
 export class FlipitPage {
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService) {
+	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform) {
+		platform.ready().then((readySource) => {
+			if(readySource == 'cordova') {
+				this.gesturesService.isFlipItGesture();
+			}
+		});
 	}
 
 	ionViewDidLoad() {
-		this.gesturesService.isFlipItGesture();
+		
 	}
 
 }
