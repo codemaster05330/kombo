@@ -13,7 +13,11 @@ import { MyApp } from './app.component';
 import { FlipitPage } from '../pages/flipit/flipit';
 import { IdlePage } from '../pages/idle/idle';
 import { EmojiPage } from '../pages/emoji/emoji';
+<<<<<<< HEAD
+import { VisualPage } from '../pages/visual/visual';
+=======
 import { ServerPage } from '../pages/server/server';
+>>>>>>> 5b3dccf4e348b0e795d6ee907786d6c3821b1f10
 
 //services
 import { GesturesService } from '../services/gestures.service';
@@ -24,7 +28,11 @@ import { GesturesService } from '../services/gestures.service';
     EmojiPage,
     FlipitPage,
     IdlePage,
+<<<<<<< HEAD
+    VisualPage
+=======
     ServerPage
+>>>>>>> 5b3dccf4e348b0e795d6ee907786d6c3821b1f10
   ],
   imports: [
     BrowserModule,
@@ -36,7 +44,11 @@ import { GesturesService } from '../services/gestures.service';
     EmojiPage,
     FlipitPage,
     IdlePage,
+<<<<<<< HEAD
+    VisualPage
+=======
     ServerPage
+>>>>>>> 5b3dccf4e348b0e795d6ee907786d6c3821b1f10
   ],
   providers: [
     StatusBar,
