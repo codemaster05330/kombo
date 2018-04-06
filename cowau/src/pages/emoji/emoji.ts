@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 
 /**
  * Generated class for the EmojiPage page.
@@ -10,16 +10,16 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 
 @Component({
-  selector: 'page-emoji',
-  templateUrl: 'emoji.html',
+	selector: 'page-emoji',
+	templateUrl: 'emoji.html',
 })
 export class EmojiPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
+	constructor(public navCtrl: NavController, public navParams: NavParams) {
+	}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad EmojiPage');
-  }
+	ionViewDidLoad() {
+		console.log('ionViewDidLoad EmojiPage');
+	}
 
 }

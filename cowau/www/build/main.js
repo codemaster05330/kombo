@@ -52,27 +52,19 @@ webpackEmptyAsyncContext.id = 110;
 /***/ }),
 
 /***/ 151:
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var map = {
-	"../pages/flipit/flipit.module": [
-		275,
-		0
-	]
-};
-function webpackAsyncContext(req) {
-	var ids = map[req];
-	if(!ids)
-		return Promise.reject(new Error("Cannot find module '" + req + "'."));
-	return __webpack_require__.e(ids[1]).then(function() {
-		return __webpack_require__(ids[0]);
+function webpackEmptyAsyncContext(req) {
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncatched exception popping up in devtools
+	return Promise.resolve().then(function() {
+		throw new Error("Cannot find module '" + req + "'.");
 	});
-};
-webpackAsyncContext.keys = function webpackAsyncContextKeys() {
-	return Object.keys(map);
-};
-webpackAsyncContext.id = 151;
-module.exports = webpackAsyncContext;
+}
+webpackEmptyAsyncContext.keys = function() { return []; };
+webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
+module.exports = webpackEmptyAsyncContext;
+webpackEmptyAsyncContext.id = 151;
 
 /***/ }),
 
@@ -110,10 +102,9 @@ var VisualPage = /** @class */ (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
             selector: 'page-visual',template:/*ion-inline-start:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\visual\visual.html"*/'<canvas id="canvas" class="canvas-visual"></canvas>\n\n<div class="background-pattern"></div>\n'/*ion-inline-end:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\visual\visual.html"*/,
         }),
-        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__["a" /* GesturesService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__["a" /* GesturesService */]) === "function" && _c || Object])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["d" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__["a" /* GesturesService */]])
     ], VisualPage);
     return VisualPage;
-    var _a, _b, _c;
 }());
 
 // ###############################################################
@@ -127,6 +118,8 @@ function initVisual() {
     // Define a few important var/const for the following scripts
     var cvs = document.getElementById('canvas'); // Define the Canvas Element
     var ctx = cvs.getContext('2d'); // Setup the Canvas to 2D
+    var speed = 5; // Define the Speed of the Soundwaves
+    var movementSpeed = 5; // Define the Speed of the Sound Elements
     var ratio = window.devicePixelRatio; // Define the DPI of the Screen
     // This are imporatent var for the Script,
     // but here you don't have to change something
@@ -189,10 +182,10 @@ function initVisual() {
         };
     }
     function setupVisualScreen() {
-        var r = returnRandomValue(30, 50) * ratio;
+        var r = returnRandomValue(1, 256);
         var x = returnRandomValue(0 + r, canvasWidth - r);
         var y = returnRandomValue(0 + r, canvasHeight - r);
-        var m = r;
+        var m = 20;
         for (var j = 0; j < soundsArray.length; j++) {
             if (getDistance(x, soundsArray[j].x, y, soundsArray[j].y) - (r * 2) < 0) {
                 x = returnRandomValue(0 + r, canvasWidth - r);
@@ -308,7 +301,7 @@ var FlipitPage = /** @class */ (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
             selector: 'page-flipit',template:/*ion-inline-start:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\flipit\flipit.html"*/'<div class="headline">\n  Flip It!\n</div>\n\n<div class="subline">\n  And get your sound. \n</div>\n\n<div class="video"></div>\n\n<div class="bottom-bar"></div>\n\n<div class="background-pattern-dark"></div>\n\n\n'/*ion-inline-end:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\flipit\flipit.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["d" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavParams */]])
     ], FlipitPage);
     return FlipitPage;
 }());
@@ -450,7 +443,7 @@ var MyApp = /** @class */ (function () {
     MyApp = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({template:/*ion-inline-start:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\app\app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\app\app.html"*/
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
     ], MyApp);
     return MyApp;
 }());
@@ -493,7 +486,7 @@ var IdlePage = /** @class */ (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
             selector: 'page-idle',template:/*ion-inline-start:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\idle\idle.html"*/'<div id="call-to-action" class="call-to-aktion">\n    <div class="call-to-action-title">\n        Pick me up!\n    </div>\n</div>\n\n<canvas id="canvas" class="canvas-idle"></canvas>\n\n<div class="background-pattern"></div>\n'/*ion-inline-end:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\idle\idle.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__["a" /* GesturesService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["d" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__["a" /* GesturesService */]])
     ], IdlePage);
     return IdlePage;
 }());
@@ -613,7 +606,7 @@ var EmojiPage = /** @class */ (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
             selector: 'page-emoji',template:/*ion-inline-start:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\emoji\emoji.html"*/'<div class="headline">\n  Who are you?\n</div>\n\n<div class="subline">\n  Pick your Emoji. \n</div>\n\n<canvas id="canvas" class="canvas-emoji"></canvas>\n\n<div class="bottom-bar"></div>\n\n<div class="background-pattern-dark"></div>\n'/*ion-inline-end:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\emoji\emoji.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["d" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavParams */]])
     ], EmojiPage);
     return EmojiPage;
 }());
@@ -681,7 +674,7 @@ var ServerPage = /** @class */ (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
             selector: 'page-server',template:/*ion-inline-start:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\server\server.html"*/'<input [(ngModel)]="testMessage" type="text" placeholder="Message">\n\n<button (click)="sendMessage()" class="button button-small">\nSend\n</button>\n'/*ion-inline-end:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\server\server.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_http__["a" /* HTTP */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["d" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_http__["a" /* HTTP */]])
     ], ServerPage);
     return ServerPage;
 }());

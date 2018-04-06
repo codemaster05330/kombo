@@ -5,23 +5,27 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { FlipitPage } from '../pages/flipit/flipit';
 import { IdlePage } from '../pages/idle/idle';
+import { EditPage } from '../pages/edit/edit';
 import { EmojiPage } from '../pages/emoji/emoji';
-import { ServerPage } from '../pages/server/server';
 import { VisualPage } from '../pages/visual/visual';
 
+import { ServerPage } from '../pages/server/server';
+
+
 @Component({
-  templateUrl: 'app.html'
+	templateUrl: 'app.html'
 })
 
 export class MyApp {
-  rootPage:any = VisualPage;
+	rootPage:any = FlipitPage;
+	// rootPage:any = ServerPage;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
-    platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      statusBar.styleDefault();
-      splashScreen.hide();
-    });
-  }
+	constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+		platform.ready().then(() => {
+			// Okay, so the platform is ready and our plugins are available.
+			// Here you can do any higher level native things you might need.
+			statusBar.styleDefault();
+			splashScreen.hide();
+		});
+	}
 }
