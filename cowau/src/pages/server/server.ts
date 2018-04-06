@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, Platform } from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
 import { Observable } from 'rxjs/Observable';
 import { Sound, SoundType } from '../../classes/sound';
@@ -12,8 +12,13 @@ import { Sound, SoundType } from '../../classes/sound';
 export class ServerPage {
 	@Input() testMessage:string = "";
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, private http: HTTP) {
-		setInterval(() => {this.repeatMe();}, 5000);
+	constructor(public navCtrl: NavController, public navParams: NavParams, private http: HTTP, public platform:Platform) {
+		platform.ready().then((readyState) => {
+			if(readyState == 'cordova') {
+				console.log('cordova abailable');
+				setInterval(() => {this.repeatMe();}, 5000);
+			}
+		});
 	}
 
 	repeatMe(){
