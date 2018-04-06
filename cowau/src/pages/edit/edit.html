@@ -1,9 +1,17 @@
-<div class="headline">
+<!-- <div class="headline">
 	Edit Screen
 </div>
 
 <div class="subline">
 	Make your Sound
+</div> -->
+
+<div class="beatgrid" id="content">
+	<div *ngFor="let cell of beatGrid; let i = index" class="beatrow">{{i}}
+		<div (click)="clicked($event)" *ngFor="let cell of beatGrid[0]; let j = index" id="{{i}}-{{j}}" class="tone">
+			
+		</div>
+	</div>
 </div>
 
 <div class="bottom-bar"></div>
