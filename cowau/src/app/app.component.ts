@@ -5,12 +5,15 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { FlipitPage } from '../pages/flipit/flipit';
 import { IdlePage } from '../pages/idle/idle';
+import { EmojiPage } from '../pages/emoji/emoji';
+import { ServerPage } from '../pages/server/server';
+
 @Component({
   templateUrl: 'app.html'
 })
 
 export class MyApp {
-  rootPage:any = FlipitPage;
+  rootPage:any = ServerPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {

@@ -3833,11 +3833,11 @@ ion-icon::before {
 
 .headline {
   position: absolute;
-  top: 10vh;
+  top: 6rem;
   left: 0;
   width: 100%;
   color: #FE7982;
-  font-size: 5rem;
+  font-size: 4.7rem;
   text-align: center;
   font-weight: bold;
   z-index: 10;
@@ -3845,7 +3845,7 @@ ion-icon::before {
 
 .subline {
   position: absolute;
-  top: 19vh;
+  top: 12rem;
   left: 0;
   width: 100%;
   color: #ffffff;
@@ -25716,6 +25716,13 @@ ion-navbar.toolbar {
   padding-bottom: calc(env(safe-area-inset-bottom) + 4px);
   min-height: calc(46px + constant(safe-area-inset-bottom));
   min-height: calc(46px + env(safe-area-inset-bottom));
+}
+
+.canvas-emoji {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .background-pattern-dark {
