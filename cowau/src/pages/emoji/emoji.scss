@@ -1,10 +1,38 @@
-page-emoji {
-
-}
-
-.canvas-emoji {
-    z-index: 1;
-    position: absolute;
+.background-pattern {
+    background: $dark;
+    position: relative;
     top: 0;
     left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
 }
+
+.flex-container{
+	display: flex;
+	position: absolute;
+	flex-wrap: wrap;
+	justify-content: center;
+	background-color: transparent;
+	z-index: 50;
+	top: 27vh;
+
+	
+
+
+}
+
+.flex-container > div {
+	width: 24%;
+	margin: 1%;
+	padding: 2%; 
+
+
+
+}
+
+
+
+
