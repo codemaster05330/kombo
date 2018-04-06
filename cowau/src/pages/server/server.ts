@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
+import { Sound, SoundType } from '../../classes/sound';
 
 @Component({
   selector: 'page-server',
@@ -17,11 +18,13 @@ export class ServerPage {
 
 	repeatMe(){
 		console.log("repeat");
-		this.http.get('http://141.28.131.171:8080/posts', {}, {}).then(
+		var s = new Sound(SoundType.Bass);
+
+		/*this.http.get('http://141.28.131.171:8080/posts', {}, {}).then(
 				(data) => {
 					console.log(data.data);
 				}
-			);
+			);*/
 		//Observable.
 	}
 
