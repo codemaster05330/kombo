@@ -1,93 +1,6 @@
 webpackJsonp([1],{
 
-/***/ 108:
-/***/ (function(module, exports) {
-
-function webpackEmptyAsyncContext(req) {
-	// Here Promise.resolve().then() is used instead of new Promise() to prevent
-	// uncatched exception popping up in devtools
-	return Promise.resolve().then(function() {
-		throw new Error("Cannot find module '" + req + "'.");
-	});
-}
-webpackEmptyAsyncContext.keys = function() { return []; };
-webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
-module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 108;
-
-/***/ }),
-
-/***/ 149:
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"../pages/flipit/flipit.module": [
-		272,
-		0
-	]
-};
-function webpackAsyncContext(req) {
-	var ids = map[req];
-	if(!ids)
-		return Promise.reject(new Error("Cannot find module '" + req + "'."));
-	return __webpack_require__.e(ids[1]).then(function() {
-		return __webpack_require__(ids[0]);
-	});
-};
-webpackAsyncContext.keys = function webpackAsyncContextKeys() {
-	return Object.keys(map);
-};
-webpackAsyncContext.id = 149;
-module.exports = webpackAsyncContext;
-
-/***/ }),
-
-/***/ 193:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EmojiPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(32);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-/**
- * Generated class for the EmojiPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-var EmojiPage = /** @class */ (function () {
-    function EmojiPage(navCtrl, navParams) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-    }
-    EmojiPage.prototype.ionViewDidLoad = function () {
-        console.log('ionViewDidLoad EmojiPage');
-    };
-    EmojiPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-emoji',template:/*ion-inline-start:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\emoji\emoji.html"*/'<div class="headline">\n  Who are you?\n</div>\n\n<div class="subline">\n  Pick your Emoji. \n</div>\n\n<canvas id="canvas" class="canvas-emoji"></canvas>\n\n<div class="bottom-bar"></div>\n\n<div class="background-pattern-dark"></div>\n'/*ion-inline-end:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\emoji\emoji.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]])
-    ], EmojiPage);
-    return EmojiPage;
-}());
-
-//# sourceMappingURL=emoji.js.map
-
-/***/ }),
-
-/***/ 194:
+/***/ 100:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -121,13 +34,251 @@ var GesturesService = /** @class */ (function () {
 
 /***/ }),
 
+/***/ 110:
+/***/ (function(module, exports) {
+
+function webpackEmptyAsyncContext(req) {
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncatched exception popping up in devtools
+	return Promise.resolve().then(function() {
+		throw new Error("Cannot find module '" + req + "'.");
+	});
+}
+webpackEmptyAsyncContext.keys = function() { return []; };
+webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
+module.exports = webpackEmptyAsyncContext;
+webpackEmptyAsyncContext.id = 110;
+
+/***/ }),
+
+/***/ 151:
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"../pages/flipit/flipit.module": [
+		275,
+		0
+	]
+};
+function webpackAsyncContext(req) {
+	var ids = map[req];
+	if(!ids)
+		return Promise.reject(new Error("Cannot find module '" + req + "'."));
+	return __webpack_require__.e(ids[1]).then(function() {
+		return __webpack_require__(ids[0]);
+	});
+};
+webpackAsyncContext.keys = function webpackAsyncContextKeys() {
+	return Object.keys(map);
+};
+webpackAsyncContext.id = 151;
+module.exports = webpackAsyncContext;
+
+/***/ }),
+
+/***/ 194:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return VisualPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__ = __webpack_require__(100);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+var VisualPage = /** @class */ (function () {
+    function VisualPage(navCtrl, navParams, gestureService) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.gestureService = gestureService;
+        //gestureService.isFlipItGesture();
+    }
+    VisualPage.prototype.ionViewDidLoad = function () {
+        initVisual();
+    };
+    VisualPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-visual',template:/*ion-inline-start:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\visual\visual.html"*/'<canvas id="canvas" class="canvas-visual"></canvas>\n\n<div class="background-pattern"></div>\n'/*ion-inline-end:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\visual\visual.html"*/,
+        }),
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__["a" /* GesturesService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__["a" /* GesturesService */]) === "function" && _c || Object])
+    ], VisualPage);
+    return VisualPage;
+    var _a, _b, _c;
+}());
+
+// ###############################################################
+// ###############################################################
+// Create the Visual Screen Canvas
+function initVisual() {
+    var cta = document.getElementById('canvas');
+    cta.addEventListener('click', function () {
+        setupVisualScreen();
+    });
+    // Define a few important var/const for the following scripts
+    var cvs = document.getElementById('canvas'); // Define the Canvas Element
+    var ctx = cvs.getContext('2d'); // Setup the Canvas to 2D
+    var ratio = window.devicePixelRatio; // Define the DPI of the Screen
+    // This are imporatent var for the Script,
+    // but here you don't have to change something
+    var canvasWidth = window.innerWidth; // Hight of the Canvas
+    var canvasHeight = window.innerHeight; // Width of the Canvas
+    var soundsArray = []; // Array of all circles
+    // Create a canvas with the max size of the device
+    // and create a canvas with a higher DPI as the "Max-Size"
+    // so everything is sharp as fuck
+    cvs.width = canvasWidth * ratio; // Multiply the width, with the DPI Scale
+    cvs.height = canvasHeight * ratio; // Multiply the width, with the DPI Scal
+    cvs.style.width = canvasWidth + 'px'; // Set the width in the canvas
+    cvs.style.height = canvasHeight + 'px'; // Set the hight in the canvas
+    canvasWidth = canvasWidth * ratio; // Set the widdth of the canvas
+    canvasHeight = canvasHeight * ratio; // Set the hight of the canvas
+    // ###############################################################
+    // ###############################################################
+    // Function to create a new Soundobject
+    function Sound(x, y, radius, mass) {
+        this.radius = radius;
+        this.x = x;
+        this.y = y;
+        this.mass = mass;
+        this.velocity = {
+            x: returnRandomValue(-20, 20),
+            y: returnRandomValue(-20, 20)
+        };
+        this.updateSound = function () {
+            this.borderDetectionSound();
+            this.soundDetectionSound();
+            this.moveSound();
+            this.drawSound();
+        };
+        this.borderDetectionSound = function () {
+            if (this.x + this.radius > canvasWidth || this.x - this.radius < 0) {
+                this.velocity.x = -this.velocity.x;
+            }
+            if (this.y + this.radius > canvasHeight || this.y - this.radius < 0) {
+                this.velocity.y = -this.velocity.y;
+            }
+        };
+        this.moveSound = function () {
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
+        };
+        this.drawSound = function () {
+            ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+            ctx.fill();
+        };
+        this.soundDetectionSound = function () {
+            for (var i = 0; i < soundsArray.length; i++) {
+                if (this === soundsArray[i])
+                    continue;
+                if (getDistance(this.x, soundsArray[i].x, this.y, soundsArray[i].y) - (this.radius * 2) < 0) {
+                    resolveCollision(this, soundsArray[i]);
+                }
+            }
+        };
+    }
+    function setupVisualScreen() {
+        var r = returnRandomValue(30, 50) * ratio;
+        var x = returnRandomValue(0 + r, canvasWidth - r);
+        var y = returnRandomValue(0 + r, canvasHeight - r);
+        var m = r;
+        for (var j = 0; j < soundsArray.length; j++) {
+            if (getDistance(x, soundsArray[j].x, y, soundsArray[j].y) - (r * 2) < 0) {
+                x = returnRandomValue(0 + r, canvasWidth - r);
+                y = returnRandomValue(0 + r, canvasHeight - r);
+                j = -1;
+            }
+        }
+        var newSound = new Sound(x, y, r, m);
+        soundsArray.push(newSound);
+    }
+    // Start the Canvas Animation
+    draw();
+    function draw() {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        soundsArray.forEach(function (soundsArray) {
+            soundsArray.updateSound();
+        });
+        requestAnimationFrame(draw);
+    }
+}
+// ###############################################################
+// ###############################################################
+// Utility Functions
+// Function to create a random int number
+// with an min and max value
+function returnRandomValue(min, max) {
+    var random = Math.floor(Math.random() * (max - min + 1) + min);
+    if (random === 0) {
+        return random = min;
+    }
+    else {
+        return random;
+    }
+}
+// Function to detect distance between to objects
+function getDistance(x1, x2, y1, y2) {
+    var xDistance = x2 - x1;
+    var yDistance = y2 - y1;
+    return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+}
+function rotate(velocity, angle) {
+    var rotatedVelocities = {
+        x: velocity.x * Math.cos(angle) - velocity.y * Math.sin(angle),
+        y: velocity.x * Math.sin(angle) + velocity.y * Math.cos(angle)
+    };
+    return rotatedVelocities;
+}
+function resolveCollision(particle, otherParticle) {
+    var xVelocityDiff = particle.velocity.x - otherParticle.velocity.x;
+    var yVelocityDiff = particle.velocity.y - otherParticle.velocity.y;
+    var xDist = otherParticle.x - particle.x;
+    var yDist = otherParticle.y - particle.y;
+    // Prevent accidental overlap of particles
+    if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0) {
+        // Grab angle between the two colliding particles
+        var angle = -Math.atan2(otherParticle.y - particle.y, otherParticle.x - particle.x);
+        // Store mass in var for better readability in collision equation
+        var m1 = particle.mass;
+        var m2 = otherParticle.mass;
+        // Velocity before equation
+        var u1 = rotate(particle.velocity, angle);
+        var u2 = rotate(otherParticle.velocity, angle);
+        // Velocity after 1d collision equation
+        var v1 = { x: u1.x * (m1 - m2) / (m1 + m2) + u2.x * 2 * m2 / (m1 + m2), y: u1.y };
+        var v2 = { x: u2.x * (m1 - m2) / (m1 + m2) + u1.x * 2 * m2 / (m1 + m2), y: u2.y };
+        // Final velocity after rotating axis back to original location
+        var vFinal1 = rotate(v1, -angle);
+        var vFinal2 = rotate(v2, -angle);
+        // Swap particle velocities for realistic bounce effect
+        particle.velocity.x = vFinal1.x;
+        particle.velocity.y = vFinal1.y;
+        otherParticle.velocity.x = vFinal2.x;
+        otherParticle.velocity.y = vFinal2.y;
+    }
+}
+//# sourceMappingURL=visual.js.map
+
+/***/ }),
+
 /***/ 195:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return FlipitPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(24);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -185,17 +336,18 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(189);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__ = __webpack_require__(192);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(191);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__ = __webpack_require__(193);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(270);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_flipit_flipit__ = __webpack_require__(195);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_idle_idle__ = __webpack_require__(271);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_emoji_emoji__ = __webpack_require__(193);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_visual_visual__ = __webpack_require__(273);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__services_gestures_service__ = __webpack_require__(194);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_emoji_emoji__ = __webpack_require__(272);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_server_server__ = __webpack_require__(273);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_visual_visual__ = __webpack_require__(194);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__services_gestures_service__ = __webpack_require__(100);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -213,6 +365,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+
 //services
 
 var AppModule = /** @class */ (function () {
@@ -225,7 +378,8 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_8__pages_emoji_emoji__["a" /* EmojiPage */],
                 __WEBPACK_IMPORTED_MODULE_6__pages_flipit_flipit__["a" /* FlipitPage */],
                 __WEBPACK_IMPORTED_MODULE_7__pages_idle_idle__["a" /* IdlePage */],
-                __WEBPACK_IMPORTED_MODULE_9__pages_visual_visual__["a" /* VisualPage */]
+                __WEBPACK_IMPORTED_MODULE_9__pages_server_server__["a" /* ServerPage */],
+                __WEBPACK_IMPORTED_MODULE_10__pages_visual_visual__["a" /* VisualPage */]
             ],
             imports: [
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -241,12 +395,13 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_8__pages_emoji_emoji__["a" /* EmojiPage */],
                 __WEBPACK_IMPORTED_MODULE_6__pages_flipit_flipit__["a" /* FlipitPage */],
                 __WEBPACK_IMPORTED_MODULE_7__pages_idle_idle__["a" /* IdlePage */],
-                __WEBPACK_IMPORTED_MODULE_9__pages_visual_visual__["a" /* VisualPage */]
+                __WEBPACK_IMPORTED_MODULE_9__pages_server_server__["a" /* ServerPage */],
+                __WEBPACK_IMPORTED_MODULE_10__pages_visual_visual__["a" /* VisualPage */]
             ],
             providers: [
                 __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__["a" /* StatusBar */],
                 __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */],
-                __WEBPACK_IMPORTED_MODULE_10__services_gestures_service__["a" /* GesturesService */],
+                __WEBPACK_IMPORTED_MODULE_11__services_gestures_service__["a" /* GesturesService */],
                 { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["u" /* ErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["b" /* IonicErrorHandler */] }
             ]
         })
@@ -264,10 +419,10 @@ var AppModule = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(192);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(189);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_visual_visual__ = __webpack_require__(273);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(193);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(191);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_visual_visual__ = __webpack_require__(194);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -295,10 +450,9 @@ var MyApp = /** @class */ (function () {
     MyApp = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({template:/*ion-inline-start:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\app\app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\app\app.html"*/
         }),
-        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Platform */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Platform */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]) === "function" && _c || Object])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
     ], MyApp);
     return MyApp;
-    var _a, _b, _c;
 }());
 
 //# sourceMappingURL=app.component.js.map
@@ -311,8 +465,8 @@ var MyApp = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IdlePage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__ = __webpack_require__(194);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__ = __webpack_require__(100);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -351,7 +505,7 @@ function initCircle() {
     // Define a few important var/const for the following scripts
     var cvs = document.getElementById('canvas'); // Define the Canvas Element
     var ctx = cvs.getContext('2d'); // Setup the Canvas to 2D
-    var speed = 4; // Define the Speed of the animaiton
+    // const speed = 10;                                    // Define the Speed of the animaiton
     var ratio = window.devicePixelRatio; // Define the DPI of the Screen
     // This are imporatent var for the Script,
     // but here you don't have to change something
@@ -372,19 +526,20 @@ function initCircle() {
     // Test Trigger of the Circle animaiton
     var cta = document.getElementById('call-to-action');
     cta.addEventListener('click', function () {
-        setupCircles(10, canvasWidth / 2, canvasHeight / 2);
+        setupCircles(10, canvasWidth / 2, canvasHeight / 2, (Math.random() * 5) + 4);
     });
     // ###############################################################
     // ###############################################################
     // Function to draw Circles into the Canvas
-    function Circle(radius, xPos, yPos) {
+    function Circle(radius, xPos, yPos, speed) {
         this.radius = radius; // Radius of this object
         this.xPos = xPos; // x position of this object
         this.yPos = yPos; // y position of this object
+        this.speed = speed; // Movementspeed of the Soundwave
         // Update the radius of the circle every frame,
         // indipendent from other Circles
         this.update = function () {
-            this.radius += (speed * ratio); // Update the radus of this Circle
+            this.radius += (this.speed * ratio); // Update the radus of this Circle
             var gradient = ctx.createRadialGradient(this.xPos, this.yPos, 0, this.xPos, this.yPos, this.radius);
             gradient.addColorStop(0.8, 'rgba(255, 255, 255, 0)');
             gradient.addColorStop(1, 'rgba(255, 255, 255, 0.2)');
@@ -398,15 +553,15 @@ function initCircle() {
         };
     }
     // Function to create new Circles
-    function setupCircles(r, x, y) {
-        var circle = new Circle(r, x, y); // Create new Circle Object
+    function setupCircles(r, x, y, s) {
+        var circle = new Circle(r, x, y, s); // Create new Circle Object
         circles.push(circle); // Add Circle Object to the array
     }
     // Start the Canvas Animation
-    drawAndUpdate();
+    draw();
     // Function that get triggert 60 times every second
     // so this function creaetes the animation in the background
-    function drawAndUpdate() {
+    function draw() {
         // This line clear the canvas every Frame,
         // without this line, every circles would stay
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -415,10 +570,55 @@ function initCircle() {
             newCircle.update();
         }
         // this line request this function every frame
-        requestAnimationFrame(drawAndUpdate);
+        requestAnimationFrame(draw);
     }
 }
 //# sourceMappingURL=idle.js.map
+
+/***/ }),
+
+/***/ 272:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EmojiPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(24);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+/**
+ * Generated class for the EmojiPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var EmojiPage = /** @class */ (function () {
+    function EmojiPage(navCtrl, navParams) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+    }
+    EmojiPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad EmojiPage');
+    };
+    EmojiPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-emoji',template:/*ion-inline-start:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\emoji\emoji.html"*/'<div class="headline">\n  Who are you?\n</div>\n\n<div class="subline">\n  Pick your Emoji. \n</div>\n\n<canvas id="canvas" class="canvas-emoji"></canvas>\n\n<div class="bottom-bar"></div>\n\n<div class="background-pattern-dark"></div>\n'/*ion-inline-end:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\emoji\emoji.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]])
+    ], EmojiPage);
+    return EmojiPage;
+}());
+
+//# sourceMappingURL=emoji.js.map
 
 /***/ }),
 
@@ -426,10 +626,10 @@ function initCircle() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return VisualPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ServerPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__ = __webpack_require__(194);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_http__ = __webpack_require__(274);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -442,103 +642,51 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var VisualPage = /** @class */ (function () {
-    function VisualPage(navCtrl, navParams, gestureService) {
+var ServerPage = /** @class */ (function () {
+    function ServerPage(navCtrl, navParams, http) {
+        var _this = this;
         this.navCtrl = navCtrl;
         this.navParams = navParams;
-        this.gestureService = gestureService;
-        //gestureService.isFlipItGesture();
+        this.http = http;
+        this.testMessage = "";
+        setInterval(function () { _this.repeatMe(); }, 5000);
     }
-    VisualPage.prototype.ionViewDidLoad = function () {
-        initVisual();
+    ServerPage.prototype.repeatMe = function () {
+        console.log("repeat");
+        this.http.get('http://192.168.0.102:8080/posts', {}, {}).then(function (data) {
+            console.log(data.data);
+        });
+        //Observable.
     };
-    VisualPage = __decorate([
+    ServerPage.prototype.sendMessage = function () {
+        console.log(this.testMessage);
+        /*this.http.get('https://www.reddit.com/r/gifs/new/.json?limit=10').map(res => res.json()).subscribe(data => {
+            console.log(data);
+        });*/
+        this.http.get('http://141.28.131.171:8080/posts', {}, {}).then(function (data) {
+            console.log("Data: " + data.data);
+        })
+            .catch(function (error) {
+            console.log("Error Status: " + error.status);
+            console.log("Error ERROR: " + error.error);
+            console.log("Error Headers: " + error.headers);
+        });
+        setInterval(this.sendMessage(), 10000);
+    };
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["D" /* Input */])(),
+        __metadata("design:type", String)
+    ], ServerPage.prototype, "testMessage", void 0);
+    ServerPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-visual',template:/*ion-inline-start:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\visual\visual.html"*/'<canvas id="canvas" class="canvas-visual"></canvas>\n\n<div class="background-pattern"></div>\n'/*ion-inline-end:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\visual\visual.html"*/,
+            selector: 'page-server',template:/*ion-inline-start:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\server\server.html"*/'<input [(ngModel)]="testMessage" type="text" placeholder="Message">\n\n<button (click)="sendMessage()" class="button button-small">\nSend\n</button>\n'/*ion-inline-end:"C:\Users\johan\OneDrive\Websites\app_forschungsprojekt\cowau\src\pages\server\server.html"*/,
         }),
-        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__["a" /* GesturesService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__services_gestures_service__["a" /* GesturesService */]) === "function" && _c || Object])
-    ], VisualPage);
-    return VisualPage;
-    var _a, _b, _c;
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_http__["a" /* HTTP */]])
+    ], ServerPage);
+    return ServerPage;
 }());
 
-function initVisual() {
-    // Define a few important var/const for the following scripts
-    var cvs = document.getElementById('canvas'); // Define the Canvas Element
-    var ctx = cvs.getContext('2d'); // Setup the Canvas to 2D
-    var speed = 5; // Define the Speed of the Soundwaves
-    var movementSpeed = 5; // Define the Speed of the Sound Elements
-    var ratio = window.devicePixelRatio; // Define the DPI of the Screen
-    // This are imporatent var for the Script,
-    // but here you don't have to change something
-    var canvasWidth = window.innerWidth; // Hight of the Canvas
-    var canvasHeight = window.innerHeight; // Width of the Canvas
-    var circles = []; // Array of all circles
-    // Create a canvas with the max size of the device
-    // and create a canvas with a higher DPI as the "Max-Size"
-    // so everything is sharp as fuck
-    cvs.width = canvasWidth * ratio; // Multiply the width, with the DPI Scale
-    cvs.height = canvasHeight * ratio; // Multiply the width, with the DPI Scal
-    cvs.style.width = canvasWidth + 'px'; // Set the width in the canvas
-    cvs.style.height = canvasHeight + 'px'; // Set the hight in the canvas
-    canvasWidth = canvasWidth * ratio; // Set the widdth of the canvas
-    canvasHeight = canvasHeight * ratio; // Set the hight of the canvas
-    // ###############################################################
-    // ###############################################################
-    // Function to create a new Soundobject
-    function Sound(xPos, yPos, lifeTime, emoji, soundData) {
-        this.xPos = xPos;
-        this.yPos = yPos;
-        this.lifetime = lifeTime;
-        this.emoji = emoji;
-        this.soundData = soundData;
-        this.update = function () {
-            this.xPos += Math.random();
-        };
-    }
-    // Function to draw Circles into the Canvas
-    function Circle(radius, xPos, yPos) {
-        this.radius = radius; // Radius of this object
-        this.xPos = xPos; // x position of this object
-        this.yPos = yPos; // y position of this object
-        // Update the radius of the circle every frame,
-        // indipendent from other Circles
-        this.update = function () {
-            this.radius += (speed * ratio); // Update the radus of this Circle
-            var gradient = ctx.createRadialGradient(this.xPos, this.yPos, 0, this.xPos, this.yPos, this.radius);
-            gradient.addColorStop(0.8, 'rgba(255, 255, 255, 0)');
-            gradient.addColorStop(1, 'rgba(255, 255, 255, 0.2)');
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.arc(this.xPos, this.yPos, this.radius, 0, Math.PI * 2, true);
-            ctx.fill();
-            if (this.radius >= canvasWidth && this.radius >= canvasHeight) {
-                circles.splice(circles.indexOf(this), 1); // Delete old Circlces
-            }
-        };
-    }
-    // Function to create new Circles
-    function setupCircles(r, x, y) {
-        var circle = new Circle(r, x, y); // Create new Circle Object
-        circles.push(circle); // Add Circle Object to the array
-    }
-    // Start the Canvas Animation
-    drawAndUpdate();
-    // Function that get triggert 60 times every second
-    // so this function creaetes the animation in the background
-    function drawAndUpdate() {
-        // This line clear the canvas every Frame,
-        // without this line, every circles would stay
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        for (var i = 0; i < circles.length; i++) {
-            var newCircle = circles[i];
-            newCircle.update();
-        }
-        // this line request this function every frame
-        requestAnimationFrame(drawAndUpdate);
-    }
-}
-//# sourceMappingURL=visual.js.map
+//# sourceMappingURL=server.js.map
 
 /***/ })
 
