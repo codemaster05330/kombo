@@ -19,7 +19,7 @@ import { GesturesService } from '../../services/gestures.service';
 
 export class FlipitPage {
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform) {
+	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform, public popoverCtrl: PopoverController) {
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova') {
 				this.gesturesService.isFlipItGesture();
@@ -31,8 +31,8 @@ export class FlipitPage {
 		// this.gesturesService.isFlipItGesture();
 		
 		// +++ Load popover on page load +++
-		// let popover = this.popoverCtrl.create(PopoverPage);
-        // popover.present();
+		let popover = this.popoverCtrl.create(PopoverPage);
+        popover.present();
 	}
 
 	// +++ Load popover on click event +++

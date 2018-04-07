@@ -56,6 +56,7 @@ import { GesturesService } from '../services/gestures.service';
     StatusBar,
     SplashScreen,
     Gyroscope,
+    DeviceMotion,
     GesturesService,
     HTTP,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
