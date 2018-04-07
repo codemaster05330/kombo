@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { Popover } from '../../popover/popover';
+import { PopoverPage } from '../../popover/popover';
 import { PopoverController } from 'ionic-angular';
+import { GesturesService } from '../../services/gestures.service';
 
 /**
  * Generated class for the FlipitPage page.
@@ -11,18 +12,29 @@ import { PopoverController } from 'ionic-angular';
  */
 
 @Component({
-  selector: 'page-flipit',
-  templateUrl: 'flipit.html',
+	selector: 'page-flipit',
+	templateUrl: 'flipit.html',
 })
+
 export class FlipitPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
+	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public popoverCtrl: PopoverController) {}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad FlipitPage');
-  }
+	ionViewDidLoad() {
+		// this.gesturesService.isFlipItGesture();
+		
+		// +++ Load popover on page load +++
+		// let popover = this.popoverCtrl.create(PopoverPage);
+        // popover.present();
+	}
 
-  @Component({})
+	// +++ Load popover on click event +++
+	// presentPopover(myEvent) {
+	// 	let popover = this.popoverCtrl.create(PopoverPage);
+	// 	popover.present({
+	// 		ev:myEvent
+	// 	});
+	// }
+  
   
 }

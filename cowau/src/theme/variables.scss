@@ -79,11 +79,12 @@ $bggradient: linear-gradient(to bottom right, $primary 0%, $secondary 100%);
 
 .headline {
     position: absolute;
-    top: 10vh;
+    //top: 10vh;
+    top: 6rem;
     left: 0;
     width: 100%;
     color: $text;
-    font-size: 5rem;
+    font-size: 4.7rem;
     text-align: center;
     font-weight: bold;
     z-index: 10;
@@ -91,7 +92,8 @@ $bggradient: linear-gradient(to bottom right, $primary 0%, $secondary 100%);
 
 .subline {
     position: absolute;
-    top: 19vh;
+    //top: 19vh;
+    top: 12rem;
     left: 0;
     width: 100%;
     color: $light;
