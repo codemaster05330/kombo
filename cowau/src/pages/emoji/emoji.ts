@@ -22,4 +22,13 @@ export class EmojiPage {
 		console.log('ionViewDidLoad EmojiPage');
 	}
 
+	clickMe(evt: MouseEvent){
+		console.log(evt.currentTarget);
+		var elem: HTMLDivElement = <HTMLDivElement> evt.currentTarget;
+		console.log(elem.id);
+
+	}
+
+	
+
 }
