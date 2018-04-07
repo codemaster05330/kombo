@@ -1,3 +1,117 @@
 page-edit {
-	
+	.edit-wrapper{
+		display: flex;
+		flex-flow: column;
+		width: 100%;
+		height: 90%;
+		padding: 5% 0 5% 0;
+		justify-content: space-between;
+		align-items: center;
+
+		.beatgrid-wrapper{
+			width:100%;
+			height:auto;
+			position: relative;
+			.beatgrid {
+				position: absolute;
+				top: 1vh;
+				left: 0;
+				color: $light;
+				font-size: 2rem;
+				text-align: center;
+				font-weight: bold;
+				z-index: 10;
+				//overflow-x:scroll;
+				width: calc(32 * 12vw + 4 * 10vw);
+				transform: translate( 10px, 0	);
+				.beatrow{
+					float: left;
+					padding: 0 0 0 0;
+					width:100%;
+					.tone{
+						display: block;
+						float: left;
+						height: 9vh;
+						width: 10vw;
+						margin: 1vw;
+						border:0.1rem solid rgba(255,255,255,0.1);
+						border-radius:3vw;
+						//background:#fff;
+					}
+					.tone:nth-child(8n+1){
+						margin-left: 10vw;
+					}
+					.tone-selected{
+						position:relative;
+						z-index:20;
+						background:$bggradient;
+						box-shadow: 0px 10px 20px rgba(0,0,0,0.5);
+					}
+					.tone-longer{
+
+					}
+					
+				}
+
+			}
+		}
+		.slider-wrapper{
+			width: 100%;
+			position: relative;
+			height: 10vh;
+
+			.beatpreview-slider{
+				position: absolute;
+				top: -1.2vh;
+				width: calc(8*3vw);
+				height: 13vh;
+				background: rgba(255,255,255,0.1);
+				border-radius: 4vw;
+			}
+			
+			.beatgrid-wrapper-preview {
+				display: block;
+				margin: 0 auto;
+				.beatrow-preview{
+					float: left;
+					.tone-preview{
+						display: block;
+						float: left;
+						height: 1.8vh;
+						width: 2vw;
+						margin: 0.3vw;
+						border-radius:0.6vw;
+						background:rgba(255,255,255,0.1);
+					}
+					.tone-preview:nth-child(8n+1){
+						margin-left: 1vw;
+					}
+					.tone-selected-preview{
+						background:$bggradient;
+					}
+					.tone-longer-preview{
+
+					}
+					
+				}
+
+			}
+		}
+
+
+		.clearsound{
+			top-padding: 10vh;
+			font-size: 4vh;
+			color: $text;
+			width: 100%;
+			text-align: center;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+
+	}
+	.background-pattern-dark{
+		z-index:-2;
+	}
+		
 }
