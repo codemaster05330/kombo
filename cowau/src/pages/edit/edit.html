@@ -5,15 +5,30 @@
 <div class="subline">
 	Make your Sound
 </div> -->
-
-<div class="beatgrid" id="content">
-	<div *ngFor="let cell of beatGrid; let i = index" class="beatrow">{{i}}
-		<div (click)="clicked($event)" *ngFor="let cell of beatGrid[0]; let j = index" id="{{i}}-{{j}}" class="tone">
-			
+<div class="edit-wrapper">
+	<div class="beatgrid-wrapper" id="beatgrid-wrapper">
+		<div class="beatgrid" id="beatgrid">
+			<div *ngFor="let cell of tmpBeatGrid; let i = index" class="beatrow">
+				<div (click)="clicked($event)" *ngFor="let cell of tmpBeatGrid[i]; let j = index" id="{{i}}-{{j}}" class="tone">
+					
+				</div>
+			</div>
 		</div>
 	</div>
+	<div class="slider-wrapper">
+		<div class="beatpreview-slider" id="beatpreview-slider">
+			
+		</div>
+		<div (pan)="panPreview($event)" class="beatgrid-wrapper-preview" id="beatgrid-wrapper-preview">
+				<div *ngFor="let cell of tmpBeatGrid; let i = index" class="beatrow-preview" id="beatrow-preview">
+					<div *ngFor="let cell of tmpBeatGrid[i]; let j = index" id="{{i}}-{{j}}" class="tone-preview">
+						
+					</div>
+				</div>
+		</div>
+	</div>
+	<div (click)="clearSound()" class="clearsound">Clear your sound</div>
 </div>
 
 <div class="bottom-bar"></div>
-
 <div class="background-pattern-dark"></div>
