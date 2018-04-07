@@ -30,7 +30,7 @@ export class GesturesService {
 			}
 
 			this.devMotion.watchAcceleration(acc_opts).subscribe((acceleration: DeviceMotionAccelerationData) => {
-				console.log(roundFloat(acceleration.x, 1), roundFloat(acceleration.y, 1), roundFloat(acceleration.z, 1), acceleration.timestamp);
+				// console.log(roundFloat(acceleration.x, 1), roundFloat(acceleration.y, 1), roundFloat(acceleration.z, 1), acceleration.timestamp);
 			});
 
 		});

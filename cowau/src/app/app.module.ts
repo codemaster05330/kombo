@@ -17,7 +17,7 @@ import { IdlePage } from '../pages/idle/idle';
 import { EmojiPage } from '../pages/emoji/emoji';
 import { EditPage } from '../pages/edit/edit';
 
-import { PopoverPage } from '../popover/popover';
+import { NewSoundPopoverPage } from '../newsound-popover/newsound-popover';
 
 import { VisualPage } from '../pages/visual/visual';
 
@@ -35,7 +35,7 @@ import { GesturesService } from '../services/gestures.service';
     EditPage,
     VisualPage,
     ServerPage,
-    PopoverPage
+    NewSoundPopoverPage
   ],
   imports: [
     BrowserModule,
@@ -50,7 +50,7 @@ import { GesturesService } from '../services/gestures.service';
     EditPage,
     VisualPage,
     ServerPage,
-    PopoverPage
+    NewSoundPopoverPage
   ],
   providers: [
     StatusBar,
