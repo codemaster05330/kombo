@@ -61,9 +61,11 @@ export class Sound {
 	}
 
 	public clearBeatGrid() : void {
+		var x : number = this.beatGrid.length;
+
 		this.beatGrid = [];
 
-		for (var i : number = 0; i < this.beatGrid.length; i++){
+		for (var i : number = 0; i < x; i++){
 			this.beatGrid[i] = [];
 			for (var j: number = 0; j < 32; j++){
 				this.beatGrid[i][j] = 0;

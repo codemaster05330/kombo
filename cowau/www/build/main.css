@@ -25718,6 +25718,38 @@ ion-navbar.toolbar {
   min-height: calc(46px + env(safe-area-inset-bottom));
 }
 
+page-edit .beatgrid {
+  position: absolute;
+  top: 12rem;
+  left: 0;
+  width: 100%;
+  color: #ffffff;
+  font-size: 2rem;
+  text-align: center;
+  font-weight: bold;
+  z-index: 10;
+  overflow-x: scroll;
+}
+
+page-edit .beatrow {
+  height: 8rem;
+}
+
+page-edit .tone {
+  position: relative;
+  float: left;
+  height: 6rem;
+  width: 3rem;
+  margin: 0.5rem;
+  border: 0.2rem solid #ffffff30;
+  border-radius: 0.5rem;
+}
+
+page-edit .tone-selected {
+  background: -webkit-gradient(linear, left top, right bottom, from(#fe8965), to(#ff65a5));
+  background: linear-gradient(to bottom right, #fe8965 0%, #ff65a5 100%);
+}
+
 .canvas-emoji {
   z-index: 1;
   position: absolute;
@@ -25794,4 +25826,89 @@ ion-navbar.toolbar {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.popover-md {
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.popover-wrapper {
+  z-index: 100;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+.popover-arrow {
+  z-index: 100;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+.popover-content {
+  background: #24242F !important;
+  margin: auto;
+  z-index: 100;
+  position: absolute;
+  width: 85% !important;
+  height: 80% !important;
+  max-height: 80% !important;
+  border-radius: 20px !important;
+  border: 1px solid #FE7982;
+}
+
+.popover-viewport {
+  z-index: 100;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+.headline {
+  position: absolute;
+  top: 18rem;
+  left: 0;
+  width: 100%;
+  color: #FE7982;
+  font-size: 4.7rem;
+  text-align: center;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.subline {
+  position: absolute;
+  top: 13rem;
+  left: 0;
+  width: 100%;
+  color: #ffffff;
+  font-size: 2rem;
+  text-align: center;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.explain-text {
+  position: absolute;
+  padding: 8rem;
+  bottom: 2rem;
+  left: 0;
+  width: 100%;
+  color: #FE7982;
+  font-size: 2rem;
+  text-align: center;
+  font-weight: bold;
+  z-index: 10;
 }
