@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, Platform } from 'ionic-angular';
 import { PopoverPage } from '../../popover/popover';
 import { PopoverController } from 'ionic-angular';
 import { GesturesService } from '../../services/gestures.service';
+
 
 /**
  * Generated class for the FlipitPage page.
@@ -13,12 +14,18 @@ import { GesturesService } from '../../services/gestures.service';
 
 @Component({
 	selector: 'page-flipit',
-	templateUrl: 'flipit.html',
+	templateUrl: 'flipit.html'
 })
 
 export class FlipitPage {
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public popoverCtrl: PopoverController) {}
+	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform) {
+		platform.ready().then((readySource) => {
+			if(readySource == 'cordova') {
+				this.gesturesService.isFlipItGesture();
+			}
+		});
+	}
 
 	ionViewDidLoad() {
 		// this.gesturesService.isFlipItGesture();

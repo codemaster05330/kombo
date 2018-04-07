@@ -26,7 +26,7 @@ function initCircle(){
     // Define a few important var/const for the following scripts
     const cvs : any = document.getElementById('canvas');    // Define the Canvas Element
     const ctx = cvs.getContext('2d');                       // Setup the Canvas to 2D
-    const speed = 4;                                        // Define the Speed of the animaiton
+    // const speed = 10;                                    // Define the Speed of the animaiton
     const ratio = window.devicePixelRatio                   // Define the DPI of the Screen
 
     // This are imporatent var for the Script,
@@ -51,22 +51,23 @@ function initCircle(){
 
     var cta = document.getElementById('call-to-action');
     cta.addEventListener('click',function(){
-        setupCircles(10,canvasWidth/2,canvasHeight/2)
+        setupCircles(10,canvasWidth/2,canvasHeight/2,(Math.random() * 5)+4);
     });
 
     // ###############################################################
     // ###############################################################
 
     // Function to draw Circles into the Canvas
-    function Circle(radius,xPos,yPos) {
+    function Circle(radius,xPos,yPos,speed) {
         this.radius = radius;       // Radius of this object
         this.xPos = xPos;           // x position of this object
         this.yPos = yPos;           // y position of this object
+        this.speed = speed;         // Movementspeed of the Soundwave
 
         // Update the radius of the circle every frame,
         // indipendent from other Circles
         this.update = function(){
-            this.radius += (speed*ratio); // Update the radus of this Circle
+            this.radius += (this.speed*ratio); // Update the radus of this Circle
             let gradient = ctx.createRadialGradient(this.xPos,this.yPos,0,this.xPos,this.yPos,this.radius);
             gradient.addColorStop(0.8, 'rgba(255, 255, 255, 0)');
             gradient.addColorStop(1, 'rgba(255, 255, 255, 0.2)');
@@ -81,17 +82,17 @@ function initCircle(){
     }
 
     // Function to create new Circles
-    function setupCircles(r,x,y) {
-        var circle = new Circle(r,x,y);     // Create new Circle Object
-        circles.push(circle);               // Add Circle Object to the array
+    function setupCircles(r,x,y,s) {
+        var circle = new Circle(r,x,y,s);     // Create new Circle Object
+        circles.push(circle);                 // Add Circle Object to the array
     }
 
     // Start the Canvas Animation
-    drawAndUpdate();
+    draw();
 
     // Function that get triggert 60 times every second
     // so this function creaetes the animation in the background
-    function drawAndUpdate() {
+    function draw() {
         // This line clear the canvas every Frame,
         // without this line, every circles would stay
         ctx.clearRect(0,0,canvasWidth,canvasHeight);
@@ -100,6 +101,6 @@ function initCircle(){
             newCircle.update();
         }
         // this line request this function every frame
-        requestAnimationFrame(drawAndUpdate);
+        requestAnimationFrame(draw);
     }
 }

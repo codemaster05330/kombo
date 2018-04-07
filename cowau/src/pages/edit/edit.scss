@@ -1,3 +1,36 @@
 page-edit {
-	
+	.beatgrid {
+		position: absolute;
+		//top: 19vh;
+		top: 12rem;
+		left: 0;
+		width: 100%;
+		color: $light;
+		font-size: 2rem;
+		text-align: center;
+		font-weight: bold;
+		z-index: 10;
+		overflow-x:scroll;
+	}
+
+	.beatrow{
+		height:8rem;
+		
+	}
+
+	.tone{
+		position: relative;
+		float: left;
+		height: 6rem;
+		width: 3rem;
+		//background:$bggradient;
+		margin:0.5rem;
+		border:0.2rem solid #ffffff30;
+		border-radius:0.5rem;
+	}
+
+	.tone-selected{
+		background:$bggradient;
+	}
+			
 }
