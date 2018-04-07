@@ -4,8 +4,8 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { Gyroscope, GyroscopeOptions, GyroscopeOrientation } from '@ionic-native/gyroscope';
-import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device-motion';
+import { Gyroscope } from '@ionic-native/gyroscope';
+import { DeviceMotion } from '@ionic-native/device-motion';
 import { HTTP } from '@ionic-native/http';
 
 import './rxjs-extensions';
