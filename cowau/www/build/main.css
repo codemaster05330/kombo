@@ -25718,6 +25718,38 @@ ion-navbar.toolbar {
   min-height: calc(46px + env(safe-area-inset-bottom));
 }
 
+page-edit .beatgrid {
+  position: absolute;
+  top: 12rem;
+  left: 0;
+  width: 100%;
+  color: #ffffff;
+  font-size: 2rem;
+  text-align: center;
+  font-weight: bold;
+  z-index: 10;
+  overflow-x: scroll;
+}
+
+page-edit .beatrow {
+  height: 8rem;
+}
+
+page-edit .tone {
+  position: relative;
+  float: left;
+  height: 6rem;
+  width: 3rem;
+  margin: 0.5rem;
+  border: 0.2rem solid #ffffff30;
+  border-radius: 0.5rem;
+}
+
+page-edit .tone-selected {
+  background: -webkit-gradient(linear, left top, right bottom, from(#fe8965), to(#ff65a5));
+  background: linear-gradient(to bottom right, #fe8965 0%, #ff65a5 100%);
+}
+
 .canvas-emoji {
   z-index: 1;
   position: absolute;

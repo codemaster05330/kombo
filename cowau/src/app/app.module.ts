@@ -16,9 +16,7 @@ import { FlipitPage } from '../pages/flipit/flipit';
 import { IdlePage } from '../pages/idle/idle';
 import { EmojiPage } from '../pages/emoji/emoji';
 import { EditPage } from '../pages/edit/edit';
-
 import { VisualPage } from '../pages/visual/visual';
-
 import { ServerPage } from '../pages/server/server';
 
 //services
