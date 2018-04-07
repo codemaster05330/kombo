@@ -4,8 +4,8 @@ import { IonicApp, IonicErrorHandler, IonicModule, Popover } from 'ionic-angular
 
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { Gyroscope, GyroscopeOptions, GyroscopeOrientation } from '@ionic-native/gyroscope';
-import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device-motion';
+import { Gyroscope } from '@ionic-native/gyroscope';
+import { DeviceMotion } from '@ionic-native/device-motion';
 import { HTTP } from '@ionic-native/http';
 
 import './rxjs-extensions';
@@ -20,7 +20,6 @@ import { EditPage } from '../pages/edit/edit';
 import { NewSoundPopoverPage } from '../newsound-popover/newsound-popover';
 
 import { VisualPage } from '../pages/visual/visual';
-
 import { ServerPage } from '../pages/server/server';
 
 //services
