@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, Platform } from 'ionic-angular';
-import { PopoverPage } from '../../popover/popover';
-import { PopoverController } from 'ionic-angular';
+import { NavController, NavParams, Platform, PopoverController, ViewController } from 'ionic-angular';
+import { Popover } from '../../classes/popover';
 import { GesturesService } from '../../services/gestures.service';
+import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
 
 
 /**
@@ -18,8 +18,11 @@ import { GesturesService } from '../../services/gestures.service';
 })
 
 export class FlipitPage {
+	popover:Popover;
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform, public popoverCtrl: PopoverController) {
+	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform, public popoverCtrl:PopoverController, public viewCtrl:ViewController) {
+		this.popover = new Popover(popoverCtrl, viewCtrl);
+		
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova') {
 				this.gesturesService.isFlipItGesture();
@@ -29,11 +32,13 @@ export class FlipitPage {
 
 	ionViewDidLoad() {
 		// this.gesturesService.isFlipItGesture();
-		
-		// +++ Load popover on page load +++
-		let popover = this.popoverCtrl.create(PopoverPage);
-        popover.present();
+		this.popover.show(NewSoundPopoverPage);
 	}
+
+	// showPopover() {
+	// 	let popover = this.popoverCtrl.create(PopoverPage);
+    //     popover.present();
+	// }
 
 	// +++ Load popover on click event +++
 	// presentPopover(myEvent) {
@@ -41,7 +46,5 @@ export class FlipitPage {
 	// 	popover.present({
 	// 		ev:myEvent
 	// 	});
-	// }
-  
-  
+	// } 
 }
