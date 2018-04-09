@@ -9,7 +9,7 @@
 	<div class="beatgrid-wrapper" id="beatgrid-wrapper">
 		<div class="beatgrid" id="beatgrid">
 			<div *ngFor="let cell of tmpBeatGrid; let i = index" class="beatrow">
-				<div (click)="clicked($event)" *ngFor="let cell of tmpBeatGrid[i]; let j = index" id="{{i}}-{{j}}" class="tone">
+				<div (click)="clickedTone($event)" (pan)="panTone($event)" *ngFor="let cell of tmpBeatGrid[i]; let j = index" id="{{i}}-{{j}}" class="tone">
 					
 				</div>
 			</div>

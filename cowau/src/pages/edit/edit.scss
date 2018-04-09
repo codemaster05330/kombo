@@ -16,10 +16,6 @@ page-edit {
 				position: absolute;
 				top: 1vh;
 				left: 0;
-				color: $light;
-				font-size: 2rem;
-				text-align: center;
-				font-weight: bold;
 				z-index: 10;
 				//overflow-x:scroll;
 				width: calc(32 * 12vw + 4 * 10vw);
@@ -31,12 +27,24 @@ page-edit {
 					.tone{
 						display: block;
 						float: left;
+						position: relative;
 						height: 9vh;
 						width: 10vw;
 						margin: 1vw;
-						border:0.1rem solid rgba(255,255,255,0.1);
+						border: 0.1rem solid rgba(255,255,255,0.1);
 						border-radius:3vw;
 						//background:#fff;
+						.tone-long{
+							position: absolute;
+							top: -0.1rem;
+							left: -0.1rem;
+							height: 9vh;
+							border: inherit;
+							border-radius: inherit;
+							background:$bggradient;
+							box-shadow: 0px 10px 20px rgba(0,0,0,0.5);
+							z-index: 100;
+						}
 					}
 					.tone:nth-child(8n+1){
 						margin-left: 9vw;
@@ -46,9 +54,6 @@ page-edit {
 						z-index:20;
 						background:$bggradient;
 						box-shadow: 0px 10px 20px rgba(0,0,0,0.5);
-					}
-					.tone-longer{
-
 					}
 					
 				}
@@ -75,6 +80,7 @@ page-edit {
 				.beatrow-preview{
 					float: left;
 					.tone-preview{
+						position: relative;
 						display: block;
 						float: left;
 						height: 1.8vh;
@@ -82,15 +88,23 @@ page-edit {
 						margin: 0.3vw;
 						border-radius:0.6vw;
 						background:rgba(255,255,255,0.1);
+						.tone-long-preview{
+							position: absolute;
+							top: 0;
+							left: 0;
+							height: 1.8vh;
+							border-radius: inherit;
+							background:$bggradient;
+							z-index: 100;
+						}
 					}
 					.tone-preview:nth-child(8n+1){
+						position: relative;
 						margin-left: 1.1vw;
+						
 					}
 					.tone-selected-preview{
 						background:$bggradient;
-					}
-					.tone-longer-preview{
-
 					}
 					
 				}
