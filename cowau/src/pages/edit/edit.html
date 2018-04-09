@@ -15,11 +15,11 @@
 			</div>
 		</div>
 	</div>
-	<div class="slider-wrapper">
+	<div (pan)="panPreview($event)" (click)="clickPreview($event)" class="slider-wrapper">
 		<div class="beatpreview-slider" id="beatpreview-slider">
 			
 		</div>
-		<div (pan)="panPreview($event)" (click)="clickPreview($event)" class="beatgrid-wrapper-preview" id="beatgrid-wrapper-preview">
+		<div class="beatgrid-wrapper-preview" id="beatgrid-wrapper-preview">
 				<div *ngFor="let cell of tmpBeatGrid; let i = index" class="beatrow-preview" id="beatrow-preview">
 					<div *ngFor="let cell of tmpBeatGrid[i]; let j = index" id="{{i}}-{{j}}" class="tone-preview">
 						

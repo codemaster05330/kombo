@@ -23,7 +23,7 @@ page-edit {
 				z-index: 10;
 				//overflow-x:scroll;
 				width: calc(32 * 12vw + 4 * 10vw);
-				transform: translate( 10px, 0	);
+				transform: translate( -7vw, 0	);
 				.beatrow{
 					float: left;
 					padding: 0 0 0 0;
@@ -39,7 +39,7 @@ page-edit {
 						//background:#fff;
 					}
 					.tone:nth-child(8n+1){
-						margin-left: 10vw;
+						margin-left: 9vw;
 					}
 					.tone-selected{
 						position:relative;
@@ -63,7 +63,7 @@ page-edit {
 			.beatpreview-slider{
 				position: absolute;
 				top: -1.2vh;
-				width: calc(8*3vw);
+				width: calc(8*2.8vw);
 				height: 13vh;
 				background: rgba(255,255,255,0.1);
 				border-radius: 4vw;
@@ -84,7 +84,7 @@ page-edit {
 						background:rgba(255,255,255,0.1);
 					}
 					.tone-preview:nth-child(8n+1){
-						margin-left: 1vw;
+						margin-left: 1.1vw;
 					}
 					.tone-selected-preview{
 						background:$bggradient;

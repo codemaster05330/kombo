@@ -51,12 +51,14 @@ export class EditPage {
 
 		this.beatgridWrapperPreview = document.getElementById('beatgrid-wrapper-preview');
 		var beatrowPreview: HTMLElement = document.getElementById('beatrow-preview');
-		this.beatgridWrapperPreview.style.width = (beatrowPreview.offsetWidth +10)+"px";
+		this.beatgridWrapperPreview.style.width = (beatrowPreview.offsetWidth +1)+"px";
 
 
 		this.beatPreviewSlider = document.getElementById('beatpreview-slider');
 
 		this.beatgridPreview = document.getElementsByClassName('tone-preview');
+
+		this.beatPreviewSlider.style.left = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + "px";
 		
 	}
 
@@ -118,10 +120,6 @@ export class EditPage {
 		//console.log(this.sound.getBeatGrid());
 	}
 
-	dragSlider(evt: any){
-		console.log(evt);
-	}
-
 	panPreview(evt: any){
 		
 		var x: number = evt.srcEvent.clientX - (this.beatPreviewSlider.offsetWidth/2);
@@ -129,7 +127,7 @@ export class EditPage {
 		var prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 
 		this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
-		this.beatgrid.style.transform = "translate( " + (-1 * (Math.min(Math.max(prevXMin,x),prevXMax) * 5.3 - 275)) + "px , 0)";
+		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 314) - 5) + "vw , 0)";
 	}
 
 
@@ -139,11 +137,8 @@ export class EditPage {
 		var prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 
 		this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
-		this.beatgrid.style.transform = "translate( " + (-1 * (Math.min(Math.max(prevXMin,x),prevXMax) * 5.3 - 275)) + "px , 0)";
+		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 314) - 5) + "vw , 0)";
 
-		/*console.log(evt.x);
-		var slider: HTMLElement = document.getElementById('beatpreview-slider');
-		slider.style.left = Math.min(Math.max(50,(evt.x - 70)),350) + "px";*/
 	}
 
 }
