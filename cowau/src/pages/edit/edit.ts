@@ -23,6 +23,8 @@ export class EditPage {
 	beatPreviewSlider: HTMLElement;
 	beatgridWrapperPreview: HTMLElement;
 	beatgrid: HTMLElement;
+	beatgridWrapper: HTMLElement;
+	beatgridPreview: HTMLCollectionOf<Element>;
 
 
 	constructor(public navCtrl: NavController, public navParams: NavParams) {
@@ -43,9 +45,9 @@ export class EditPage {
 	ionViewDidLoad() {
 		console.log('ionViewDidLoad EditPage');
 
-		var beatgridWrapper: HTMLElement = document.getElementById('beatgrid-wrapper');
+		this.beatgridWrapper = document.getElementById('beatgrid-wrapper');
 		this.beatgrid= document.getElementById('beatgrid');
-		beatgridWrapper.style.height = (this.beatgrid.offsetHeight)+"px";
+		this.beatgridWrapper.style.height = (this.beatgrid.offsetHeight)+"px";
 
 		this.beatgridWrapperPreview = document.getElementById('beatgrid-wrapper-preview');
 		var beatrowPreview: HTMLElement = document.getElementById('beatrow-preview');
@@ -53,6 +55,8 @@ export class EditPage {
 
 
 		this.beatPreviewSlider = document.getElementById('beatpreview-slider');
+
+		this.beatgridPreview = document.getElementsByClassName('tone-preview');
 		
 	}
 
@@ -73,11 +77,13 @@ export class EditPage {
 	clearSound(){
 		this.sound.clearBeatGrid();
 		this.reloadGrid();
-		this.syncSmallGrid();
+		this.clearSmallGrid();
 	}
 
-	syncSmallGrid(){
-
+	clearSmallGrid(){
+		for(var i = 0; i < this.beatgridPreview.length; i++){
+			this.beatgridPreview[i].classList.remove("tone-selected-preview");
+		}
 	}
 
 	clicked(evt: MouseEvent){
@@ -89,9 +95,25 @@ export class EditPage {
 
 		if(elem.classList.toggle("tone-selected")){
 			this.sound.setBeatGridAtPos(x, y, 1);
+			for(var i = 0; i < this.beatgridPreview.length; i++){
+				var xp:number = +this.beatgridPreview[i].id.split("-")[0];
+				var yp:number = +this.beatgridPreview[i].id.split("-")[1];
+				if (xp == x && yp == y){
+					this.beatgridPreview[i].classList.add("tone-selected-preview");
+					break;
+				}
+			}
 			
 		} else {
 			this.sound.setBeatGridAtPos(x, y, 0);
+			for(var i = 0; i < this.beatgridPreview.length; i++){
+				var xp:number = +this.beatgridPreview[i].id.split("-")[0];
+				var yp:number = +this.beatgridPreview[i].id.split("-")[1];
+				if (xp == x && yp == y){
+					this.beatgridPreview[i].classList.remove("tone-selected-preview");
+					break;
+				}
+			}
 		}
 		//console.log(this.sound.getBeatGrid());
 	}
@@ -102,26 +124,26 @@ export class EditPage {
 
 	panPreview(evt: any){
 		
-
-
-		
 		var x: number = evt.srcEvent.clientX - (this.beatPreviewSlider.offsetWidth/2);
-		var prevXMin: number = (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)/2;
-		var prevXMax: number = (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)/2;
+		var prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
+		var prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 
 		this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
-
-		//console.log(beatgrid.offsetWidth / slider.offsetWidth);
-
 		this.beatgrid.style.transform = "translate( " + (-1 * (Math.min(Math.max(prevXMin,x),prevXMax) * 5.3 - 275)) + "px , 0)";
 	}
 
-/*
+
 	clickPreview(evt: any){
-		console.log(evt.x);
+		var x: number = evt.x - (this.beatPreviewSlider.offsetWidth/2);
+		var prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
+		var prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
+
+		this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
+		this.beatgrid.style.transform = "translate( " + (-1 * (Math.min(Math.max(prevXMin,x),prevXMax) * 5.3 - 275)) + "px , 0)";
+
+		/*console.log(evt.x);
 		var slider: HTMLElement = document.getElementById('beatpreview-slider');
-		console.log(slider);
-		slider.style.left = Math.min(Math.max(50,(evt.x - 70)),350) + "px";
+		slider.style.left = Math.min(Math.max(50,(evt.x - 70)),350) + "px";*/
 	}
-*/
+
 }

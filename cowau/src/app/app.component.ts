@@ -16,7 +16,7 @@ import { ServerPage } from '../pages/server/server';
 })
 
 export class MyApp {
-	rootPage:any = VisualPage;
+	rootPage:any = EditPage;
 	// rootPage:any = ServerPage;
 
 	constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
