@@ -23,6 +23,9 @@ export class EditPage {
 	beatgridPreview: HTMLCollectionOf<Element>;
 	beatrowPreview: HTMLElement;
 
+	isScrolling: boolean = false;
+	deltaTime: number = 1000000;
+
 
 	constructor(public navCtrl: NavController, public navParams: NavParams) {
 		this.sound = new Sound(SoundType.Bass);
@@ -124,14 +127,15 @@ export class EditPage {
 			this.setPreview(parseInt(elem.parentElement.id.split("-")[0]), parseInt(elem.parentElement.id.split("-")[1]),0);
 			elem.parentElement.removeChild(elem);
 		}
-		//console.log(this.sound.getBeatGrid());
 	}
 
 
 	//TODO: Prevent overlapping
+	//TODO: Account for measure gaps
 	panTone(evt: any){
-		var panLength :number = evt.deltaX;
+		/*var panLength :number = evt.deltaX;
 		var passedTones: number = Math.floor((panLength / this.vw) / 11.1);
+
 		
 		if(passedTones >= 0){
 			var tone:HTMLElement = <HTMLElement> evt.target;
@@ -145,9 +149,21 @@ export class EditPage {
 				tone.removeChild(tone.children[0]);
 			}
 
+			var y: number = +tone.id.split("-")[1];
+			//console.log(y + " " + ((10 + ((7 - (y % 8)) * 12)) * this.vw) + " " + panLength + "; " + ((10 + ((7 - (y % 8)) * 12)) * this.vw <= panLength));
+			if (Math.floor((10 + ((7 - (y % 8)) * 12)) * this.vw) <= panLength){
+				passedTones -= 1;
+				panLength -= 9 * this.vw;
+			}
+			//console.log(passedTones);
+
 			var longtone :HTMLElement = document.createElement("div");
 			longtone.classList.add("tone-long");
-			var width = 11.8 * (passedTones + 1) - 1;		//TODO: Account for measure gaps
+			var width = 10 + 12 * (passedTones);
+			if (((y % 8) - ((y+passedTones)% 8 + 1) >= 0 ) || ((passedTones) / 8 >= 1)){
+				width += 9;
+			}
+
 			longtone.style.width =  width+"vw";
 			tone.appendChild(longtone);
 
@@ -156,11 +172,32 @@ export class EditPage {
 
 		} else {
 			
-		}
+		}*/
 
+		//console.log(evt);
+		//console.log(evt.deltaTime +" "+ this.deltaTime);
+		if(evt.deltaTime < this.deltaTime){
+			console.log("new pan: " + evt.deltaTime);
+			if (evt.deltaTime > 300){
+				this.isScrolling = false;
+			} else {
+				this.isScrolling = true;
+			}
+			console.log("Scrolling: " + this.isScrolling)
+
+		}
+		this.deltaTime = evt.deltaTime;
+
+		if(this.isScrolling){
+
+		} else {
+
+		}
 	}
 
-
+	longTap(){
+		console.log("longTap");
+	}
 
 	/*
 	*		PREVIEW SLIDER
@@ -206,7 +243,11 @@ export class EditPage {
 					this.beatgridPreview[i].classList.remove("tone-selected-preview");
 					var longtonePrev: HTMLElement = document.createElement("div");
 					longtonePrev.classList.add("tone-long-preview");
-					longtonePrev.style.width = 2 + 2.6 * (length-1) +"vw";				//TODO: Account for measure gaps
+					var divLength = 2 + 2.6 * (length-1);
+					if (((y % 8) - ((y+length-1)% 8) >= 0 ) || (length / 8 >= 1)){
+						divLength += 1.1;
+					}
+					longtonePrev.style.width = divLength +"vw";
 					this.beatgridPreview[i].appendChild(longtonePrev);
 				}
 			}
