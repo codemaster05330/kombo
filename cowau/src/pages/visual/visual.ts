@@ -60,13 +60,13 @@ function initVisual(){
 
     // Function to create a new Soundobject with mass, x, y and radius
     function Sound(x, y, radius, mass, tones){
-        this.radius        = radius;                        // radius of the sound
-        this.x             = x;                             // y position of the sound
-        this.y             = y;                             // x positon of the sound
-        this.mass          = mass;                          // Mass of the sound
-        this.tones         = tones;                         // Count the Tones in the sound
-        this.lifeTimeValue = 100;                           // The lifetime of the object 100-0
-        this.soundWaves    = [];                            // The Soundwaves from this object
+        this.radius        = radius;                      // radius of the sound
+        this.x             = x;                           // y position of the sound
+        this.y             = y;                           // x positon of the sound
+        this.mass          = mass;                        // Mass of the sound
+        this.tones         = tones;                       // Count the Tones in the sound
+        this.lifeTimeValue = 100;                         // The lifetime of the object 100-0
+        this.soundWaves    = [];                          // The Soundwaves from this object
         this.velocity      = {
             x: returnRandomValue(-5,5),                   // velocity in the x direction
             y: returnRandomValue(-5,5)                    // velocity in the y direction
@@ -79,6 +79,12 @@ function initVisual(){
             for(var i = 0; i < this.soundWaves.length;i++) {
                 var newSoundWave = this.soundWaves[i];
                 newSoundWave.update();
+            }
+
+            var test = returnRandomValue(0, 30);
+
+            if(test == 2){
+                this.createSoundWave();
             }
 
             this.borderDetectionSound();                    // Controll if the object hits the wall
@@ -94,25 +100,23 @@ function initVisual(){
         }
 
         this.lifeTime = function() {
-            if((this.lifeTimeValue/100) > 0.05) {
-                this.lifeTimeValue += -0.1;
+            if((this.lifeTimeValue/100) > 0.03) {
+                this.lifeTimeValue = this.lifeTimeValue - (this.lifeTimeValue/100);
                 // console.log('alive');
             } else {
                 // console.log('die');
                 soundsArray.splice(soundsArray.indexOf(this),1);
             }
-        }
+    }
 
         // Function to detect if the sound object hits an wall of the canvas
         // When the detects gets true, the velocity get negating
         this.borderDetectionSound = function() {
             if(this.x + this.radius > canvasWidth || this.x - this.radius < 0) {
                 this.velocity.x = -this.velocity.x;
-                this.createSoundWave();
             }
             if(this.y + this.radius > canvasHeight || this.y - this.radius < 0) {
                 this.velocity.y = -this.velocity.y;
-                this.createSoundWave();
             }
         }
 
@@ -125,6 +129,7 @@ function initVisual(){
 
         // Function to draw the Sound object into the canvas
         this.drawSound = function() {
+
             ctx.globalAlpha = (this.lifeTimeValue/100);
             ctx.fillStyle = 'rgba(255, 255, 255, 1)';
             ctx.beginPath();
@@ -139,14 +144,13 @@ function initVisual(){
         this.soundDetectionSound = function() {
             for (let i = 0; i < soundsArray.length; i++) {
                 if(this === soundsArray[i]) continue;
-                if(getDistance(this.x,soundsArray[i].x,this.y,soundsArray[i].y) - (this.radius * 2) < 0){
+                if(getDistance(this.x,soundsArray[i].x,this.y,soundsArray[i].y, this.radius, soundsArray[i].radius) < 0){
                     resolveCollision(this, soundsArray[i]);
-                    this.createSoundWave();
-                    soundsArray[i].createSoundWave();
                 }
             }
         }
     }
+
 
     // Function to draw Circles into the Canvas
     function Circle(soundWave,radius,xPos,yPos,speed) {
@@ -183,7 +187,7 @@ function initVisual(){
 
     // function to setup the Visual Screen and draw soundobjects into the canvas
     function setupVisualScreen() {
-        let r = 45*ratio;
+        let r = returnRandomValue(20,200);
         let x = returnRandomValue(0+r,canvasWidth-r);
         let y = returnRandomValue(0+r,canvasHeight-r);
         let t = returnRandomValue(0,256);
@@ -193,7 +197,7 @@ function initVisual(){
         for(let j = 0; j < soundsArray.length; j++){
             if(c >= 20) {break;}
             c++;
-            if(getDistance(x,soundsArray[j].x, y, soundsArray[j].y) - (r*2) < 0 ){
+            if(getDistance(x,soundsArray[j].x, y, soundsArray[j].y, r, soundsArray[j].radius) < 0 ){
                 x = returnRandomValue(0+r,canvasWidth-r);
                 y = returnRandomValue(0+r,canvasHeight-r);
                 j = -1;
@@ -234,10 +238,8 @@ function returnRandomValue(min,max) {
 }
 
 // Function to detect distance between to objects
-function getDistance(x1, x2, y1, y2) {
-    let xDistance = x2-x1;
-    let yDistance = y2-y1;
-    return Math.sqrt(Math.pow(xDistance,2) + Math.pow(yDistance,2));
+function getDistance(x1, x2, y1, y2, r1, r2) {
+    return Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2) ) - (r2 + r1);
 }
 
 function rotate(velocity, angle) {

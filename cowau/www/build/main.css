@@ -8,7 +8,7 @@ body, html {
   left: 0;
   right: 0;
   width: 100%;
-  z-index: 10;
+  z-index: -1;
   height: 1.5vh;
   background: -webkit-gradient(linear, left top, right bottom, from(#fe8965), to(#ff65a5));
   background: linear-gradient(to bottom right, #fe8965 0%, #ff65a5 100%);
@@ -25718,9 +25718,83 @@ ion-navbar.toolbar {
   min-height: calc(46px + env(safe-area-inset-bottom));
 }
 
-page-edit .beatgrid {
+.popover-md {
   position: absolute;
-  top: 12rem;
+  z-index: 100;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.popover-wrapper {
+  z-index: 100;
+  position: absolute;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+.popover-arrow {
+  z-index: 100;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+.popover-content {
+  background: #24242F !important;
+  margin: 0px;
+  z-index: 100;
+  position: relative;
+  width: 85% !important;
+  height: 80% !important;
+  max-height: 80% !important;
+  top: 0px !important;
+  left: 0px !important;
+  border-radius: 20px !important;
+  border: 1px solid #FE7982;
+}
+
+.popover-viewport {
+  z-index: 100;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+.headline {
+  position: absolute;
+  top: 18rem;
+  left: 0;
+  width: 100%;
+  color: #FE7982;
+  font-size: 4.7rem;
+  text-align: center;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.subline {
+  position: absolute;
+  top: 13rem;
   left: 0;
   width: 100%;
   color: #ffffff;
@@ -25728,33 +25802,208 @@ page-edit .beatgrid {
   text-align: center;
   font-weight: bold;
   z-index: 10;
-  overflow-x: scroll;
 }
 
-page-edit .beatrow {
-  height: 8rem;
+.explain-text {
+  position: absolute;
+  padding: 8rem;
+  bottom: 2rem;
+  left: 0;
+  width: 100%;
+  color: #FE7982;
+  font-size: 2rem;
+  text-align: center;
+  font-weight: bold;
+  z-index: 10;
 }
 
-page-edit .tone {
+page-edit .edit-wrapper {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: column;
+  -ms-flex-flow: column;
+  flex-flow: column;
+  width: 100%;
+  height: 90%;
+  padding: 5% 0 5% 0;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+page-edit .edit-wrapper .beatgrid-wrapper {
+  width: 100%;
+  height: auto;
   position: relative;
-  float: left;
-  height: 6rem;
-  width: 3rem;
-  margin: 0.5rem;
-  border: 0.2rem solid #ffffff30;
-  border-radius: 0.5rem;
 }
 
-page-edit .tone-selected {
+page-edit .edit-wrapper .beatgrid-wrapper .beatgrid {
+  position: absolute;
+  top: 1vh;
+  left: 0;
+  z-index: 10;
+  width: calc(32 * 12vw + 4 * 10vw);
+  -webkit-transform: translate(-7vw, 0);
+  transform: translate(-7vw, 0);
+}
+
+page-edit .edit-wrapper .beatgrid-wrapper .beatgrid .beatrow {
+  float: left;
+  padding: 0 0 0 0;
+  width: 100%;
+}
+
+page-edit .edit-wrapper .beatgrid-wrapper .beatgrid .beatrow .tone {
+  display: block;
+  float: left;
+  position: relative;
+  height: 9vh;
+  width: 10vw;
+  margin: 1vw;
+  border: 0.1rem solid rgba(255, 255, 255, 0.1);
+  border-radius: 3vw;
+}
+
+page-edit .edit-wrapper .beatgrid-wrapper .beatgrid .beatrow .tone .tone-long {
+  position: absolute;
+  top: -0.1rem;
+  left: -0.1rem;
+  height: 9vh;
+  border: inherit;
+  border-radius: inherit;
+  background: -webkit-gradient(linear, left top, right bottom, from(#fe8965), to(#ff65a5));
+  background: linear-gradient(to bottom right, #fe8965 0%, #ff65a5 100%);
+  -webkit-box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+page-edit .edit-wrapper .beatgrid-wrapper .beatgrid .beatrow .tone:nth-child(8n+1) {
+  margin-left: 9vw;
+}
+
+page-edit .edit-wrapper .beatgrid-wrapper .beatgrid .beatrow .tone-selected {
+  position: relative;
+  z-index: 20;
+  background: -webkit-gradient(linear, left top, right bottom, from(#fe8965), to(#ff65a5));
+  background: linear-gradient(to bottom right, #fe8965 0%, #ff65a5 100%);
+  -webkit-box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+page-edit .edit-wrapper .slider-wrapper {
+  width: 100%;
+  position: relative;
+  height: 10vh;
+}
+
+page-edit .edit-wrapper .slider-wrapper .beatpreview-slider {
+  position: absolute;
+  top: -1.2vh;
+  width: calc(8*2.8vw);
+  height: 13vh;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4vw;
+}
+
+page-edit .edit-wrapper .slider-wrapper .beatgrid-wrapper-preview {
+  display: block;
+  margin: 0 auto;
+}
+
+page-edit .edit-wrapper .slider-wrapper .beatgrid-wrapper-preview .beatrow-preview {
+  float: left;
+}
+
+page-edit .edit-wrapper .slider-wrapper .beatgrid-wrapper-preview .beatrow-preview .tone-preview {
+  position: relative;
+  display: block;
+  float: left;
+  height: 1.8vh;
+  width: 2vw;
+  margin: 0.3vw;
+  border-radius: 0.6vw;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+page-edit .edit-wrapper .slider-wrapper .beatgrid-wrapper-preview .beatrow-preview .tone-preview .tone-long-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1.8vh;
+  border-radius: inherit;
+  background: -webkit-gradient(linear, left top, right bottom, from(#fe8965), to(#ff65a5));
+  background: linear-gradient(to bottom right, #fe8965 0%, #ff65a5 100%);
+  z-index: 100;
+}
+
+page-edit .edit-wrapper .slider-wrapper .beatgrid-wrapper-preview .beatrow-preview .tone-preview:nth-child(8n+1) {
+  position: relative;
+  margin-left: 1.1vw;
+}
+
+page-edit .edit-wrapper .slider-wrapper .beatgrid-wrapper-preview .beatrow-preview .tone-selected-preview {
   background: -webkit-gradient(linear, left top, right bottom, from(#fe8965), to(#ff65a5));
   background: linear-gradient(to bottom right, #fe8965 0%, #ff65a5 100%);
 }
 
-.canvas-emoji {
-  z-index: 1;
-  position: absolute;
+page-edit .edit-wrapper .clearsound {
+  top-padding: 10vh;
+  font-size: 4vh;
+  color: #FE7982;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+page-edit .background-pattern-dark {
+  z-index: -2;
+}
+
+.background-pattern {
+  background: #24242F;
+  position: relative;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.flex-container {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  position: absolute;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  background-color: transparent;
+  z-index: 50;
+  top: 27vh;
+}
+
+.flex-container > div {
+  width: 24%;
+  margin: 1%;
+  padding: 2%;
 }
 
 .background-pattern-dark {
@@ -25826,89 +26075,4 @@ page-edit .tone-selected {
   position: absolute;
   top: 0;
   left: 0;
-}
-
-.popover-md {
-  position: absolute;
-  z-index: 100;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-.popover-wrapper {
-  z-index: 100;
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-}
-
-.popover-arrow {
-  z-index: 100;
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-}
-
-.popover-content {
-  background: #24242F !important;
-  margin: auto;
-  z-index: 100;
-  position: absolute;
-  width: 85% !important;
-  height: 80% !important;
-  max-height: 80% !important;
-  border-radius: 20px !important;
-  border: 1px solid #FE7982;
-}
-
-.popover-viewport {
-  z-index: 100;
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-}
-
-.headline {
-  position: absolute;
-  top: 18rem;
-  left: 0;
-  width: 100%;
-  color: #FE7982;
-  font-size: 4.7rem;
-  text-align: center;
-  font-weight: bold;
-  z-index: 10;
-}
-
-.subline {
-  position: absolute;
-  top: 13rem;
-  left: 0;
-  width: 100%;
-  color: #ffffff;
-  font-size: 2rem;
-  text-align: center;
-  font-weight: bold;
-  z-index: 10;
-}
-
-.explain-text {
-  position: absolute;
-  padding: 8rem;
-  bottom: 2rem;
-  left: 0;
-  width: 100%;
-  color: #FE7982;
-  font-size: 2rem;
-  text-align: center;
-  font-weight: bold;
-  z-index: 10;
 }
