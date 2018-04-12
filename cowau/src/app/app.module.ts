@@ -27,6 +27,8 @@ import { ServerPage } from '../pages/server/server';
 //services
 import { GesturesService } from '../services/gestures.service';
 
+//classes
+import { Variables } from '../classes/variables';
 
 @NgModule({
   declarations: [
@@ -63,6 +65,7 @@ import { GesturesService } from '../services/gestures.service';
     DeviceMotion,
     GesturesService,
     HTTP,
+    Variables,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
