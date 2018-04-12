@@ -45,7 +45,7 @@ export class FlipitPage {
 
 	ionViewDidLoad() {
 		// this.gesturesService.isFlipItGesture();
-		this.popover.show(NewSoundPopoverPage);
+		this.popover.show(NewSoundPopoverPage, 3000);
 	}
 
 	// showPopover() {
