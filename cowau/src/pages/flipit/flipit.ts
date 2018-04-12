@@ -3,7 +3,7 @@ import { NavController, NavParams, Platform, PopoverController, ViewController }
 import { Popover } from '../../classes/popover';
 import { GesturesService } from '../../services/gestures.service';
 import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
-
+import { ThrowItPopoverPage } from '../../throwit-popover/throwit-popover';
 
 /**
  * Generated class for the FlipitPage page.
@@ -32,13 +32,9 @@ export class FlipitPage {
 
 	ionViewDidLoad() {
 		// this.gesturesService.isFlipItGesture();
-		this.popover.show(NewSoundPopoverPage, 3000);
+		// this.popover.show(NewSoundPopoverPage, 3000);
+		this.popover.show(ThrowItPopoverPage, 3000);
 	}
-
-	// showPopover() {
-	// 	let popover = this.popoverCtrl.create(PopoverPage);
-    //     popover.present();
-	// }
 
 	// +++ Load popover on click event +++
 	// presentPopover(myEvent) {
