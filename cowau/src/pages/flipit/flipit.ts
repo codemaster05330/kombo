@@ -3,9 +3,7 @@ import { NavController, NavParams, Platform, PopoverController, ViewController }
 import { Popover } from '../../classes/popover';
 import { GesturesService } from '../../services/gestures.service';
 import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
-
-//natives
-import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device-motion';
+import { ThrowItPopoverPage } from '../../throwit-popover/throwit-popover';
 
 
 /**
@@ -25,33 +23,19 @@ export class FlipitPage {
 	motion_subscription: any;
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform, 
-		public popoverCtrl:PopoverController, public viewCtrl:ViewController, public devMotion:DeviceMotion) {
+		public popoverCtrl:PopoverController, public viewCtrl:ViewController) {
 		this.popover = new Popover(popoverCtrl, viewCtrl);
 		
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova') {
-				this.devMotion.watchAcceleration({frequency: 50}).subscribe((data:DeviceMotionAccelerationData) => {
-					// console.log(this.gesturesService.isFlipItGesture(data));
-				});
-				// console.log('subscription' + this.motion_subscription);
-				
-				// if(this.gesturesService.isFlipItGesture()) {
-				// 	console.log('FLIPPED');
-				// }
-				// this.gesturesService.isFlipItGesture();
+				this.gesturesService.isFlipItGesture();
 			}
 		});
 	}
 
 	ionViewDidLoad() {
-		// this.gesturesService.isFlipItGesture();
 		this.popover.show(NewSoundPopoverPage, 3000);
 	}
-
-	// showPopover() {
-	// 	let popover = this.popoverCtrl.create(PopoverPage);
-    //     popover.present();
-	// }
 
 	// +++ Load popover on click event +++
 	// presentPopover(myEvent) {

@@ -1,6 +1,7 @@
 import { PopoverController, ViewController, PopoverCmp } from 'ionic-angular';
 import { NewSoundPopoverPage } from '../newsound-popover/newsound-popover';
-//import { PopoverPage } from '../newsound-popover/newsound-popover';
+import { ThrowItPopoverPage } from '../throwit-popover/throwit-popover';
+
 
 export class Popover {
 
