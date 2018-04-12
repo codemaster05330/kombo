@@ -85,4 +85,5 @@
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
     <plugin name="cordova-plugin-gyroscope" spec="^0.1.4" />
     <plugin name="cordova-plugin-device-motion" spec="^1.2.5" />
+    <allow-navigation href="http://141.28.128.55:8100" />
 </widget>

@@ -37,7 +37,7 @@ function initVisual(){
     const cvs : any = document.getElementById('canvas');    // Define the Canvas Element
     const ctx = cvs.getContext('2d');                       // Setup the Canvas to 2D
     const ratio = window.devicePixelRatio                   // Define the DPI of the Screen
-    const fps = 60;                                          // FPS of the Canvas
+    const fps = 60;                                         // FPS of the Canvas
 
     // This are imporatent var for the Script,
     // but here you don't have to change something
@@ -59,52 +59,60 @@ function initVisual(){
     // ###############################################################
 
     // Function to create a new Soundobject with mass, x, y and radius
-    function Sound(x, y, radius, mass, tones){
-        this.radius        = radius;                      // radius of the sound
-        this.x             = x;                           // y position of the sound
-        this.y             = y;                           // x positon of the sound
-        this.mass          = mass;                        // Mass of the sound
-        this.tones         = tones;                       // Count the Tones in the sound
-        this.lifeTimeValue = 100;                         // The lifetime of the object 100-0
-        this.soundWaves    = [];                          // The Soundwaves from this object
-        this.velocity      = {
-            x: returnRandomValue(-5,5),                   // velocity in the x direction
-            y: returnRandomValue(-5,5)                    // velocity in the y direction
+    function Sequence(x, y, radius, mass, tones, emoji){
+        this.radius         = radius;                        // radius of the sequence
+        this.newRadius;                                      // radius with lifetime value
+        this.emoji          = emoji                          // emoji id of this sequence
+        this.x              = x;                             // y position of the sequence
+        this.y              = y;                             // x positon of the sequence
+        this.mass           = mass;                          // Mass of the sequence
+        this.tones          = tones;                         // Count the Tones in the sequence
+        this.lifeTimeValue  = 100;                           // The lifetime of the object 100-0
+        this.soundWaves     = [];                            // The Soundwaves from this object
+        this.emojiImg       = new Image();                   // Create new object
+        this.velocity       = {
+            x: returnRandomValue(-1,1),                     // velocity in the x direction
+            y: returnRandomValue(-1,1)                      // velocity in the y direction
         };
 
-        // Function to update the sound element
+        // Emoji
+        this.emojiImg.src   = '../../assets/imgs/' + this.emoji + '.svg';
+
+        // Function to update the sequence element
         // this function is used for Collision ditection,
         // movement and the drawing of the element
         this.updateSound = function() {
-            for(var i = 0; i < this.soundWaves.length;i++) {
-                var newSoundWave = this.soundWaves[i];
-                newSoundWave.update();
-            }
-
+            // Update the this.radius var to the new value
+            this.newRadius = this.radius * (this.lifeTimeValue/100);
+            // just for Testing
             var test = returnRandomValue(0, 30);
-
             if(test == 2){
                 this.createSoundWave();
             }
 
+            // Function to fire the update function from every Soundwave created
+            // by this sequence object
+            for(var i = 0; i < this.soundWaves.length;i++) {
+                var newSoundWave = this.soundWaves[i];
+                newSoundWave.update();
+            }
             this.borderDetectionSound();                    // Controll if the object hits the wall
             this.moveSound();                               // move the object random
-            this.drawSound();                               // draw the sound object
+            this.drawSound();                               // draw the sequence object
             this.lifeTime();                                // reduce lifetime
             this.soundDetectionSound();                     // Controll if the object hits another object
         }
 
         this.createSoundWave = function() {
-            var soundWave = new Circle(this.soundWaves,this.radius,this.x,this.y,2);
+            var soundWave = new Soundwave(this.soundWaves,this.newRadius,this.x,this.y,2);
             this.soundWaves.push(soundWave);
         }
 
         this.lifeTime = function() {
-            if((this.lifeTimeValue/100) > 0.03) {
-                this.lifeTimeValue = this.lifeTimeValue - (this.lifeTimeValue/100);
-                // console.log('alive');
+            if((this.lifeTimeValue/100) > 0.01) {
+                this.lifeTimeValue = this.lifeTimeValue - 0.2;
             } else {
-                // console.log('die');
+                console.log('die');
                 soundsArray.splice(soundsArray.indexOf(this),1);
             }
     }
@@ -112,39 +120,39 @@ function initVisual(){
         // Function to detect if the sound object hits an wall of the canvas
         // When the detects gets true, the velocity get negating
         this.borderDetectionSound = function() {
-            if(this.x + this.radius > canvasWidth || this.x - this.radius < 0) {
+            if(this.x + this.newRadius > canvasWidth || this.x - this.newRadius < 0) {
                 this.velocity.x = -this.velocity.x;
             }
-            if(this.y + this.radius > canvasHeight || this.y - this.radius < 0) {
+            if(this.y + this.newRadius > canvasHeight || this.y - this.newRadius < 0) {
                 this.velocity.y = -this.velocity.y;
             }
         }
 
-        // Function to move the sound object in an
+        // Function to move the sequence object in an
         // random direction
         this.moveSound = function() {
             this.x += this.velocity.x;
             this.y += this.velocity.y;
         }
 
-        // Function to draw the Sound object into the canvas
+        // Function to draw the sequence object into the canvas
         this.drawSound = function() {
-
             ctx.globalAlpha = (this.lifeTimeValue/100);
-            ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+            ctx.fillStyle = '#353847';
             ctx.beginPath();
-            ctx.arc(this.x,this.y,this.radius,0,Math.PI*2,true);
+            ctx.arc(this.x,this.y,this.newRadius,0,Math.PI*2,true);
             ctx.fill();
+            ctx.drawImage(this.emojiImg,this.x-(this.newRadius*0.7),this.y-(this.newRadius*0.7),(this.newRadius*2)*0.7,(this.newRadius*2)*0.7);
         }
 
-        // Functiton to detect if the sound hits another sound object.
+        // Functiton to detect if the sequence hits another sound object.
         // When this happend, this function starts the resloveCollision function.
-        // Here this Sound object and the sound object that gets hit will get new
+        // Here this sequence object and the sequence object that gets hit will get new
         // positions, with new velocity and mass.
         this.soundDetectionSound = function() {
             for (let i = 0; i < soundsArray.length; i++) {
                 if(this === soundsArray[i]) continue;
-                if(getDistance(this.x,soundsArray[i].x,this.y,soundsArray[i].y, this.radius, soundsArray[i].radius) < 0){
+                if(getDistance(this.x,soundsArray[i].x,this.y,soundsArray[i].y, this.newRadius, soundsArray[i].newRadius) < 0){
                     resolveCollision(this, soundsArray[i]);
                 }
             }
@@ -153,7 +161,7 @@ function initVisual(){
 
 
     // Function to draw Circles into the Canvas
-    function Circle(soundWave,radius,xPos,yPos,speed) {
+    function Soundwave(soundWave,radius,xPos,yPos,speed) {
         this.radius = radius;       // Radius of this object
         this.xPos = xPos;           // x position of this object
         this.yPos = yPos;           // y position of this object
@@ -164,7 +172,7 @@ function initVisual(){
         // indipendent from other Circles
         this.update = function(){
             this.radius += (this.speed*ratio); // Update the radus of this Circle
-            this.opacity += -0.008;
+            this.opacity += -0.01;
             if(this.opacity < 0 ) {
                 this.opacity = 0;
             } else {
@@ -191,7 +199,7 @@ function initVisual(){
         let x = returnRandomValue(0+r,canvasWidth-r);
         let y = returnRandomValue(0+r,canvasHeight-r);
         let t = returnRandomValue(0,256);
-        let m = 20;
+        let m = 250;
         let c = 0;
 
         for(let j = 0; j < soundsArray.length; j++){
@@ -203,7 +211,7 @@ function initVisual(){
                 j = -1;
             }
         }
-        var newSound = new Sound(x,y,r,m,t);
+        var newSound = new Sequence(x,y,r,m,t,returnRandomValue(0, 11));
         soundsArray.push(newSound);
     }
 

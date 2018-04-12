@@ -17,7 +17,6 @@ import { ServerPage } from '../pages/server/server';
 
 export class MyApp {
 	rootPage:any = FlipitPage;
-	// rootPage:any = EmojiPage;
 	// rootPage:any = ServerPage;
 
 	constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {

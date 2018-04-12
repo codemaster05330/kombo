@@ -5,9 +5,6 @@ import { GesturesService } from '../../services/gestures.service';
 import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
 import { ThrowItPopoverPage } from '../../throwit-popover/throwit-popover';
 
-//natives
-import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device-motion';
-
 
 /**
  * Generated class for the FlipitPage page.
@@ -31,21 +28,16 @@ export class FlipitPage {
 		
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova') {
-				this.devMotion.watchAcceleration({frequency: 50}).subscribe((data:DeviceMotionAccelerationData) => {
-					// console.log(this.gesturesService.isFlipItGesture(data));
-				});
-				// console.log('subscription' + this.motion_subscription);
-				
-				// if(this.gesturesService.isFlipItGesture()) {
-				// 	console.log('FLIPPED');
-				// }
-				// this.gesturesService.isFlipItGesture();
+				this.gesturesService.isFlipItGesture();
 			}
+		});
+
+		events.subscribe('flipped', (acceleration) => {
+		    console.log('FLIPPED');
 		});
 	}
 
 	ionViewDidLoad() {
-		// this.gesturesService.isFlipItGesture();
 		this.popover.show(NewSoundPopoverPage, 6000);
 		this.popover.show(ThrowItPopoverPage, 3000);
 	}
