@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { Variables } from '../../classes/variables';
+import { FlipitPage } from '../flipit/flipit';
 
 /**
  * Generated class for the EmojiPage page.
@@ -15,7 +17,7 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class EmojiPage {
 
-	constructor(public navCtrl: NavController, public navParams: NavParams) {
+	constructor(public navCtrl: NavController, public navParams: NavParams, public globalVars: Variables) {
 	}
 
 	ionViewDidLoad() {
@@ -26,9 +28,15 @@ export class EmojiPage {
 		console.log(evt.currentTarget);
 		var elem: HTMLDivElement = <HTMLDivElement> evt.currentTarget;
 		console.log(elem.id);
+		this.globalVars.emojiID = Number(elem.id);
+    	this.navCtrl.push(FlipitPage);
+    }
+}
 
-	}
+		
+
+
+
+
 
 	
-
-}
