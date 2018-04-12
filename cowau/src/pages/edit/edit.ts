@@ -25,6 +25,7 @@ export class EditPage {
 
 	isScrolling: boolean = false;
 	deltaTime: number = 1000000;
+	translation: number;
 
 
 	constructor(public navCtrl: NavController, public navParams: NavParams) {
@@ -57,6 +58,9 @@ export class EditPage {
 		this.beatPreviewSlider.style.left = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + "px";
 		
 		this.vw = (this.beatgridWrapper.offsetWidth / 100);
+
+		this.beatgrid.style.transform = "translate( -5vw , 0)";
+
 	}
 
 	reloadGrid(){
@@ -174,21 +178,32 @@ export class EditPage {
 			
 		}*/
 
-		//console.log(evt);
-		//console.log(evt.deltaTime +" "+ this.deltaTime);
+		//detect if a new pan has been started.
 		if(evt.deltaTime < this.deltaTime){
-			console.log("new pan: " + evt.deltaTime);
+			//if the delay between the click and the movement is above 300ms don't scroll but move the screen
 			if (evt.deltaTime > 300){
 				this.isScrolling = false;
 			} else {
 				this.isScrolling = true;
 			}
-			console.log("Scrolling: " + this.isScrolling)
-
+			//get the current translation of the main beatgrid to be able to move it accordingly.
+			this.translation = parseInt(this.beatgrid.style.transform.slice(10).split("vw")[0]);
 		}
 		this.deltaTime = evt.deltaTime;
 
+		//if the current pan gesture is a scroll gesture, move the screen
 		if(this.isScrolling){
+			var translate: number = (this.translation * this.vw + evt.deltaX) / this.vw;
+			translate = Math.max(Math.min(-5,translate),-319);
+
+			this.beatgrid.style.transform = "translate( " + translate + "vw , 0)";
+
+			//move the preview as well
+			var prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
+			var x: number = -1 * ( ( translate / 319 ) * (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) + prevXMin;
+			var prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
+
+			this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
 
 		} else {
 
