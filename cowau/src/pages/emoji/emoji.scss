@@ -13,12 +13,10 @@
 
 .flex-container{
 	display: flex;
-	position: absolute;
 	flex-wrap: wrap;
 	justify-content: center;
 	background-color: transparent;
 	z-index: 50;
-	top: 27rem;
 
 	.emoji-container {
 		width: 24%;
