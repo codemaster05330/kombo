@@ -25,14 +25,14 @@ export class FlipitPage {
 		
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova') {
-				this.gesturesService.isFlipItGesture();
+				//this.gesturesService.isFlipItGesture();
 			}
 		});
 	}
 
 	ionViewDidLoad() {
 		// this.gesturesService.isFlipItGesture();
-		this.popover.show(NewSoundPopoverPage);
+		this.popover.show(NewSoundPopoverPage, 3000);
 	}
 
 	// showPopover() {
