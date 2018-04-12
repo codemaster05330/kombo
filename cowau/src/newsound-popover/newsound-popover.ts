@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ViewController, PopoverController } from 'ionic-angular';
+import { PopoverController } from 'ionic-angular';
 
 @Component({
 	selector: 'new-sound-popover',
@@ -7,5 +7,5 @@ import { ViewController, PopoverController } from 'ionic-angular';
 })
 
  export class NewSoundPopoverPage {
-	constructor(public viewCtrl: ViewController, public popoverCtrl: PopoverController) {}
+	constructor(public popoverCtrl: PopoverController) {}
 }
