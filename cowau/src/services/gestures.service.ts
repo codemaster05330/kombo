@@ -1,43 +1,55 @@
 import { Injectable } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { Platform, Events } from 'ionic-angular';
 
-import { Observable } from 'rxjs/Observable';
+// import { Observable } from 'rxjs/Observable';
 // import { Jsonp } from '@angular/http';
 
 //ionic native imports
-import { Gyroscope, GyroscopeOptions, GyroscopeOrientation } from '@ionic-native/gyroscope';
+// import { Gyroscope, GyroscopeOptions, GyroscopeOrientation } from '@ionic-native/gyroscope';
 import { DeviceMotion, DeviceMotionAccelerationData, DeviceMotionAccelerometerOptions } from '@ionic-native/device-motion';
 
 
 @Injectable()
 export class GesturesService {
-	treshold:number = 0.15;
+	
+	constructor(public devMotion:DeviceMotion, public platform:Platform, public events:Events) {}
 
-	motion_array = new Array<number>();
-	motion_index = 0;
-
-	constructor(public devMotion:DeviceMotion, public gyroscope:Gyroscope, public platform:Platform) {}
-
-	public isFlipItGesture(acceleration:DeviceMotionAccelerationData):boolean {
-		if(this.motion_array.length == 30) {
-			this.motion_array = this.motion_array.slice(1);
+	public isFlipItGesture() {
+		let treshold:number = 0.15;
+		let motion_opts:DeviceMotionAccelerometerOptions = {
+			frequency: 50
 		}
-		this.motion_array.push(acceleration.z);
 
-		console.log(this.motion_array.length);
+		let motion_array:Array<number> = new Array<number>();
+		
+		this.devMotion.watchAcceleration(motion_opts).subscribe((acceleration:DeviceMotionAccelerationData) => {
+			let flip_down:boolean = false;
+			let start_top:boolean = false;
 
-		this.motion_array.forEach((value, index) => {
-			if(value < 0) {
-				console.log(value);
-				return true;
+			if(motion_array.length == 30) {
+				motion_array = motion_array.slice(1);
 			}
+			
+			motion_array.push(acceleration.z);
+
+			if(motion_array[0] > 7) {
+				start_top = true;
+			}
+			
+			motion_array.forEach((value, index) => {
+				if(value < -7) {
+					flip_down = true;
+				}
+
+				if(value > 7 && flip_down && start_top) {
+					flip_down = false;
+					this.events.publish('flipped', acceleration);
+					motion_array = new Array<number>();
+				}
+				
+			});
 		});
-
-		return false;
 	}
-
-
-
 }
 
 function roundFloat(num:number, precision:number) {
