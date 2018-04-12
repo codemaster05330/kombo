@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, Platform, PopoverController, } from 'ionic-angular';
+import { NavController, NavParams, Platform, PopoverController, Events} from 'ionic-angular';
 import { Popover } from '../../classes/popover';
 import { GesturesService } from '../../services/gestures.service';
 import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
@@ -23,7 +23,7 @@ export class FlipitPage {
 	motion_subscription: any;
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform, 
-		public popoverCtrl:PopoverController, public devMotion:DeviceMotion) {
+		public popoverCtrl:PopoverController, public events:Events) {
 		this.popover = new Popover(popoverCtrl);
 		
 		platform.ready().then((readySource) => {
@@ -33,13 +33,14 @@ export class FlipitPage {
 		});
 
 		events.subscribe('flipped', (acceleration) => {
-		    console.log('FLIPPED');
+			console.log('FLIPPED');
+			this.popover.show(NewSoundPopoverPage, 6000);
 		});
 	}
 
 	ionViewDidLoad() {
-		this.popover.show(NewSoundPopoverPage, 6000);
-		this.popover.show(ThrowItPopoverPage, 3000);
+		
+		// this.popover.show(ThrowItPopoverPage, 3000);
 	}
 
 	// +++ Load popover on click event +++
