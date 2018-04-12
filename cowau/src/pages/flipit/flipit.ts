@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, Platform, PopoverController, ViewController } from 'ionic-angular';
+import { NavController, NavParams, Platform, PopoverController, } from 'ionic-angular';
 import { Popover } from '../../classes/popover';
 import { GesturesService } from '../../services/gestures.service';
 import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
@@ -26,8 +26,8 @@ export class FlipitPage {
 	motion_subscription: any;
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform, 
-		public popoverCtrl:PopoverController, public viewCtrl:ViewController, public devMotion:DeviceMotion) {
-		this.popover = new Popover(popoverCtrl, viewCtrl);
+		public popoverCtrl:PopoverController, public devMotion:DeviceMotion) {
+		this.popover = new Popover(popoverCtrl);
 		
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova') {
@@ -46,7 +46,7 @@ export class FlipitPage {
 
 	ionViewDidLoad() {
 		// this.gesturesService.isFlipItGesture();
-		// this.popover.show(NewSoundPopoverPage, 3000);
+		this.popover.show(NewSoundPopoverPage, 6000);
 		this.popover.show(ThrowItPopoverPage, 3000);
 	}
 
