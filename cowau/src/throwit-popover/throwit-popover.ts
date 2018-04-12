@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { PopoverController } from 'ionic-angular';
 
 @Component({
-	selector: 'new-sound-popover',
-	templateUrl: 'newsound-popover.html'
+	selector: 'throw-it-popover',
+	templateUrl: 'throwit-popover.html'
 })
 
- export class NewSoundPopoverPage {
+ export class ThrowItPopoverPage {
 	constructor(public popoverCtrl: PopoverController) {}
 }

@@ -1,10 +1,11 @@
-import { PopoverController, ViewController, PopoverCmp } from 'ionic-angular';
+import { PopoverController, PopoverCmp } from 'ionic-angular';
 import { NewSoundPopoverPage } from '../newsound-popover/newsound-popover';
-//import { PopoverPage } from '../newsound-popover/newsound-popover';
+import { ThrowItPopoverPage } from '../throwit-popover/throwit-popover';
+
 
 export class Popover {
 
-	constructor(public popoverCtrl:PopoverController, public viewCtrl:ViewController) {	}
+	constructor(public popoverCtrl:PopoverController) {	}
 
 	public show(p:any, timeout) {
 		let pop = this.popoverCtrl.create(p);

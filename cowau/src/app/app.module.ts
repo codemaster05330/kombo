@@ -17,13 +17,18 @@ import { IdlePage } from '../pages/idle/idle';
 import { EmojiPage } from '../pages/emoji/emoji';
 import { EditPage } from '../pages/edit/edit';
 
+//popovers
 import { NewSoundPopoverPage } from '../newsound-popover/newsound-popover';
+import { ThrowItPopoverPage } from '../throwit-popover/throwit-popover';
 
 import { VisualPage } from '../pages/visual/visual';
 import { ServerPage } from '../pages/server/server';
 
 //services
 import { GesturesService } from '../services/gestures.service';
+
+//classes
+import { Variables } from '../classes/variables';
 
 @NgModule({
   declarations: [
@@ -34,7 +39,8 @@ import { GesturesService } from '../services/gestures.service';
     EditPage,
     VisualPage,
     ServerPage,
-    NewSoundPopoverPage
+    NewSoundPopoverPage,
+    ThrowItPopoverPage
   ],
   imports: [
     BrowserModule,
@@ -49,7 +55,8 @@ import { GesturesService } from '../services/gestures.service';
     EditPage,
     VisualPage,
     ServerPage,
-    NewSoundPopoverPage
+    NewSoundPopoverPage,
+    ThrowItPopoverPage
   ],
   providers: [
     StatusBar,
@@ -58,6 +65,7 @@ import { GesturesService } from '../services/gestures.service';
     DeviceMotion,
     GesturesService,
     HTTP,
+    Variables,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
