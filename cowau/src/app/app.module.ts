@@ -26,6 +26,7 @@ import { ServerPage } from '../pages/server/server';
 
 //services
 import { GesturesService } from '../services/gestures.service';
+import { AudioProvider } from '../providers/audio/audio';
 
 
 @NgModule({
@@ -63,7 +64,8 @@ import { GesturesService } from '../services/gestures.service';
     DeviceMotion,
     GesturesService,
     HTTP,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    AudioProvider
   ]
 })
 export class AppModule {}
