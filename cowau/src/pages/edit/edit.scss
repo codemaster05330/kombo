@@ -113,15 +113,33 @@ page-edit {
 			}
 		}
 
+		.clearsound-container {
+			width: 80%;
+			height: 5vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: $bggradient;
+			border-radius: 3vw;
 
-		.clearsound{
-			top-padding: 10vh;
-			font-size: 4vh;
-			color: $text;
-			width: 100%;
-			text-align: center;
-			font-weight: bold;
-			text-transform: uppercase;
+			.clearsound {
+				top-padding: 10vh;
+				font-size: 3vh;
+				color: $text;
+				background: $dark;
+				width: 99%;
+				height: 98%;
+				text-align: center;
+				font-weight: bold;
+				text-transform: uppercase;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+
+				border: 0.1rem solid rgba(255,255,255,0.1);
+				border-radius:3vw;
+				border-color: $text;
+			}
 		}
 
 	}

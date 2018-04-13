@@ -28,6 +28,8 @@ import { ServerPage } from '../pages/server/server';
 import { GesturesService } from '../services/gestures.service';
 import { AudioProvider } from '../providers/audio/audio';
 
+//classes
+import { Variables } from '../classes/variables';
 
 @NgModule({
   declarations: [
@@ -64,6 +66,7 @@ import { AudioProvider } from '../providers/audio/audio';
     DeviceMotion,
     GesturesService,
     HTTP,
+    Variables,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AudioProvider
   ]
