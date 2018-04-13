@@ -26,6 +26,7 @@ export class EditPage {
 	isScrolling: boolean = false;
 	deltaTime: number = 1000000;
 	translation: number;
+	relativeX: number;
 
 
 	constructor(public navCtrl: NavController, public navParams: NavParams) {
@@ -112,22 +113,16 @@ export class EditPage {
 	clickedTone(evt: MouseEvent){
 
 		var elem : HTMLDivElement = <HTMLDivElement> evt.target;
+		var x: number = +elem.id.split("-")[0];
+		var y: number = +elem.id.split("-")[1];
 
 		if(elem.classList.contains("tone")){
+			this.sound.setBeatGridAtPos(x, y, 1);
+			this.setPreview(x, y, 1);
+			elem.appendChild(this.createLongTone());
 
-			var x: number = +elem.id.split("-")[0];
-			var y: number = +elem.id.split("-")[1];
-
-			if(elem.classList.toggle("tone-selected")){
-				this.sound.setBeatGridAtPos(x, y, 1);
-				this.setPreview(x, y, 1);
-				
-			} else {
-				this.sound.setBeatGridAtPos(x, y, 0);
-				this.setPreview(x, y, 0);
-			}
 		} else if (elem.classList.contains("tone-long")) {
-			this.sound.setBeatGridAtPos(parseInt(elem.parentElement.id.split("-")[0]), parseInt(elem.parentElement.id.split("-")[1]),0);
+			this.sound.setBeatGridAtPos(x, y, 0);
 			this.setPreview(parseInt(elem.parentElement.id.split("-")[0]), parseInt(elem.parentElement.id.split("-")[1]),0);
 			elem.parentElement.removeChild(elem);
 		}
@@ -181,6 +176,7 @@ export class EditPage {
 		//detect if a new pan has been started.
 		if(evt.deltaTime < this.deltaTime){
 			//if the delay between the click and the movement is above 300ms don't scroll but move the screen
+			//TODO: MAKE SURE IT WORKS WITH LONG PAUSES (e.g. through timestamps)
 			if (evt.deltaTime > 300){
 				this.isScrolling = false;
 			} else {
@@ -188,11 +184,12 @@ export class EditPage {
 			}
 			//get the current translation of the main beatgrid to be able to move it accordingly.
 			this.translation = parseInt(this.beatgrid.style.transform.slice(10).split("vw")[0]);
+			//TODO: save the relative X of the start of the event relative to the parent element
 		}
 		this.deltaTime = evt.deltaTime;
 
-		//if the current pan gesture is a scroll gesture, move the screen
-		if(this.isScrolling){
+		
+		if(this.isScrolling){		//if the current pan gesture is a scroll gesture, move the screen
 			var translate: number = (this.translation * this.vw + evt.deltaX) / this.vw;
 			translate = Math.max(Math.min(-5,translate),-319);
 
@@ -200,18 +197,42 @@ export class EditPage {
 
 			//move the preview as well
 			var prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
-			var x: number = -1 * ( ( translate / 319 ) * (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) + prevXMin;
+			var x: number = -1 * ( ( ( translate + 5) / 314 ) * (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) + prevXMin;
 			var prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 
 			this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
 
-		} else {
+
+
+		} else {					// if the current pan gesture is a drawing gesture, create the new tones
+
+			// if it was an empty one originally
+
+
+
+			//if it was an occupied one originally
+
 
 		}
 	}
 
-	longTap(){
-		console.log("longTap");
+	/*
+	*		LONG TONE SUPPORT FUNCTIONS
+	*/
+
+	createLongTone(width :number = 10): HTMLElement{
+		var longtone :HTMLElement = document.createElement("div");
+		longtone.classList.add("tone-long");
+		longtone.style.width =  width+"vw";
+		return longtone;
+	}
+
+	calculateLongToneWidth(passedTones:number, y: number){
+		var width = 10 + 12 * (passedTones);
+		if (((y % 8) - ((y+passedTones)% 8 + 1) >= 0 ) || ((passedTones) / 8 >= 1)){
+			width += 9;
+		}
+		return width;
 	}
 
 	/*
@@ -268,4 +289,5 @@ export class EditPage {
 			}
 		}
 	}
+
 }

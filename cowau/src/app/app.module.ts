@@ -26,6 +26,7 @@ import { ServerPage } from '../pages/server/server';
 
 //services
 import { GesturesService } from '../services/gestures.service';
+import { AudioProvider } from '../providers/audio/audio';
 
 //classes
 import { Variables } from '../classes/variables';
@@ -66,7 +67,8 @@ import { Variables } from '../classes/variables';
     GesturesService,
     HTTP,
     Variables,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    AudioProvider
   ]
 })
 export class AppModule {}
