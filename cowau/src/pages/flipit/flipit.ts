@@ -4,6 +4,7 @@ import { Popover } from '../../classes/popover';
 import { GesturesService } from '../../services/gestures.service';
 import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
 import { ThrowItPopoverPage } from '../../throwit-popover/throwit-popover';
+import { EditPage } from '../edit/edit';
 
 
 /**
@@ -35,6 +36,7 @@ export class FlipitPage {
 		events.subscribe('flipped', (acceleration) => {
 			console.log('FLIPPED');
 			this.popover.show(NewSoundPopoverPage, 6000);
+			this.navCtrl.push(EditPage);
 		});
 	}
 
