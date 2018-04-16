@@ -73,6 +73,28 @@ export class Sequence {
 		}
 	}
 
+	public fillBeatGridAtRandom(){
+		this.clearBeatGrid();
+
+		var x: number = this.beatGrid.length;
+		for(var i: number = 0; i < x; i++){
+			for (var j = 0; j < 32; j++) {
+				var rand:number = Math.random();
+				if(rand>0.75){
+					this.beatGrid[i][j] = 1;
+				} else if (rand > 0.7){
+					var l = Math.floor(Math.random()*7) + 1;
+					if(j + l > 32){
+						l = 32 - j;
+					}
+					this.beatGrid[i][j] = l;
+					j += l;
+				}
+			}
+		}
+
+	}
+
 }
 
 
