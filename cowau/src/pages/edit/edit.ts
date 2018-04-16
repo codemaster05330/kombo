@@ -28,9 +28,13 @@ export class EditPage {
 	translation: number;
 	relativeX: number;
 
+	wasEmpty: boolean = true;
+	orignalTarget: HTMLElement;
+	previousPassedTones: number;
+
 
 	constructor(public navCtrl: NavController, public navParams: NavParams) {
-		this.sound = new Sound(SoundType.Bass);
+		this.sound = new Sequence(SoundType.Bass);
 		this.sound.clearBeatGrid();
 		this.beatGrid = this.sound.getBeatGrid();
 
@@ -74,10 +78,12 @@ export class EditPage {
 				cvs[i].removeChild(cvs[i].children[0]);
 			}
 
-			if(this.sound.getBeatGrid()[x][y] == 0){
-				cvs[i].classList.remove("tone-selected");
-			} else {
-				cvs[i].classList.add("tone-selected");
+			var num: number = this.sound.getBeatGrid()[x][y];
+
+			if(num > 0){
+				var tone : HTMLElement = this.createLongTone(this.calculateLongToneWidth(num - 1,y));
+				cvs[i].appendChild(tone);
+				this.setPreview(x, y, num);
 			}
 		}
 	}
@@ -90,8 +96,11 @@ export class EditPage {
 
 	clearSound(){
 		this.sound.clearBeatGrid();
-		this.reloadGrid();
 		this.clearSmallGrid();
+
+		this.sound.fillBeatGridAtRandom();
+
+		this.reloadGrid();
 	}
 
 	clearSmallGrid(){
@@ -177,14 +186,33 @@ export class EditPage {
 		if(evt.deltaTime < this.deltaTime){
 			//if the delay between the click and the movement is above 300ms don't scroll but move the screen
 			//TODO: MAKE SURE IT WORKS WITH LONG PAUSES (e.g. through timestamps)
-			if (evt.deltaTime > 300){
+			if (evt.deltaTime > 200 && !(evt.target.classList.contains("beatgrid") || evt.target.classList.contains("beatrow"))){
 				this.isScrolling = false;
 			} else {
 				this.isScrolling = true;
 			}
 			//get the current translation of the main beatgrid to be able to move it accordingly.
 			this.translation = parseInt(this.beatgrid.style.transform.slice(10).split("vw")[0]);
-			//TODO: save the relative X of the start of the event relative to the parent element
+			
+			if(!this.isScrolling){
+				//save the relative X of the start of the event relative to the parent element
+				//get middle x coordinate of the parent element1
+				var middleX: number = evt.target.getBoundingClientRect().left + (evt.target.offsetWidth / 2);
+				//get starting point of the users click
+				var startX: number = evt.center.x - evt.deltaX;
+
+				this.relativeX = startX - middleX;
+			}
+
+			this.orignalTarget = evt.target;				
+			this.wasEmpty = true;
+
+			if (evt.target.classList.contains("tone-long")){
+				this.wasEmpty = false;
+				this.orignalTarget = this.orignalTarget.parentElement;
+			}
+			console.log(evt.target.classList, this.isScrolling);
+
 		}
 		this.deltaTime = evt.deltaTime;
 
@@ -201,18 +229,75 @@ export class EditPage {
 			var prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 
 			this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
+		} 
 
+		//TODO: Make sure already existing ones get overridden!
+		else {						// if the current pan gesture is a drawing gesture, create the new tones
+			var tone:HTMLElement = <HTMLElement> evt.target;
+			//if the target is a long one, get the actual target
+			if (tone.classList.contains("tone-long")){
+				var tmp = tone;
+				tone = tone.parentElement;
+			}
+			//if it already has a long one inside of it, remove it
+			if (tone.children.length > 0 && tone.classList.contains("tone")){
+				tone.removeChild(tone.children[0]);
+				this.setPreview(+tone.id.split("-")[0],+tone.id.split("-")[1], 0);
+			}
 
+			//calculate passed tones
+			var y: number = +this.orignalTarget.id.split("-")[1];
+			var passedTones = Math.floor(((this.relativeX + evt.deltaX) / this.vw) / 11.1);	//11.1vw is the width of one tone + one side of the margin	
+			if(passedTones < 0)
+				passedTones++;
 
-		} else {					// if the current pan gesture is a drawing gesture, create the new tones
+			//if we pass a gap, wait longer.
+			if (Math.floor((y + passedTones) / 8) != Math.floor(y / 8)){
+				passedTones = Math.floor(((this.relativeX + evt.deltaX - (Math.sign(evt.deltaX) * 9 * this.vw)) / this.vw) / 11.1);
+			}
+
+			//if we are at one of the ends, cut it short
+			if (y+passedTones < 0){
+				passedTones = -y;
+			} else if (y+passedTones >= 32){
+				passedTones = 31 - y;
+			}
+
+			//remove obsolete divs
+			if(this.previousPassedTones < passedTones && Math.sign(this.previousPassedTones) < 0){
+				var target: HTMLElement = this.orignalTarget;
+				for(var i: number = this.previousPassedTones; i < 0; i++){
+					if(target.previousElementSibling != null){
+						target = <HTMLElement> target.previousElementSibling;
+						if(target.children.length > 0 && target.classList.contains("tone"))
+							target.removeChild(target.children[0]);
+						this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1], 0);
+					}
+				}
+			}
+			this.previousPassedTones = passedTones;
 
 			// if it was an empty one originally
+			if(this.wasEmpty){
+				var target: HTMLElement = this.orignalTarget;
+				for(var i: number = passedTones; i < 0; i++){
+					if(target.previousElementSibling != null){
+						target = <HTMLElement> target.previousElementSibling;
+						if(target.children.length > 0)
+							target.removeChild(target.children[0]);
+						this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1], 0);
+					}
+				}
+				target.appendChild(this.createLongTone(this.calculateLongToneWidth(passedTones, y)));
+				this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1],Math.abs(passedTones)+1);
+			}
 
+			//if it was an occupied one originally change it's size
+			else {
+				
+			}
 
-
-			//if it was an occupied one originally
-
-
+			//console.log(passedTones);
 		}
 	}
 
@@ -228,9 +313,9 @@ export class EditPage {
 	}
 
 	calculateLongToneWidth(passedTones:number, y: number){
-		var width = 10 + 12 * (passedTones);
-		if (((y % 8) - ((y+passedTones)% 8 + 1) >= 0 ) || ((passedTones) / 8 >= 1)){
-			width += 9;
+		var width = 10 + 12 * Math.abs(passedTones);
+		if ((Math.floor(y / 8) != Math.floor((y+passedTones)/ 8) || ((passedTones) / 8 >= 1))){
+			width += 8;
 		}
 		return width;
 	}
