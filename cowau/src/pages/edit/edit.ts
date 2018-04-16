@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { Sound, SoundType } from '../../classes/sound';
+import { Sequence, SoundType } from '../../classes/sequence';
 import { NgForOf } from '@angular/common';
 
 
@@ -9,7 +9,7 @@ import { NgForOf } from '@angular/common';
 	templateUrl: 'edit.html',
 })
 export class EditPage {
-	sound: Sound;
+	sound: Sequence;
 	beatGrid: number[][];
 	tmpBeatGrid :number[][] = [];
 

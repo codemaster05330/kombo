@@ -1,4 +1,4 @@
-export class Sound {
+export class Sequence {
 	//ID of the sound to identify it uniquely. Randomly generated when newly created
 	id : number;
 
