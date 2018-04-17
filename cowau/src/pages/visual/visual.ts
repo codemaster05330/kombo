@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { GesturesService } from '../../services/gestures.service';
+import { AudioProvider } from '../../providers/audio/audio';
 
 
 @Component({

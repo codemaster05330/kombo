@@ -68,6 +68,7 @@ import { Variables } from '../classes/variables';
     HTTP,
     Variables,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    AudioProvider,
     AudioProvider
   ]
 })
