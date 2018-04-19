@@ -11,6 +11,7 @@ cowau/*.sublime-project
 cowau/*.sublime-workspace
 cowau/.vscode/
 cowau/npm-debug.log*
+cowau/src/app/app.component.ts
 
 cowau/.idea/
 cowau/.sourcemaps/
