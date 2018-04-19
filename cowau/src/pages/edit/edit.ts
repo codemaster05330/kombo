@@ -57,7 +57,7 @@ export class EditPage {
 		this.popover = new Popover(popoverCtrl);
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova') {
-				this.gesturesService.isFlipItGesture();
+				this.gesturesService.watchForGesture(false);
 			}
 		});
 

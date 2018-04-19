@@ -29,7 +29,7 @@ export class FlipitPage {
 		
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova') {
-				this.gesturesService.isFlipItGesture();
+				this.gesturesService.watchForGesture(false);
 			}
 		});
 
@@ -37,7 +37,7 @@ export class FlipitPage {
 			console.log('FLIPPED flipitpage');
 			this.popover.show(NewSoundPopoverPage, 2000);
 			setTimeout(() => {
-				this.gesturesService.stopFlipitWatch(this.events);
+				this.gesturesService.stopGestureWatch(this.events, ['flipped', 'thrown']);
 				this.navCtrl.setRoot(EditPage);
 			}, 500);
 		});

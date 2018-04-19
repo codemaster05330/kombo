@@ -10,67 +10,80 @@ import { DeviceMotion, DeviceMotionAccelerationData, DeviceMotionAccelerometerOp
 export class GesturesService {
 	devMotionSubscription:any;
 	gyroSubscription:any;
+
+	flipArray:Array<any> = new Array<any>();
+	throwArray:Array<any> = new Array<any>();
 	
 	constructor(public devMotion:DeviceMotion, public gyro:Gyroscope, public platform:Platform, public events:Events) {}
 
-	public isFlipItGesture(timeForGesture:number = 1500, frequency:number = 50) {
+	public watchForGesture(watchForThrow:boolean = true, timeForGesture:number = 1500, frequency:number = 50) {
 		let motionOpts:DeviceMotionAccelerometerOptions = {
 			frequency: frequency
 		}
 
 		let arraySize = timeForGesture / motionOpts.frequency;
 
-		let motionArray:Array<number> = new Array<number>();
-		let gyroArray:Array<number> = new Array<number>();
-
-		let flipArray:Array<any> = new Array<any>();
-
-		let gyroCheck:boolean = false;
-		
 		this.devMotionSubscription = this.devMotion.watchAcceleration(motionOpts).subscribe((acceleration:DeviceMotionAccelerationData) => {
-			let flipDown:boolean = false;
-			let flipUp:boolean = false;
-			let gyroDown:boolean = false;
-			let gyroUp:boolean = false;
+			this.isFlipItGesture(arraySize, acceleration);
 
-
-			if(flipArray.length == arraySize) {
-				flipArray = flipArray.slice(1);
+			if(watchForThrow) {
+				this.throwItGesture(arraySize, acceleration);
 			}
-
-			this.gyro.getCurrent().then((orientation) => {
-				flipArray.push({devmo_z: acceleration.z, gyro_y: orientation.y});
-
-				flipArray.forEach((value, index) => {
-					if(value.devmo_z < -8) {
-						flipDown = true;
-					}
-
-					if(value.devmo_z > 8) {
-						flipUp = true;
-					}
-
-					if(value.gyro_y > 4) {
-						gyroUp = true;
-					}
-					if (value.gyro_y < -4){
-						gyroDown = true;
-					}
-
-					if(flipDown && flipUp && gyroUp && gyroDown) {
-						flipDown = flipUp = gyroUp = gyroDown = false;
-						this.events.publish('flipped', acceleration);
-						flipArray = new Array<number>();
-					}
-				});
-			});
-			
-		
 		});
 	}
 
-	public stopFlipitWatch(ev:Events) {
-		ev.unsubscribe('flipped');
+	private isFlipItGesture(arraySize:number, acceleration:DeviceMotionAccelerationData) {
+		let flipDown:boolean = false;
+		let flipUp:boolean = false;
+		let flipGyroDown:boolean = false;
+		let flipGyroUp:boolean = false;
+
+
+		if(this.flipArray.length == arraySize) {
+			this.flipArray = this.flipArray.slice(1);
+		}
+
+		this.gyro.getCurrent().then((orientation:GyroscopeOrientation) => {
+			this.flipArray.push({devmo_z: acceleration.z, gyro_y: orientation.y});
+
+			this.flipArray.forEach((value, index) => {
+				if(value.devmo_z < -8) {
+					flipDown = true;
+				}
+
+				if(value.devmo_z > 8) {
+					flipUp = true;
+				}
+
+				if(value.gyro_y > 4) {
+					flipGyroUp = true;
+				}
+				if (value.gyro_y < -4){
+					flipGyroDown = true;
+				}
+
+
+				if(flipDown && flipUp && flipGyroUp && flipGyroDown) {
+					flipDown = flipUp = flipGyroUp = flipGyroDown = false;
+					this.events.publish('flipped', value);
+					this.flipArray = new Array<number>();
+				}
+			});
+		});
+	}
+
+	private throwItGesture(arraySize:number, acceleration:DeviceMotionAccelerationData) {
+		console.log('check for throwing');
+	}
+
+	public stopGestureWatch(ev:Events, name:string|Array<string>) {
+		if(typeof(name) === "string") {
+			ev.unsubscribe(name);
+		} else {
+			name.forEach((value) => {
+				ev.unsubscribe(value);
+			});
+		}
 		this.devMotionSubscription.unsubscribe();
 	}
 }
