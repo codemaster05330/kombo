@@ -24,7 +24,7 @@ export class FlipitPage {
 	motion_subscription: any;
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform, 
-		public popoverCtrl:PopoverController, public events:Events) {
+		public popoverCtrl:PopoverController, private events:Events) {
 		this.popover = new Popover(popoverCtrl);
 		
 		platform.ready().then((readySource) => {
@@ -34,13 +34,10 @@ export class FlipitPage {
 		});
 
 		events.subscribe('flipped', (acceleration) => {
-			console.log('FLIPPED');
+			console.log('FLIPPED flipitpage');
 			this.popover.show(NewSoundPopoverPage, 3000);
+			this.gesturesService.stopFlipitWatch(this.events);
 			this.navCtrl.setRoot(EditPage);
 		});
-	}
-
-	ionViewWillLeave() {
-		this.gesturesService.stopFlipitWatch();
 	}
 }

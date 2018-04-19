@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Platform, Events } from 'ionic-angular';
 
 //ionic native imports
-// import { Gyroscope, GyroscopeOptions, GyroscopeOrientation } from '@ionic-native/gyroscope';
+import { Gyroscope, GyroscopeOptions, GyroscopeOrientation } from '@ionic-native/gyroscope';
 import { DeviceMotion, DeviceMotionAccelerationData, DeviceMotionAccelerometerOptions } from '@ionic-native/device-motion';
 
 
@@ -10,13 +10,14 @@ import { DeviceMotion, DeviceMotionAccelerationData, DeviceMotionAccelerometerOp
 export class GesturesService {
 	devMotionSubscription:any;
 	
-	constructor(public devMotion:DeviceMotion, public platform:Platform, public events:Events) {}
+	constructor(public devMotion:DeviceMotion, public gyro:Gyroscope, public platform:Platform, public events:Events) {}
 
 	public isFlipItGesture() {
-		let treshold:number = 0.15;
 		let motion_opts:DeviceMotionAccelerometerOptions = {
 			frequency: 50
 		}
+
+		let time_for_gesture:number = 30;
 
 		let motion_array:Array<number> = new Array<number>();
 		
@@ -24,7 +25,7 @@ export class GesturesService {
 			let flip_down:boolean = false;
 			let start_top:boolean = false;
 
-			if(motion_array.length == 30) {
+			if(motion_array.length == time_for_gesture) {
 				motion_array = motion_array.slice(1);
 			}
 			
@@ -49,7 +50,8 @@ export class GesturesService {
 		});
 	}
 
-	public stopFlipitWatch() {
+	public stopFlipitWatch(ev:Events) {
+		ev.unsubscribe('flipped');
 		this.devMotionSubscription.unsubscribe();
 	}
 }
