@@ -35,21 +35,12 @@ export class FlipitPage {
 
 		events.subscribe('flipped', (acceleration) => {
 			console.log('FLIPPED');
-			this.popover.show(NewSoundPopoverPage, 6000);
-			this.navCtrl.push(EditPage);
+			this.popover.show(NewSoundPopoverPage, 3000);
+			this.navCtrl.setRoot(EditPage);
 		});
 	}
 
-	ionViewDidLoad() {
-		
-		// this.popover.show(ThrowItPopoverPage, 3000);
+	ionViewWillLeave() {
+		this.gesturesService.stopFlipitWatch();
 	}
-
-	// +++ Load popover on click event +++
-	// presentPopover(myEvent) {
-	// 	let popover = this.popoverCtrl.create(PopoverPage);
-	// 	popover.present({
-	// 		ev:myEvent
-	// 	});
-	// } 
 }

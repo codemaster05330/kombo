@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Platform, Events } from 'ionic-angular';
 
-// import { Observable } from 'rxjs/Observable';
-// import { Jsonp } from '@angular/http';
-
 //ionic native imports
 // import { Gyroscope, GyroscopeOptions, GyroscopeOrientation } from '@ionic-native/gyroscope';
 import { DeviceMotion, DeviceMotionAccelerationData, DeviceMotionAccelerometerOptions } from '@ionic-native/device-motion';
@@ -11,6 +8,7 @@ import { DeviceMotion, DeviceMotionAccelerationData, DeviceMotionAccelerometerOp
 
 @Injectable()
 export class GesturesService {
+	devMotionSubscription:any;
 	
 	constructor(public devMotion:DeviceMotion, public platform:Platform, public events:Events) {}
 
@@ -22,7 +20,7 @@ export class GesturesService {
 
 		let motion_array:Array<number> = new Array<number>();
 		
-		this.devMotion.watchAcceleration(motion_opts).subscribe((acceleration:DeviceMotionAccelerationData) => {
+		this.devMotionSubscription = this.devMotion.watchAcceleration(motion_opts).subscribe((acceleration:DeviceMotionAccelerationData) => {
 			let flip_down:boolean = false;
 			let start_top:boolean = false;
 
@@ -32,16 +30,16 @@ export class GesturesService {
 			
 			motion_array.push(acceleration.z);
 
-			if(motion_array[0] > 7) {
+			if(motion_array[0] > 8) {
 				start_top = true;
 			}
 			
 			motion_array.forEach((value, index) => {
-				if(value < -7) {
+				if(value < -8) {
 					flip_down = true;
 				}
 
-				if(value > 7 && flip_down && start_top) {
+				if(value > 8 && flip_down && start_top) {
 					flip_down = false;
 					this.events.publish('flipped', acceleration);
 					motion_array = new Array<number>();
@@ -49,6 +47,10 @@ export class GesturesService {
 				
 			});
 		});
+	}
+
+	public stopFlipitWatch() {
+		this.devMotionSubscription.unsubscribe();
 	}
 }
 

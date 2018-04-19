@@ -1,8 +1,13 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { Sequence, SoundType } from '../../classes/sequence';
 import { NgForOf } from '@angular/common';
+import { NavController, NavParams, PopoverController, Platform, Events } from 'ionic-angular';
 
+import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
+
+import { Sequence, SoundType } from '../../classes/sequence';
+import { Popover } from '../../classes/popover';
+
+import { GesturesService } from '../../services/gestures.service';
 
 @Component({
 	selector: 'page-edit',
@@ -32,8 +37,11 @@ export class EditPage {
 	orignalTarget: HTMLElement;
 	previousPassedTones: number;
 
+	popover:Popover;
 
-	constructor(public navCtrl: NavController, public navParams: NavParams) {
+
+	constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
+		private popoverCtrl:PopoverController) {
 		this.sound = new Sequence(SoundType.Bass);
 		this.sound.clearBeatGrid();
 		this.beatGrid = this.sound.getBeatGrid();
@@ -44,6 +52,23 @@ export class EditPage {
 				this.tmpBeatGrid[i][j] = 0;
 			}
 		}
+
+		//FLIP EVENT
+		this.popover = new Popover(popoverCtrl);
+		platform.ready().then((readySource) => {
+			if(readySource == 'cordova') {
+				this.gesturesService.isFlipItGesture();
+			}
+		});
+
+		events.subscribe('flipped', (acceleration) => {
+			console.log('FLIPPED');
+			this.popover.show(NewSoundPopoverPage, 3000);
+		});
+	}
+
+	ionViewWillLeave() {
+		this.gesturesService.stopFlipitWatch();
 	}
 
 	ionViewDidLoad() {
