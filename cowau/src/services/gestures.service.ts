@@ -12,38 +12,38 @@ export class GesturesService {
 	
 	constructor(public devMotion:DeviceMotion, public gyro:Gyroscope, public platform:Platform, public events:Events) {}
 
-	public isFlipItGesture() {
-		let motion_opts:DeviceMotionAccelerometerOptions = {
-			frequency: 50
+	public isFlipItGesture(timeForGesture:number = 1500, frequency:number = 50) {
+		let motionOpts:DeviceMotionAccelerometerOptions = {
+			frequency: frequency
 		}
 
-		let time_for_gesture:number = 30;
+		let arraySize = timeForGesture / motionOpts.frequency;
 
-		let motion_array:Array<number> = new Array<number>();
+		let motionArray:Array<number> = new Array<number>();
 		
-		this.devMotionSubscription = this.devMotion.watchAcceleration(motion_opts).subscribe((acceleration:DeviceMotionAccelerationData) => {
-			let flip_down:boolean = false;
-			let start_top:boolean = false;
+		this.devMotionSubscription = this.devMotion.watchAcceleration(motionOpts).subscribe((acceleration:DeviceMotionAccelerationData) => {
+			let flipDown:boolean = false;
+			let startTop:boolean = false;
 
-			if(motion_array.length == time_for_gesture) {
-				motion_array = motion_array.slice(1);
+			if(motionArray.length == arraySize) {
+				motionArray = motionArray.slice(1);
 			}
 			
-			motion_array.push(acceleration.z);
+			motionArray.push(acceleration.z);
 
-			if(motion_array[0] > 8) {
-				start_top = true;
+			if(motionArray[0] > 8) {
+				startTop = true;
 			}
 			
-			motion_array.forEach((value, index) => {
+			motionArray.forEach((value, index) => {
 				if(value < -8) {
-					flip_down = true;
+					flipDown = true;
 				}
 
-				if(value > 8 && flip_down && start_top) {
-					flip_down = false;
+				if(value > 8 && flipDown && startTop) {
+					flipDown = false;
 					this.events.publish('flipped', acceleration);
-					motion_array = new Array<number>();
+					motionArray = new Array<number>();
 				}
 				
 			});

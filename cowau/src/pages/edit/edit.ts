@@ -67,10 +67,6 @@ export class EditPage {
 		});
 	}
 
-	ionViewWillLeave() {
-		this.gesturesService.stopFlipitWatch();
-	}
-
 	ionViewDidLoad() {
 		this.beatgridWrapper = document.getElementById('beatgrid-wrapper');
 		this.beatgrid= document.getElementById('beatgrid');
