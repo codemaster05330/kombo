@@ -63,7 +63,7 @@ export class EditPage {
 
 		events.subscribe('flipped', (acceleration) => {
 			console.log('FLIPPED edit page');
-			this.popover.show(NewSoundPopoverPage, 3000);
+			this.popover.show(NewSoundPopoverPage, 2000);
 		});
 	}
 

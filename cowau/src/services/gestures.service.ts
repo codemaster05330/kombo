@@ -9,6 +9,7 @@ import { DeviceMotion, DeviceMotionAccelerationData, DeviceMotionAccelerometerOp
 @Injectable()
 export class GesturesService {
 	devMotionSubscription:any;
+	gyroSubscription:any;
 	
 	constructor(public devMotion:DeviceMotion, public gyro:Gyroscope, public platform:Platform, public events:Events) {}
 
@@ -20,33 +21,51 @@ export class GesturesService {
 		let arraySize = timeForGesture / motionOpts.frequency;
 
 		let motionArray:Array<number> = new Array<number>();
+		let gyroArray:Array<number> = new Array<number>();
+
+		let flipArray:Array<any> = new Array<any>();
+
+		let gyroCheck:boolean = false;
 		
 		this.devMotionSubscription = this.devMotion.watchAcceleration(motionOpts).subscribe((acceleration:DeviceMotionAccelerationData) => {
 			let flipDown:boolean = false;
-			let startTop:boolean = false;
+			let flipUp:boolean = false;
+			let gyroDown:boolean = false;
+			let gyroUp:boolean = false;
 
-			if(motionArray.length == arraySize) {
-				motionArray = motionArray.slice(1);
+
+			if(flipArray.length == arraySize) {
+				flipArray = flipArray.slice(1);
 			}
-			
-			motionArray.push(acceleration.z);
 
-			if(motionArray[0] > 8) {
-				startTop = true;
-			}
-			
-			motionArray.forEach((value, index) => {
-				if(value < -8) {
-					flipDown = true;
-				}
+			this.gyro.getCurrent().then((orientation) => {
+				flipArray.push({devmo_z: acceleration.z, gyro_y: orientation.y});
 
-				if(value > 8 && flipDown && startTop) {
-					flipDown = false;
-					this.events.publish('flipped', acceleration);
-					motionArray = new Array<number>();
-				}
-				
+				flipArray.forEach((value, index) => {
+					if(value.devmo_z < -8) {
+						flipDown = true;
+					}
+
+					if(value.devmo_z > 8) {
+						flipUp = true;
+					}
+
+					if(value.gyro_y > 4) {
+						gyroUp = true;
+					}
+					if (value.gyro_y < -4){
+						gyroDown = true;
+					}
+
+					if(flipDown && flipUp && gyroUp && gyroDown) {
+						flipDown = flipUp = gyroUp = gyroDown = false;
+						this.events.publish('flipped', acceleration);
+						flipArray = new Array<number>();
+					}
+				});
 			});
+			
+		
 		});
 	}
 

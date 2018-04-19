@@ -35,7 +35,7 @@ export class FlipitPage {
 
 		events.subscribe('flipped', (acceleration) => {
 			console.log('FLIPPED flipitpage');
-			this.popover.show(NewSoundPopoverPage, 3000);
+			this.popover.show(NewSoundPopoverPage, 2000);
 			setTimeout(() => {
 				this.gesturesService.stopFlipitWatch(this.events);
 				this.navCtrl.setRoot(EditPage);
