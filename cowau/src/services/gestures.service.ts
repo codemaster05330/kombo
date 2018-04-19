@@ -62,10 +62,9 @@ export class GesturesService {
 					flipGyroDown = true;
 				}
 
-
 				if(flipDown && flipUp && flipGyroUp && flipGyroDown) {
 					flipDown = flipUp = flipGyroUp = flipGyroDown = false;
-					this.events.publish('flipped', value);
+					this.sendEvent('flipped', value);
 					this.flipArray = new Array<number>();
 				}
 			});
@@ -73,7 +72,58 @@ export class GesturesService {
 	}
 
 	private throwItGesture(arraySize:number, acceleration:DeviceMotionAccelerationData) {
-		console.log('check for throwing');
+		if(this.throwArray.length == arraySize) {
+			this.throwArray = this.throwArray.slice(1);
+		}
+
+		this.throwArray.push(acceleration.x);
+
+		let startIndex = -1;
+		let startDir = '';
+		let endFor = false;
+
+		this.throwArray.forEach((value, index) => {
+			if(!endFor) {
+				if(value > 25) {
+					startDir = 'positive';
+					startIndex = index;
+					endFor = true;
+				}
+
+				if(value < -25) {
+					startDir = 'negative';
+					startIndex = index;
+					endFor = true;
+				}
+			}
+		});
+
+		if(startDir != '' && startIndex != -1) {
+			for(let i=startIndex; i<this.throwArray.length; i++) {
+				if(startDir == 'positive') {
+					if(this.throwArray[i] < -35) {
+						console.log(this.throwArray[i]);
+						console.log('throw gesture');
+						startDir = '';
+						startIndex = -1;
+						this.sendEvent('thrown', this.throwArray[i]);
+						this.throwArray = new Array<any>();
+						this.flipArray = new Array<any>();
+					}
+				}
+				if(startDir == 'negative') {
+					if(this.throwArray[i] > 35) {
+						console.log(this.throwArray[i]);
+						console.log('throw gesture');
+						startDir = '';
+						startIndex = -1;
+						this.sendEvent('thrown', this.throwArray[i]);
+						this.throwArray = new Array<any>();
+						this.flipArray = new Array<any>();
+					}
+				}
+			}
+		}
 	}
 
 	public stopGestureWatch(ev:Events, name:string|Array<string>) {
@@ -85,6 +135,10 @@ export class GesturesService {
 			});
 		}
 		this.devMotionSubscription.unsubscribe();
+	}
+
+	private sendEvent(name:string, value:any) {
+		this.events.publish(name, value);
 	}
 }
 

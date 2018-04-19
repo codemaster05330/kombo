@@ -42,4 +42,8 @@ export class FlipitPage {
 			}, 500);
 		});
 	}
+
+	public switchScreen() {
+		this.navCtrl.setRoot(EditPage);
+	}
 }

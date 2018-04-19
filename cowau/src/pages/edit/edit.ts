@@ -57,11 +57,15 @@ export class EditPage {
 		this.popover = new Popover(popoverCtrl);
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova') {
-				this.gesturesService.watchForGesture(false);
+				this.gesturesService.watchForGesture();
 			}
 		});
 
-		events.subscribe('flipped', (acceleration) => {
+		events.subscribe('thrown', (value) => {
+			console.log('thrown event');
+		})
+
+		events.subscribe('flipped', (value) => {
 			console.log('FLIPPED edit page');
 			this.popover.show(NewSoundPopoverPage, 2000);
 		});
