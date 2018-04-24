@@ -1,8 +1,7 @@
 {
-  "name": "cowau",
+  "name": "kom[bp]o",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "author": "Forschungsprojekt",
   "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",

@@ -49,7 +49,7 @@ export class GesturesService {
 		let flipUp:boolean = false;
 		let flipGyroDown:boolean = false;
 		let flipGyroUp:boolean = false;
-		let checkFlip:boolean = true;
+		let checkFlip:boolean = false;
 
 		if(this.flipArray.length == arraySize) {
 			this.acMedianX = medianOfArray(this.acMedianXarray);
@@ -80,7 +80,6 @@ export class GesturesService {
 			this.countAccelerationData++;
 
 			if(acceleration.z < (this.acMedianZ - this.stillStandingTreshold) || acceleration.z > (this.acMedianZ + this.stillStandingTreshold)) {
-
 				this.flipArray.forEach((value, index) => {
 					//check acceleration state
 					if(value.devmo.z < 2) {
@@ -100,13 +99,14 @@ export class GesturesService {
 					}
 					
 					//controll check
-					if(value.devmo.y > (this.acMedianY + this.stillStandingTreshold) || value.devmo.y < (this.acMedianY - this.stillStandingTreshold)) {
-						checkFlip = false;
+					if(value.devmo.y <= (this.acMedianY + this.stillStandingTreshold) && value.devmo.y >= (this.acMedianY - this.stillStandingTreshold)
+						&& value.devmo.x <= (this.acMedianX + this.stillStandingTreshold) && value.devmo.x >= (this.acMedianX - this.stillStandingTreshold)) {
+						checkFlip = true;
 					}
 
 					if(flipDown && flipUp && flipGyroUp && flipGyroDown && checkFlip) {
 						flipDown = flipUp = flipGyroUp = flipGyroDown = false;
-						checkFlip = true;
+						checkFlip = false;
 						this.sendEvent('flipped', value);
 						this.flipArray = new Array<number>();
 						this.countAccelerationData = 0;

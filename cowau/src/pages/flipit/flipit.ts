@@ -28,18 +28,18 @@ export class FlipitPage {
 		this.popover = new Popover(popoverCtrl);
 		
 		platform.ready().then((readySource) => {
-			if(readySource == 'cordova') {
+			if(readySource == 'cordova' || readySource == 'mobile') {
 				this.gesturesService.watchForGesture(false);
 			}
 		});
 
 		events.subscribe('flipped', (acceleration) => {
 			console.log('FLIPPED flipitpage');
-			this.popover.show(NewSoundPopoverPage, 2000);
+			this.popover.show(NewSoundPopoverPage, 1000);
 			setTimeout(() => {
-				this.gesturesService.stopGestureWatch(this.events, ['flipped', 'thrown']);
+				this.gesturesService.stopGestureWatch(this.events, 'flipped');
 				this.navCtrl.setRoot(EditPage);
-			}, 500);
+			}, 300);
 		});
 	}
 
