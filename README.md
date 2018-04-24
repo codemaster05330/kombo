@@ -12,9 +12,9 @@ Collaborative Web Audio – Master Project 2017/18 #collaboration #contribution
 ### The Kom[bp]o-App, a part of the installation 
 Screen | Description
 ------------ | -------------
-![Imgur](https://i.imgur.com/8wsdsAV.png) | Insert description here, please!
-![Imgur](https://i.imgur.com/a6dOQly.png) | Insert description here, please!
-![Imgur](https://i.imgur.com/DYEdWgj.png) | Insert description here, please!
-![Imgur](https://i.imgur.com/1qMxbY7.png) | Insert description here, please!
-![Imgur](https://i.imgur.com/b43mPgc.png) | Insert description here, please!
-![Imgur](https://i.imgur.com/rGJDf0H.png) | Insert description here, please!
+![Imgur](https://i.imgur.com/8wsdsAV.png?2) | Insert description here, please!
+![Imgur](https://i.imgur.com/a6dOQly.png?2) | Insert description here, please!
+![Imgur](https://i.imgur.com/DYEdWgj.png?2) | Insert description here, please!
+![Imgur](https://i.imgur.com/1qMxbY7.png?2) | Insert description here, please!
+![Imgur](https://i.imgur.com/b43mPgc.png?2) | Insert description here, please!
+![Imgur](https://i.imgur.com/rGJDf0H.png?2) | Insert description here, please!
