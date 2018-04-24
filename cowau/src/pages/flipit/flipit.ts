@@ -24,32 +24,26 @@ export class FlipitPage {
 	motion_subscription: any;
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform, 
-		public popoverCtrl:PopoverController, public events:Events) {
+		public popoverCtrl:PopoverController, private events:Events) {
 		this.popover = new Popover(popoverCtrl);
 		
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova') {
-				this.gesturesService.isFlipItGesture();
+				this.gesturesService.watchForGesture(false);
 			}
 		});
 
 		events.subscribe('flipped', (acceleration) => {
-			console.log('FLIPPED');
-			this.popover.show(NewSoundPopoverPage, 6000);
-			this.navCtrl.push(EditPage);
+			console.log('FLIPPED flipitpage');
+			this.popover.show(NewSoundPopoverPage, 2000);
+			setTimeout(() => {
+				this.gesturesService.stopGestureWatch(this.events, ['flipped', 'thrown']);
+				this.navCtrl.setRoot(EditPage);
+			}, 500);
 		});
 	}
 
-	ionViewDidLoad() {
-		
-		// this.popover.show(ThrowItPopoverPage, 3000);
+	public switchScreen() {
+		this.navCtrl.setRoot(EditPage);
 	}
-
-	// +++ Load popover on click event +++
-	// presentPopover(myEvent) {
-	// 	let popover = this.popoverCtrl.create(PopoverPage);
-	// 	popover.present({
-	// 		ev:myEvent
-	// 	});
-	// } 
 }

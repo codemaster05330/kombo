@@ -3,7 +3,7 @@
     <name>cowau</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://192.168.178.44:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -86,4 +86,5 @@
     <plugin name="cordova-plugin-gyroscope" spec="^0.1.4" />
     <plugin name="cordova-plugin-device-motion" spec="^1.2.5" />
     <allow-navigation href="http://141.28.128.55:8100" />
+    <allow-navigation href="http://192.168.178.44:8100" />
 </widget>
