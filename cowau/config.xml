@@ -1,9 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="io.ionic.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>cowau</name>
-    <description>An awesome Ionic/Cordova app.</description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content original-src="index.html" src="http://192.168.178.44:8100" />
+    <name>kom[bp]o</name>
+    <description>An app for a interactive sound installation.</description>
+    <author email="kathrin.fuhrer@hs-furtwangen.de">Kathrin Fuhrer</author>
+    <author email="sandra.kless@hs-furtwangen.de">Sandra Kleß</author>
+    <author email="lukas.scheuerle@hs-furtwangen.de">Lukas Scheuerle</author>
+    <author email="johannes.schiel@hs-furtwangen.de">Johannes Schiel</author>
+    <author email="patrick.schmid@hs-furtwangen.de">Patrick Schmid</author>
+    <author email="norbert.schnell@hs-furtwangen.de">Prof. Dr. Norbert Schnell</author>
+    <content original-src="index.html" src="http://141.28.129.27:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -87,4 +92,5 @@
     <plugin name="cordova-plugin-device-motion" spec="^1.2.5" />
     <allow-navigation href="http://141.28.128.55:8100" />
     <allow-navigation href="http://192.168.178.44:8100" />
+    <allow-navigation href="http://141.28.129.27:8100" />
 </widget>
