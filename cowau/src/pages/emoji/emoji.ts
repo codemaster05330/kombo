@@ -27,17 +27,8 @@ export class EmojiPage {
 	clickMe(evt: MouseEvent){
 		console.log(evt.currentTarget);
 		var elem: HTMLDivElement = <HTMLDivElement> evt.currentTarget;
-		
-		elem.classList.add("grayscale");
-		// console.log(elem.id);
-
 		this.globalVars.emojiID = Number(elem.id);
-
-		//$("div").addClass("grayscale");
-		
-
-
-    	this.navCtrl.push(FlipitPage);
+    	this.navCtrl.setRoot(FlipitPage);
     }
 }
 
