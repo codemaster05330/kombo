@@ -1,7 +1,19 @@
 page-flipit {
-	.video {
-		
+	.headline-container {
+		position: absolute;
+		z-index: 1000;
+		width: 100%;
 	}
 
+	.video-wrapper {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
+	}
+
+	.how-to-flip {
+		object-fit: cover !important;
+	}
 }
 

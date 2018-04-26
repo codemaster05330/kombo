@@ -6,8 +6,12 @@
 		And get your sound. 
 	</div>
 </div>
-
-<div class="video"></div>
+<div class="video-wrapper">
+	<video class="how-to-flip" #videoPlayer width="auto" height="100%" (click)="playVid()">
+		<source src="{{videoSource}}" type="video/mp4">
+	  	Your browser or device does not support the video tag.
+	</video>
+</div>
 <div class="bottom-bar"></div>
 <div class="background-pattern-dark"></div>
 
