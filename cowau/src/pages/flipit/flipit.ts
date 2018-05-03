@@ -43,7 +43,7 @@ export class FlipitPage {
 		
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
-				// this.gesturesService.watchForGesture(false);
+				this.gesturesService.watchForGesture(this.lookOfEvents);
 			}
 		});
 
@@ -62,7 +62,7 @@ export class FlipitPage {
 		});
 	}
 
-	ionViewDidEnter() {
+	ionViewWillEnter() {
 		this.playVid();
 	}
 

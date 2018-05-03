@@ -58,12 +58,29 @@ export class EditPage {
 			}
 		}
 
-		//FLIP EVENT
+		//Start Gesture Events
 		this.popover = new Popover(popoverCtrl);
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
 				this.gesturesService.watchForGesture(this.lookOfEvents);
 			}
+		});
+		
+		//THROW
+		this.events.subscribe(GestureType.THROWN.toString(), (value) => {
+			console.log('thrown event');
+		});
+		
+		//FLIPPING
+		this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
+			// console.log('FLIPPED edit page');
+			this.popover.show(NewSoundPopoverPage, 1000);
+		});
+
+		//IDLE IN
+		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
+			this.navCtrl.setRoot(IdlePage);
+			this.gesturesService.stopGestureWatch(this.events, [GestureType.THROWN, GestureType.FLIPPED, GestureType.IDLE_IN]);
 		});
 	}
 
@@ -86,20 +103,6 @@ export class EditPage {
 		this.vw = (this.beatgridWrapper.offsetWidth / 100);
 
 		this.beatgrid.style.transform = "translate( -5vw , 0)";
-
-		this.events.subscribe(GestureType.THROWN.toString(), (value) => {
-			console.log('thrown event');
-		});
-
-		this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
-			console.log('FLIPPED edit page');
-			this.popover.show(NewSoundPopoverPage, 1000);
-		});
-
-		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
-			console.log('set idle mode');
-			this.navCtrl.setRoot(IdlePage);
-		});
 	}
 
 	reloadGrid(){

@@ -25,10 +25,12 @@ export class GesturesService {
 	countAccelerationData:number = 0;
 	countAccelerationDataForIdle:number = 0;
 	countAccelerationDataForMedian:number = 0;
+	countAccelerationDataForNoMoreIdle:number = 0;
 
 	flipArray:Array<any> = new Array<any>();
 	throwArray:Array<any> = new Array<any>();
 	goToIdleArray:Array<any> = new Array<any>();
+	outOfIdleArray:Array<any> = new Array<any>();
 
 	stillStandingTreshold:number = 3;
 	
@@ -44,15 +46,19 @@ export class GesturesService {
 		let timeTillIdle = 5000; //later 10000
 		let arraySizeIdle = timeTillIdle / motionOpts.frequency;
 
+		let timeOutOfIdle = 500;
+		let arraySizeIdleOut = timeOutOfIdle / motionOpts.frequency;
+
 		this.countAccelerationDataForIdle = 0;
 		this.countAccelerationDataForMedian = 0;
 		this.countAccelerationData = 0;
+		this.countAccelerationDataForNoMoreIdle = 0;
 
 		this.devMotionSubscription = this.devMotion.watchAcceleration(motionOpts).subscribe((acceleration:DeviceMotionAccelerationData) => {
 			this.getAccelerationMedianXYZ(acceleration, arraySize);
 			
 			if(watchForEvents.indexOf(GestureType.IDLE_OUT) != -1) {
-				this.noIdleMode(arraySize, acceleration);
+				this.noIdleMode(arraySizeIdleOut, acceleration);
 			}
 
 			if(watchForEvents.indexOf(GestureType.FLIPPED) != -1) {
@@ -72,7 +78,22 @@ export class GesturesService {
 	}
 
 	private noIdleMode(arraySize:number, acceleration:DeviceMotionAccelerationData) {
-		// console.log('go out of Idel');
+		let xTreshold = 1;
+		let yTreshold = 3;
+		let zTreshold = 3;
+
+		let outOfIdle:boolean = false;
+
+		if(	acceleration.x < (this.acMedianX - xTreshold) || acceleration.x > (this.acMedianX + xTreshold) ||
+			acceleration.y < (this.acMedianY - yTreshold) || acceleration.y > (this.acMedianY + yTreshold) ||
+			acceleration.z < (this.acMedianZ - zTreshold) || acceleration.z > (this.acMedianZ + zTreshold)) {
+			outOfIdle = true;
+		}
+
+		if(outOfIdle) {
+			this.sendEvent(GestureType.IDLE_OUT, acceleration);
+			outOfIdle = false;
+		}
 	}
 
 	private isFlipItGesture(arraySize:number, acceleration:DeviceMotionAccelerationData) {
@@ -104,22 +125,20 @@ export class GesturesService {
 						flipGyroDown = true;
 					}
 					
+					
 					//controll check
-					//&& value.devmo.x > (this.acMedianX + this.stillStandingTreshold) || value.devmo.x < (this.acMedianX - this.stillStandingTreshold)???
-					if(value.devmo.y > (this.acMedianY + this.stillStandingTreshold) || value.devmo.y < (this.acMedianY - this.stillStandingTreshold)
-						) {
-						// console.log(value.devmo.y, this.acMedianY + this.stillStandingTreshold);
-						checkFlip = false;
-					}
-
-					if(flipDown && flipUp && flipGyroUp && flipGyroDown && checkFlip) {
-						// flipDown = flipUp = flipGyroUp = flipGyroDown = false;
-						// checkFlip = false;
-						this.sendEvent(GestureType.FLIPPED, value);
-						this.flipArray = new Array<number>();
-						this.countAccelerationData = 0;
-					}
+					// if(value.devmo.y > (this.acMedianY + this.stillStandingTreshold) || value.devmo.y < (this.acMedianY - this.stillStandingTreshold)) {
+					// 	console.log(value.devmo.y, this.acMedianY);
+					// 	checkFlip = false;
+					// }
 				});
+
+				if(flipDown && flipUp && flipGyroUp && flipGyroDown) {
+					flipDown = flipUp = flipGyroDown = flipGyroUp = false;
+					this.sendEvent(GestureType.FLIPPED, acceleration);
+					this.flipArray = new Array<number>();
+					this.countAccelerationData = 0;
+				}
 			}
 		});
 	}
@@ -206,7 +225,7 @@ export class GesturesService {
 		if(this.goToIdleArray.length == arraySize) {
 			this.goToIdleArray.forEach((acc, index) => {
 				// console.log(acc.x, this.acMedianX);
-				console.log(index, acc.y, this.acMedianY);
+				// console.log(index, acc.y, this.acMedianY);
 				// console.log(acc.z, this.acMedianZ);
 
 				if(	acc.x < (this.acMedianX - xTreshold) || acc.x > (this.acMedianX + xTreshold) ||
