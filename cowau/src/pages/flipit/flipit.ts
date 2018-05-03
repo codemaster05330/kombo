@@ -1,10 +1,20 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, Platform, PopoverController, Events} from 'ionic-angular';
-import { Popover } from '../../classes/popover';
-import { GesturesService } from '../../services/gestures.service';
+
+//pages
+import { EditPage } from '../edit/edit';
+import { IdlePage } from '../idle/idle';
+
+//popovers
 import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
 import { ThrowItPopoverPage } from '../../throwit-popover/throwit-popover';
-import { EditPage } from '../edit/edit';
+
+//services
+import { GesturesService } from '../../services/gestures.service';
+
+//classes
+import { Popover } from '../../classes/popover';
+import { GestureType } from '../../classes/gesture-type';
 
 
 /**
@@ -23,6 +33,7 @@ export class FlipitPage {
 	popover:Popover;
 	motion_subscription: any;
 	videoSource:string = '../../assets/anim/flipit_android.mp4';
+	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.IDLE_IN];
 
 	@ViewChild('videoPlayer') videoplayer: any;
 
@@ -32,21 +43,26 @@ export class FlipitPage {
 		
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
-				// this.gesturesService.watchForGesture(false);
+				this.gesturesService.watchForGesture(this.lookOfEvents);
 			}
 		});
 
-		events.subscribe('flipped', (acceleration) => {
+		events.subscribe(GestureType.FLIPPED.toString(), (acceleration) => {
 			console.log('FLIPPED flipitpage');
 			this.popover.show(NewSoundPopoverPage, 1000);
 			setTimeout(() => {
-				this.gesturesService.stopGestureWatch(this.events, 'flipped');
+				this.gesturesService.stopGestureWatch(this.events, [GestureType.FLIPPED, GestureType.IDLE_IN]);
 				this.navCtrl.setRoot(EditPage);
 			}, 300);
 		});
+
+		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
+			this.gesturesService.stopGestureWatch(this.events, [GestureType.FLIPPED, GestureType.IDLE_IN]);
+			this.navCtrl.setRoot(IdlePage);
+		});
 	}
 
-	ionViewDidEnter() {
+	ionViewWillEnter() {
 		this.playVid();
 	}
 

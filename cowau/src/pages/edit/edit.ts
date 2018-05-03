@@ -2,11 +2,16 @@ import { Component } from '@angular/core';
 import { NgForOf } from '@angular/common';
 import { NavController, NavParams, PopoverController, Platform, Events } from 'ionic-angular';
 
+//pages
+import { IdlePage } from '../idle/idle';
 import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
 
+//classes
 import { Sequence, SoundType } from '../../classes/sequence';
 import { Popover } from '../../classes/popover';
+import { GestureType } from '../../classes/gesture-type';
 
+//services
 import { GesturesService } from '../../services/gestures.service';
 
 @Component({
@@ -19,7 +24,6 @@ export class EditPage {
 	tmpBeatGrid :number[][] = [];
 
 	vw: number;
-
 
 	beatPreviewSlider: HTMLElement;
 	beatgridWrapperPreview: HTMLElement;
@@ -39,6 +43,7 @@ export class EditPage {
 
 	popover:Popover;
 
+	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN, GestureType.IDLE_IN];
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController) {
@@ -53,12 +58,29 @@ export class EditPage {
 			}
 		}
 
-		//FLIP EVENT
+		//Start Gesture Events
 		this.popover = new Popover(popoverCtrl);
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
-				this.gesturesService.watchForGesture();
+				this.gesturesService.watchForGesture(this.lookOfEvents);
 			}
+		});
+		
+		//THROW
+		this.events.subscribe(GestureType.THROWN.toString(), (value) => {
+			console.log('thrown event');
+		});
+		
+		//FLIPPING
+		this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
+			// console.log('FLIPPED edit page');
+			this.popover.show(NewSoundPopoverPage, 1000);
+		});
+
+		//IDLE IN
+		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
+			this.navCtrl.setRoot(IdlePage);
+			this.gesturesService.stopGestureWatch(this.events, [GestureType.THROWN, GestureType.FLIPPED, GestureType.IDLE_IN]);
 		});
 	}
 
@@ -81,15 +103,6 @@ export class EditPage {
 		this.vw = (this.beatgridWrapper.offsetWidth / 100);
 
 		this.beatgrid.style.transform = "translate( -5vw , 0)";
-
-		this.events.subscribe('thrown', (value) => {
-			console.log('thrown event');
-		});
-
-		this.events.subscribe('flipped', (value) => {
-			console.log('FLIPPED edit page');
-			this.popover.show(NewSoundPopoverPage, 1000);
-		});
 	}
 
 	reloadGrid(){
@@ -122,7 +135,7 @@ export class EditPage {
 		this.sound.clearBeatGrid();
 		this.clearSmallGrid();
 
-		this.sound.fillBeatGridAtRandom();
+		// this.sound.fillBeatGridAtRandom();
 
 		this.reloadGrid();
 	}
@@ -146,25 +159,31 @@ export class EditPage {
 	clickedTone(evt: MouseEvent){
 
 		var elem : HTMLDivElement = <HTMLDivElement> evt.target;
-		var x: number = +elem.id.split("-")[0];
-		var y: number = +elem.id.split("-")[1];
+		
 
 		if(elem.classList.contains("tone")){
+			var x: number = +elem.id.split("-")[0];
+			var y: number = +elem.id.split("-")[1];
 			this.sound.setBeatGridAtPos(x, y, 1);
 			this.setPreview(x, y, 1);
 			elem.appendChild(this.createLongTone());
 
 		} else if (elem.classList.contains("tone-long")) {
+			var x: number = +elem.parentElement.id.split("-")[0];
+			var y: number = +elem.parentElement.id.split("-")[1];
 			this.sound.setBeatGridAtPos(x, y, 0);
 			this.setPreview(parseInt(elem.parentElement.id.split("-")[0]), parseInt(elem.parentElement.id.split("-")[1]),0);
 			elem.parentElement.removeChild(elem);
 		}
+
+		this.deltaTime = 10000000;
 	}
 
 
 	//TODO: Prevent overlapping
 	//TODO: Account for measure gaps
 	panTone(evt: any){
+
 		/*var panLength :number = evt.deltaX;
 		var passedTones: number = Math.floor((panLength / this.vw) / 11.1);
 
@@ -235,7 +254,8 @@ export class EditPage {
 				this.wasEmpty = false;
 				this.orignalTarget = this.orignalTarget.parentElement;
 			}
-			console.log(evt.target.classList, this.isScrolling);
+			//console.log(this.orignalTarget);
+			this.previousPassedTones = 0;
 
 		}
 		this.deltaTime = evt.deltaTime;
@@ -255,29 +275,34 @@ export class EditPage {
 			this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
 		} 
 
-		//TODO: Make sure already existing ones get overridden!
+
 		else {						// if the current pan gesture is a drawing gesture, create the new tones
-			var tone:HTMLElement = <HTMLElement> evt.target;
-			//if the target is a long one, get the actual target
-			if (tone.classList.contains("tone-long")){
-				var tmp = tone;
-				tone = tone.parentElement;
-			}
-			//if it already has a long one inside of it, remove it
-			if (tone.children.length > 0 && tone.classList.contains("tone")){
-				tone.removeChild(tone.children[0]);
-				this.setPreview(+tone.id.split("-")[0],+tone.id.split("-")[1], 0);
-			}
+			// var tone:HTMLElement = <HTMLElement> evt.target;
+			// //if the target is a long one, get the actual target
+			// if (tone.classList.contains("tone-long")){
+			// 	var tmp = tone;
+			// 	tone = tone.parentElement;
+			// }
+			// //if it already has a long one inside of it, remove it
+			// if (tone.children.length > 0 && tone.classList.contains("tone")){
+			// 	tone.removeChild(tone.children[0]);
+			// 	this.setPreview(+tone.id.split("-")[0],+tone.id.split("-")[1], 0);
+			// }
 
 			//calculate passed tones
 			var y: number = +this.orignalTarget.id.split("-")[1];
+			var x: number = +this.orignalTarget.id.split("-")[0];
 			var passedTones = Math.floor(((this.relativeX + evt.deltaX) / this.vw) / 11.1);	//11.1vw is the width of one tone + one side of the margin	
 			if(passedTones < 0)
 				passedTones++;
 
 			//if we pass a gap, wait longer.
 			if (Math.floor((y + passedTones) / 8) != Math.floor(y / 8)){
-				passedTones = Math.floor(((this.relativeX + evt.deltaX - (Math.sign(evt.deltaX) * 9 * this.vw)) / this.vw) / 11.1);
+				if(evt.deltaX > 0)
+					passedTones = Math.floor(((this.relativeX + evt.deltaX - (Math.sign(evt.deltaX) * 9 * this.vw)) / this.vw) / 11.1);
+				else
+					passedTones = Math.floor(((this.relativeX + evt.deltaX - (Math.sign(evt.deltaX) * 9 * this.vw * 2)) / this.vw) / 11.1);
+				//console.log("tones " + passedTones);
 			}
 
 			//if we are at one of the ends, cut it short
@@ -287,7 +312,8 @@ export class EditPage {
 				passedTones = 31 - y;
 			}
 
-			//remove obsolete divs
+
+			//remove obsolete divs from left
 			if(this.previousPassedTones < passedTones && Math.sign(this.previousPassedTones) < 0){
 				var target: HTMLElement = this.orignalTarget;
 				for(var i: number = this.previousPassedTones; i < 0; i++){
@@ -296,6 +322,7 @@ export class EditPage {
 						if(target.children.length > 0 && target.classList.contains("tone"))
 							target.removeChild(target.children[0]);
 						this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1], 0);
+						this.sound.setBeatGridAtPos(+target.id.split("-")[0],+target.id.split("-")[1], 0);
 					}
 				}
 			}
@@ -304,16 +331,51 @@ export class EditPage {
 			// if it was an empty one originally
 			if(this.wasEmpty){
 				var target: HTMLElement = this.orignalTarget;
-				for(var i: number = passedTones; i < 0; i++){
+				if(target.children.length > 0)
+					target.removeChild(target.children[0]);
+				// this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1], 0);
+				// this.sound.setBeatGridAtPos(+target.id.split("-")[0],+target.id.split("-")[1], 0);
+
+				//prevent drawing over notes to the left
+				var beatGrid = this.sound.getBeatGrid();
+				for(var i: number = 0; i <= y; i++){
+					console.log(beatGrid[x][i] + i , y + passedTones);
+					// if(beatGrid[x][i] + i < y + passedTones){
+					// 	passedTones = y - beatGrid[x][i] + i;
+					// }
+				}
+
+				//remove additionally added tones
+				for(var i: number = 0; i < 32; i++){
 					if(target.previousElementSibling != null){
+						console.log(target.id);
 						target = <HTMLElement> target.previousElementSibling;
-						if(target.children.length > 0)
+						if(target.children.length > 0){
 							target.removeChild(target.children[0]);
-						this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1], 0);
+						}
+						// this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1], 0);
+						// this.sound.setBeatGridAtPos(+target.id.split("-")[0],+target.id.split("-")[1], 0);
 					}
 				}
+				//prevent drawing over notes to the right
+				var tmp: HTMLElement = target; 
+				for(var i: number = 0; i < passedTones; i++){
+					if(tmp.nextElementSibling != null){
+						tmp = <HTMLElement> tmp.nextElementSibling;
+						if(tmp.children.length > 0){
+							//tmp.removeChild(tmp.children[0])
+							passedTones = i;
+							console.log(passedTones, i);
+							break;
+						}
+						this.setPreview(+tmp.id.split("-")[0],+tmp.id.split("-")[1], 0);
+						this.sound.setBeatGridAtPos(+tmp.id.split("-")[0],+tmp.id.split("-")[1], 0);
+					}
+				}
+
 				target.appendChild(this.createLongTone(this.calculateLongToneWidth(passedTones, y)));
 				this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1],Math.abs(passedTones)+1);
+				this.sound.setBeatGridAtPos(+target.id.split("-")[0],+target.id.split("-")[1], Math.abs(passedTones) + 1);
 			}
 
 			//if it was an occupied one originally change it's size
@@ -380,6 +442,7 @@ export class EditPage {
 
 				if(length == 0){
 					this.beatgridPreview[i].classList.remove("tone-selected-preview");
+					// console.log(this.beatgridPreview[i].id)
 					break;
 				} else if (length == 1){
 					this.beatgridPreview[i].classList.add("tone-selected-preview");
@@ -389,8 +452,8 @@ export class EditPage {
 					var longtonePrev: HTMLElement = document.createElement("div");
 					longtonePrev.classList.add("tone-long-preview");
 					var divLength = 2 + 2.6 * (length-1);
-					if (((y % 8) - ((y+length-1)% 8) >= 0 ) || (length / 8 >= 1)){
-						divLength += 1.1;
+					if (Math.floor(y / 8) != Math.floor((y+length-1)/ 8)){
+						divLength += 0.8;
 					}
 					longtonePrev.style.width = divLength +"vw";
 					this.beatgridPreview[i].appendChild(longtonePrev);
