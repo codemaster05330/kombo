@@ -110,7 +110,7 @@ export class GesturesService {
 				// console.log('flip');
 				this.flipArray.forEach((value, index) => {
 					//check acceleration state
-					if(value.devmo.z < -4) {
+					if(value.devmo.z < -8) {
 						flipDown = true;
 					}
 					if(value.devmo.z > 8) {

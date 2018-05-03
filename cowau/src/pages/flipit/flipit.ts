@@ -50,8 +50,8 @@ export class FlipitPage {
 		events.subscribe(GestureType.FLIPPED.toString(), (acceleration) => {
 			console.log('FLIPPED flipitpage');
 			this.popover.show(NewSoundPopoverPage, 1000);
+			this.gesturesService.stopGestureWatch(this.events, [GestureType.FLIPPED, GestureType.IDLE_IN]);
 			setTimeout(() => {
-				this.gesturesService.stopGestureWatch(this.events, [GestureType.FLIPPED, GestureType.IDLE_IN]);
 				this.navCtrl.setRoot(EditPage);
 			}, 300);
 		});
