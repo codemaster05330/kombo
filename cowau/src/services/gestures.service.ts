@@ -11,8 +11,20 @@ export class GesturesService {
 	devMotionSubscription:any;
 	gyroSubscription:any;
 
+	acMedianXarray:Array<number> = new Array<number>();
+	acMedianYarray:Array<number> = new Array<number>();
+	acMedianZarray:Array<number> = new Array<number>();
+
+	acMedianX:number = 0;
+	acMedianY:number = 2;
+	acMedianZ:number = 9.81;
+
+	countAccelerationData:number = 0;
+
 	flipArray:Array<any> = new Array<any>();
 	throwArray:Array<any> = new Array<any>();
+
+	stillStandingTreshold:number = 1;
 	
 	constructor(public devMotion:DeviceMotion, public gyro:Gyroscope, public platform:Platform, public events:Events) {}
 
@@ -24,11 +36,15 @@ export class GesturesService {
 		let arraySize = timeForGesture / motionOpts.frequency;
 
 		this.devMotionSubscription = this.devMotion.watchAcceleration(motionOpts).subscribe((acceleration:DeviceMotionAccelerationData) => {
+			this.getAccelerationMerianXYZ(acceleration, arraySize);
+
 			this.isFlipItGesture(arraySize, acceleration);
 
 			if(watchForThrow) {
 				this.throwItGesture(arraySize, acceleration);
 			}
+			
+			this.countAccelerationData++;
 		});
 	}
 
@@ -37,37 +53,50 @@ export class GesturesService {
 		let flipUp:boolean = false;
 		let flipGyroDown:boolean = false;
 		let flipGyroUp:boolean = false;
-
+		let checkFlip:boolean = false;
 
 		if(this.flipArray.length == arraySize) {
 			this.flipArray = this.flipArray.slice(1);
 		}
 
+		// console.log('MEDIAN Z: ' + this.acMedianZ);
+
 		this.gyro.getCurrent().then((orientation:GyroscopeOrientation) => {
-			this.flipArray.push({devmo_z: acceleration.z, gyro_y: orientation.y});
+			this.flipArray[this.countAccelerationData] = {devmo: acceleration, gyro: orientation};
 
-			this.flipArray.forEach((value, index) => {
-				if(value.devmo_z < -8) {
-					flipDown = true;
-				}
+			if(acceleration.z < (this.acMedianZ - this.stillStandingTreshold) || acceleration.z > (this.acMedianZ + this.stillStandingTreshold)) {
+				this.flipArray.forEach((value, index) => {
+					//check acceleration state
+					if(value.devmo.z < -4) {
+						flipDown = true;
+					}
+					if(value.devmo.z > 8) {
+						flipUp = true;
+					}
 
-				if(value.devmo_z > 8) {
-					flipUp = true;
-				}
+					//check gyro state
+					if(value.gyro.y > 4) {
+						flipGyroUp = true;
+					}
+					if(value.gyro.y < -4){
+						flipGyroDown = true;
+					}
+					
+					//controll check
+					if(value.devmo.y <= (this.acMedianY + this.stillStandingTreshold) && value.devmo.y >= (this.acMedianY - this.stillStandingTreshold)
+						&& value.devmo.x <= (this.acMedianX + this.stillStandingTreshold) && value.devmo.x >= (this.acMedianX - this.stillStandingTreshold)) {
+						checkFlip = true;
+					}
 
-				if(value.gyro_y > 4) {
-					flipGyroUp = true;
-				}
-				if (value.gyro_y < -4){
-					flipGyroDown = true;
-				}
-
-				if(flipDown && flipUp && flipGyroUp && flipGyroDown) {
-					flipDown = flipUp = flipGyroUp = flipGyroDown = false;
-					this.sendEvent('flipped', value);
-					this.flipArray = new Array<number>();
-				}
-			});
+					if(flipDown && flipUp && flipGyroUp && flipGyroDown && checkFlip) {
+						flipDown = flipUp = flipGyroUp = flipGyroDown = false;
+						checkFlip = false;
+						this.sendEvent('flipped', value);
+						this.flipArray = new Array<number>();
+						this.countAccelerationData = 0;
+					}
+				});
+			}
 		});
 	}
 
@@ -76,7 +105,7 @@ export class GesturesService {
 			this.throwArray = this.throwArray.slice(1);
 		}
 
-		this.throwArray.push(acceleration.x);
+		this.throwArray[this.countAccelerationData] = acceleration.x;
 
 		let startIndex = -1;
 		let startDir = '';
@@ -84,13 +113,12 @@ export class GesturesService {
 
 		this.throwArray.forEach((value, index) => {
 			if(!endFor) {
-				if(value > 25) {
+				if(value > 15) {
 					startDir = 'positive';
 					startIndex = index;
 					endFor = true;
 				}
-
-				if(value < -25) {
+				if(value < -15) {
 					startDir = 'negative';
 					startIndex = index;
 					endFor = true;
@@ -108,7 +136,9 @@ export class GesturesService {
 						startIndex = -1;
 						this.sendEvent('thrown', this.throwArray[i]);
 						this.throwArray = new Array<any>();
-						this.flipArray = new Array<any>();
+						this.flipArray = new Array<number>();
+
+						this.countAccelerationData = 0;
 					}
 				}
 				if(startDir == 'negative') {
@@ -119,7 +149,9 @@ export class GesturesService {
 						startIndex = -1;
 						this.sendEvent('thrown', this.throwArray[i]);
 						this.throwArray = new Array<any>();
-						this.flipArray = new Array<any>();
+						this.flipArray = new Array<number>();
+
+						this.countAccelerationData = 0;
 					}
 				}
 			}
@@ -140,6 +172,41 @@ export class GesturesService {
 	private sendEvent(name:string, value:any) {
 		this.events.publish(name, value);
 	}
+
+	private getAccelerationMerianXYZ(acceleration:DeviceAcceleration, arraySize:number) {
+		if(this.acMedianXarray.length == arraySize) {
+			this.acMedianX = medianOfArray(this.acMedianXarray);
+			this.acMedianY = medianOfArray(this.acMedianYarray);
+			this.acMedianZ = medianOfArray(this.acMedianZarray);
+
+			this.acMedianXarray = this.acMedianXarray.slice(1);
+			this.acMedianYarray = this.acMedianYarray.slice(1);
+			this.acMedianZarray = this.acMedianZarray.slice(1);
+
+			this.countAccelerationData = 0;
+		}
+
+		this.acMedianXarray[this.countAccelerationData] = acceleration.x;
+		this.acMedianYarray[this.countAccelerationData] = acceleration.y;
+		this.acMedianZarray[this.countAccelerationData] = acceleration.z;
+	}
+}
+
+function medianOfArray(values:Array<number>):number {
+	let median:number;
+	let sortedArray:Array<number>;
+
+	sortedArray = values.sort();
+
+	//even or odd amount of values
+	if(sortedArray.length % 2 == 0) {
+		let halfAmount = sortedArray.length / 2;
+		median = 0.5 * (sortedArray[halfAmount] + sortedArray[(halfAmount + 1)]);
+	} else {
+		median = sortedArray[((sortedArray.length + 1) / 2)];
+	}
+
+	return median;
 }
 
 function roundFloat(num:number, precision:number) {

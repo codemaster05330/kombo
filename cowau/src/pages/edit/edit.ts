@@ -56,18 +56,9 @@ export class EditPage {
 		//FLIP EVENT
 		this.popover = new Popover(popoverCtrl);
 		platform.ready().then((readySource) => {
-			if(readySource == 'cordova') {
+			if(readySource == 'cordova' || readySource == 'mobile') {
 				this.gesturesService.watchForGesture();
 			}
-		});
-
-		events.subscribe('thrown', (value) => {
-			console.log('thrown event');
-		})
-
-		events.subscribe('flipped', (value) => {
-			console.log('FLIPPED edit page');
-			this.popover.show(NewSoundPopoverPage, 2000);
 		});
 	}
 
@@ -91,6 +82,14 @@ export class EditPage {
 
 		this.beatgrid.style.transform = "translate( -5vw , 0)";
 
+		this.events.subscribe('thrown', (value) => {
+			console.log('thrown event');
+		});
+
+		this.events.subscribe('flipped', (value) => {
+			console.log('FLIPPED edit page');
+			this.popover.show(NewSoundPopoverPage, 1000);
+		});
 	}
 
 	reloadGrid(){
