@@ -1,6 +1,34 @@
 // import { audioContext } from 'soundworks/client';
 
-class ClockSync {
+export class ClientClockSync {
+	_resolveStartPromise:any;
+	_resolveRestartPromise:any;
+	_listeners:any;
+	_errorListeners:any;
+	
+	_doublePingInterval:number;
+	_minPingPeriod:number;
+	_maxPingPeriod:number;
+	_pingCount:number;
+
+	_maxTravelDuration:number;
+	_syncTolerance:number;
+	_evenPingClientTime:number;
+	_evenPingServerTime:number;
+	_evenPingTravelDuration:number;
+	_evenPingCount:number;
+
+	_sync:boolean;
+	_pingCountAtSync:number;
+	_syncServerTime:any;
+	_syncClientTime:any;
+
+	_sendFunction:any;
+
+	_timeoutId:any;
+
+	audioContext; //################# wie übergeben??
+
 	constructor() {
 		this._resolveStartPromise = null;
 		this._resolveRestartPromise = null;
@@ -31,7 +59,7 @@ class ClockSync {
 	}
 
 	_pingLoop() {
-		const time = audioContext.currentTime;
+		const time = this.audioContext.currentTime;
 		this._sendFunction('clock-sync:ping', this._pingCount, time);
 
 		let interval;
@@ -47,7 +75,7 @@ class ClockSync {
 	}
 
 	_onPong(pingCount, pingTime, serverTime) {
-		const time = audioContext.currentTime;
+		const time = this.audioContext.currentTime;
 		const travelDuration = time - pingTime;
 		const clientTime = pingTime + 0.5 * travelDuration;
 		let error = null;
@@ -146,7 +174,7 @@ class ClockSync {
 	}
 
 	get syncTime() {
-		const time = audioContext.currentTime;
+		const time = this.audioContext.currentTime;
 		return this._syncServerTime + time - this._syncClientTime;
 	}
 
@@ -180,5 +208,3 @@ class ClockSync {
 			listener(error, errorDuration);
 	}
 }
-
-export default ClockSync;
