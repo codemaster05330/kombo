@@ -1,6 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, Platform, Events } from 'ionic-angular';
 import { GesturesService } from '../../services/gestures.service';
+
+//pages
+import { EmojiPage } from '../emoji/emoji';
+
+//classes
+import { GestureType } from '../../classes/gesture-type';
 
 @Component({
   selector: 'page-idle',
@@ -8,8 +14,22 @@ import { GesturesService } from '../../services/gestures.service';
 })
 
 export class IdlePage {
-    constructor(public navCtrl: NavController, public navParams: NavParams, private gestureService:GesturesService) {
-    	//gestureService.isFlipItGesture();
+	lookOfEvents:Array<GestureType> = [GestureType.IDLE_OUT];
+
+    constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, 
+    			private gesturesService:GesturesService) {
+    	platform.ready().then((readySource) => {
+			if(readySource == 'cordova' || readySource == 'mobile') {
+				this.gesturesService.watchForGesture(this.lookOfEvents);
+			}
+		});
+
+		events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
+			setTimeout(() => {
+				this.navCtrl.setRoot(EmojiPage);
+				this.gesturesService.stopGestureWatch(this.events, [GestureType.IDLE_OUT]);
+			}, 500);
+		});
     }
 
     ionViewDidLoad() {
