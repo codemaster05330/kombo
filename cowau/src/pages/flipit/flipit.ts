@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, Platform, PopoverController, Events} from 'ionic-angular';
 
 //pages
@@ -32,7 +32,10 @@ import { GestureType } from '../../classes/gesture-type';
 export class FlipitPage {
 	popover:Popover;
 	motion_subscription: any;
+	videoSource:string = '../../assets/anim/flipit_android.mp4';
 	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.IDLE_IN];
+
+	@ViewChild('videoPlayer') videoplayer: any;
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform, 
 		public popoverCtrl:PopoverController, private events:Events) {
@@ -40,7 +43,7 @@ export class FlipitPage {
 		
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
-				this.gesturesService.watchForGesture(this.lookOfEvents);
+				// this.gesturesService.watchForGesture(false);
 			}
 		});
 
@@ -59,7 +62,18 @@ export class FlipitPage {
 		});
 	}
 
-	public switchScreen() {
-		this.navCtrl.setRoot(EditPage);
+	ionViewDidEnter() {
+		this.playVid();
 	}
+
+	public switchScreen() {
+        this.navCtrl.setRoot(EditPage);
+	}
+
+	public playVid() {
+		console.log("video");
+		this.videoplayer.nativeElement.play();
+		this.videoplayer.nativeElement.loop = true;
+	}
+
 }
