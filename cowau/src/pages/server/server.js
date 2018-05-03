@@ -8,21 +8,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Component, Input } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, Platform } from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
+import { Sequence, SoundType } from '../../classes/sequence';
 var ServerPage = /** @class */ (function () {
-    function ServerPage(navCtrl, navParams, http) {
+    function ServerPage(navCtrl, navParams, http, platform) {
+        var _this = this;
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.http = http;
+        this.platform = platform;
         this.testMessage = "";
-        this.repeatMe();
+        platform.ready().then(function (readyState) {
+            if (readyState == 'cordova') {
+                console.log('cordova abailable');
+                setInterval(function () { _this.repeatMe(); }, 5000);
+            }
+        });
     }
     ServerPage.prototype.repeatMe = function () {
         console.log("repeat");
-        this.http.get();
+        var s = new Sequence(SoundType.Bass);
+        /*this.http.get('http://141.28.131.171:8080/posts', {}, {}).then(
+                (data) => {
+                    console.log(data.data);
+                }
+            );*/
         //Observable.
-        //setInterval(this.repeatMe(), 10000);
     };
     ServerPage.prototype.sendMessage = function () {
         console.log(this.testMessage);
@@ -48,7 +60,7 @@ var ServerPage = /** @class */ (function () {
             selector: 'page-server',
             templateUrl: 'server.html',
         }),
-        __metadata("design:paramtypes", [NavController, NavParams, HTTP])
+        __metadata("design:paramtypes", [NavController, NavParams, HTTP, Platform])
     ], ServerPage);
     return ServerPage;
 }());

@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { GesturesService } from '../../services/gestures.service';
-import { AudioProvider } from '../../providers/audio/audio';
-
+// import { AudioProvider } from '../../providers/audio/audio';
 
 @Component({
   selector: 'page-visual',
@@ -10,9 +9,48 @@ import { AudioProvider } from '../../providers/audio/audio';
 })
 
 export class VisualPage {
-    constructor(public navCtrl: NavController, public navParams: NavParams, private gestureService:GesturesService) {
-    	//gestureService.isFlipItGesture();
-    }
+
+    // Audio Provider Value and Controll elements
+    // This have to be in every page witch has to have audio playback
+    // public volume : any;
+    // public isPlaying : boolean  = false;
+    // public tracks : any         = [
+    //     {
+    //         name: '909-BD-hight',
+    //         track: '../../assets/sounds/909-BD-hight.wav'
+    //     }
+    // ];
+
+    constructor(
+        public navCtrl      : NavController,
+        public navParams    : NavParams,
+        // private _AUDIO      : AudioProvider
+    ) {}
+
+    // loadSound(track : string ) : void {
+    //     if(!this.isPlaying) {
+    //         this.triggerPlayback(track);
+    //     } else {
+    //         this.isPlaying = false;
+    //         this.stopPlayback();
+    //         this.triggerPlayback(track);
+    //     }
+    // }
+    //
+    // triggerPlayback(track : string) : void {
+    //     this._AUDIO.loadSound(track);
+    //     this.isPlaying = true;
+    // }
+    //
+    // changeVolume(volume : any) : void {
+    //     console.log(volume.value);
+    //     this._AUDIO.changeVolume(volume.value);
+    // }
+    //
+    // stopPlayback() : void {
+    //     this.isPlaying = false;
+    //     this._AUDIO.stopSound();
+    // }
 
     ionViewDidLoad() {
         initVisual();
@@ -25,7 +63,6 @@ export class VisualPage {
 // Create the Visual Screen Canvas
 
 function initVisual(){
-
 
     // Create a new sound element just for testing
     // this part of the code can be removed in the final version

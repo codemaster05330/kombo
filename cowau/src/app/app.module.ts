@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule, Popover } from 'ionic-angular';
 
+import { HttpModule } from '@angular/http';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Gyroscope } from '@ionic-native/gyroscope';
@@ -45,6 +46,7 @@ import { Variables } from '../classes/variables';
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
@@ -68,7 +70,6 @@ import { Variables } from '../classes/variables';
     HTTP,
     Variables,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    AudioProvider,
     AudioProvider
   ]
 })

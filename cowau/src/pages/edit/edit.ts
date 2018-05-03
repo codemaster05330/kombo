@@ -2,11 +2,16 @@ import { Component } from '@angular/core';
 import { NgForOf } from '@angular/common';
 import { NavController, NavParams, PopoverController, Platform, Events } from 'ionic-angular';
 
+//pages
+import { IdlePage } from '../idle/idle';
 import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
 
+//classes
 import { Sequence, SoundType } from '../../classes/sequence';
 import { Popover } from '../../classes/popover';
+import { GestureType } from '../../classes/gesture-type';
 
+//services
 import { GesturesService } from '../../services/gestures.service';
 
 @Component({
@@ -19,7 +24,6 @@ export class EditPage {
 	tmpBeatGrid :number[][] = [];
 
 	vw: number;
-
 
 	beatPreviewSlider: HTMLElement;
 	beatgridWrapperPreview: HTMLElement;
@@ -39,6 +43,7 @@ export class EditPage {
 
 	popover:Popover;
 
+	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN, GestureType.IDLE_IN];
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController) {
@@ -53,12 +58,29 @@ export class EditPage {
 			}
 		}
 
-		//FLIP EVENT
+		//Start Gesture Events
 		this.popover = new Popover(popoverCtrl);
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
-				this.gesturesService.watchForGesture();
+				this.gesturesService.watchForGesture(this.lookOfEvents);
 			}
+		});
+		
+		//THROW
+		this.events.subscribe(GestureType.THROWN.toString(), (value) => {
+			console.log('thrown event');
+		});
+		
+		//FLIPPING
+		this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
+			// console.log('FLIPPED edit page');
+			this.popover.show(NewSoundPopoverPage, 1000);
+		});
+
+		//IDLE IN
+		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
+			this.navCtrl.setRoot(IdlePage);
+			this.gesturesService.stopGestureWatch(this.events, [GestureType.THROWN, GestureType.FLIPPED, GestureType.IDLE_IN]);
 		});
 	}
 
@@ -81,15 +103,6 @@ export class EditPage {
 		this.vw = (this.beatgridWrapper.offsetWidth / 100);
 
 		this.beatgrid.style.transform = "translate( -5vw , 0)";
-
-		this.events.subscribe('thrown', (value) => {
-			console.log('thrown event');
-		});
-
-		this.events.subscribe('flipped', (value) => {
-			console.log('FLIPPED edit page');
-			this.popover.show(NewSoundPopoverPage, 1000);
-		});
 	}
 
 	reloadGrid(){
