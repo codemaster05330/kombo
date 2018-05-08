@@ -41,7 +41,8 @@ export class ServerMetricSync {
 	}
 
 	get syncTime() {
-		return this._clockSync.syncTime;
+		// return this._clockSync.syncTime;
+		return;
 	}
 
 	get metricPosition() {

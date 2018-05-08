@@ -5,6 +5,7 @@ import { NavController, NavParams, PopoverController, Platform, Events } from 'i
 //pages
 import { IdlePage } from '../idle/idle';
 import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
+import { ThrowItPopoverPage } from '../../throwit-popover/throwit-popover';
 
 //classes
 import { Sequence, SoundType } from '../../classes/sequence';
@@ -68,12 +69,12 @@ export class EditPage {
 		
 		//THROW
 		this.events.subscribe(GestureType.THROWN.toString(), (value) => {
-			console.log('thrown event');
+			// console.log('thrown event');
+			this.popover.show(ThrowItPopoverPage, 1000);
 		});
 		
 		//FLIPPING
 		this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
-			// console.log('FLIPPED edit page');
 			this.popover.show(NewSoundPopoverPage, 1000);
 		});
 

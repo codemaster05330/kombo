@@ -28,8 +28,8 @@ import { ServerPage } from '../pages/server/server';
 //services
 import { GesturesService } from '../services/gestures.service';
 
-import { ClientMetricSync } from '../services/metric-sync.client.service';
-import { ServerMetricSync } from '../services/metric-sync.server.service';
+// import { ClientMetricSync } from '../services/metric-sync.client.service';
+// import { ServerMetricSync } from '../services/metric-sync.server.service';
 
 //classes
 import { Variables } from '../classes/variables';
@@ -71,8 +71,9 @@ import { Variables } from '../classes/variables';
     GesturesService,
     Variables,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    ClientMetricSync,
-	ServerMetricSync
+ //    ClientMetricSync,
+	// ServerMetricSync
   ]
 })
 export class AppModule {}
+
