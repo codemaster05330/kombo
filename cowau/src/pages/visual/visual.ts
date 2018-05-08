@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { GesturesService } from '../../services/gestures.service';
-// import { AudioProvider } from '../../providers/audio/audio';
+// import { GesturesService } from '../../services/gestures.service';
 
 @Component({
   selector: 'page-visual',
@@ -10,47 +9,7 @@ import { GesturesService } from '../../services/gestures.service';
 
 export class VisualPage {
 
-    // Audio Provider Value and Controll elements
-    // This have to be in every page witch has to have audio playback
-    // public volume : any;
-    // public isPlaying : boolean  = false;
-    // public tracks : any         = [
-    //     {
-    //         name: '909-BD-hight',
-    //         track: '../../assets/sounds/909-BD-hight.wav'
-    //     }
-    // ];
-
-    constructor(
-        public navCtrl      : NavController,
-        public navParams    : NavParams,
-        // private _AUDIO      : AudioProvider
-    ) {}
-
-    // loadSound(track : string ) : void {
-    //     if(!this.isPlaying) {
-    //         this.triggerPlayback(track);
-    //     } else {
-    //         this.isPlaying = false;
-    //         this.stopPlayback();
-    //         this.triggerPlayback(track);
-    //     }
-    // }
-    //
-    // triggerPlayback(track : string) : void {
-    //     this._AUDIO.loadSound(track);
-    //     this.isPlaying = true;
-    // }
-    //
-    // changeVolume(volume : any) : void {
-    //     console.log(volume.value);
-    //     this._AUDIO.changeVolume(volume.value);
-    // }
-    //
-    // stopPlayback() : void {
-    //     this.isPlaying = false;
-    //     this._AUDIO.stopSound();
-    // }
+    constructor( public navCtrl: NavController, public navParams: NavParams) {}
 
     ionViewDidLoad() {
         initVisual();
