@@ -69,7 +69,6 @@ import { Variables } from '../classes/variables';
     Gyroscope,
     DeviceMotion,
     GesturesService,
-    HTTP,
     Variables,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ClientMetricSync,
