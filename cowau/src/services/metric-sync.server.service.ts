@@ -9,6 +9,8 @@ import { ServerMetricScheduler } from '../classes/sync-service/server.metric-sch
 // e.g. for soundworks
 //   broadcastFunction = (cmd, ...args) => this.broadcast(null, null, cmd, ...args);
 
+//zu allen clients eine message schicken: so dass, symetrisch mit der receive funktion der clients
+
 @Injectable()
 export class ServerMetricSync {
 	_clockSync:ServerClockSync;

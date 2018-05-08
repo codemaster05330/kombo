@@ -96,7 +96,7 @@ export class ClientMetricSync {
 	}
 
 	get metricPosition() {
-		return this._metricScheduler.position;
+		return this._metricScheduler.metricPosition;
 	}
 
 	getMetricPositionAtAudioTime(audioTime) {

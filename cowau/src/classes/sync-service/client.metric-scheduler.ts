@@ -46,7 +46,7 @@ class SyncSchedulerHook extends audio.TimeEngine {
 			this._nextPosition = nextPosition;
 			this._nextTime = syncTime;
 
-			this.resetTime(syncTime);
+			super.resetTime(syncTime);
 		}
 	}
 }
@@ -74,12 +74,12 @@ class NextRefEngine extends audio.TimeEngine {
 
 	set(ref) {
 		this._ref = ref;
-		this.resetTime(ref.syncTime);
+		super.resetTime(ref.syncTime);
 	}
 
 	reset(syncTime, metricPosition, tempo, tempoUnit, event) {
 		this._ref = null;
-		this.resetTime(Infinity);
+		super.resetTime(Infinity);
 	}
 }
 
@@ -92,6 +92,10 @@ class BeatEngine extends audio.TimeEngine {
 
 		this._metro = metro;
 		audioScheduler.add(this, Infinity);
+	}
+
+	resetTime(ref) {
+		super.resetTime(ref);
 	}
 
 	// generate next beat

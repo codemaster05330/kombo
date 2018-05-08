@@ -20,18 +20,6 @@ export class ServerMetricScheduler {
 		this._nextRef = null;
 	}
 
-	configure(options) {
-		const ref = this._ref;
-
-		if (options.tempo !== undefined)
-			ref.tempo = options.tempo;
-
-		if (options.tempoUnit !== undefined)
-			ref.tempoUnit = options.tempoUnit;
-
-		// super.configure(options); ################################## SCHNELL FRAGEN?
-	}
-
 	_updateRef() {
 		const currentSyncTime = this._clockSync.syncTime;
 		const nextRef = this._nextRef;

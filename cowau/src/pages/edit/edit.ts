@@ -136,8 +136,8 @@ export class EditPage {
 		this.clearSmallGrid();
 
 		// this.sound.fillBeatGridAtRandom();
-
 		this.reloadGrid();
+		// console.log(this.sound.getBeatGrid());
 	}
 
 	clearSmallGrid(){
@@ -314,13 +314,14 @@ export class EditPage {
 
 
 			//remove obsolete divs from left
-			if(this.previousPassedTones < passedTones && Math.sign(this.previousPassedTones) < 0){
+			if(this.previousPassedTones < 0){
 				var target: HTMLElement = this.orignalTarget;
 				for(var i: number = this.previousPassedTones; i < 0; i++){
 					if(target.previousElementSibling != null){
 						target = <HTMLElement> target.previousElementSibling;
-						if(target.children.length > 0 && target.classList.contains("tone"))
+						if(target.children.length > 0 && target.classList.contains("tone")){
 							target.removeChild(target.children[0]);
+						}
 						this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1], 0);
 						this.sound.setBeatGridAtPos(+target.id.split("-")[0],+target.id.split("-")[1], 0);
 					}
@@ -331,24 +332,28 @@ export class EditPage {
 			// if it was an empty one originally
 			if(this.wasEmpty){
 				var target: HTMLElement = this.orignalTarget;
-				if(target.children.length > 0)
+				if(target.children.length > 0){
 					target.removeChild(target.children[0]);
-				// this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1], 0);
-				// this.sound.setBeatGridAtPos(+target.id.split("-")[0],+target.id.split("-")[1], 0);
+				}
+				this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1], 0);
+				this.sound.setBeatGridAtPos(+target.id.split("-")[0],+target.id.split("-")[1], 0);
 
 				//prevent drawing over notes to the left
-				var beatGrid = this.sound.getBeatGrid();
-				for(var i: number = 0; i <= y; i++){
-					console.log(beatGrid[x][i] + i , y + passedTones);
-					// if(beatGrid[x][i] + i < y + passedTones){
-					// 	passedTones = y - beatGrid[x][i] + i;
-					// }
+				if(passedTones < 0){
+					var beatGrid = this.sound.getBeatGrid();
+					for(var i: number = 0; i < y - 1; i++){
+						if(i + beatGrid[x][i] > y + passedTones && beatGrid[x][i] > 0){
+							passedTones = (y - (beatGrid[x][i] + i)) * -1;
+							//set previous Passed Tones so it won't get removed anyways in the next iteration
+							this.previousPassedTones = passedTones;
+						}
+					}
 				}
 
-				//remove additionally added tones
-				for(var i: number = 0; i < 32; i++){
+				//remove additionally added tones & move target to the left if passedTones is negative
+				for(var i: number = passedTones; i < 0; i++){
 					if(target.previousElementSibling != null){
-						console.log(target.id);
+						// console.log(target.id);
 						target = <HTMLElement> target.previousElementSibling;
 						if(target.children.length > 0){
 							target.removeChild(target.children[0]);
@@ -357,6 +362,7 @@ export class EditPage {
 						// this.sound.setBeatGridAtPos(+target.id.split("-")[0],+target.id.split("-")[1], 0);
 					}
 				}
+
 				//prevent drawing over notes to the right
 				var tmp: HTMLElement = target; 
 				for(var i: number = 0; i < passedTones; i++){
@@ -365,7 +371,7 @@ export class EditPage {
 						if(tmp.children.length > 0){
 							//tmp.removeChild(tmp.children[0])
 							passedTones = i;
-							console.log(passedTones, i);
+							//console.log(passedTones, i);
 							break;
 						}
 						this.setPreview(+tmp.id.split("-")[0],+tmp.id.split("-")[1], 0);
@@ -373,6 +379,7 @@ export class EditPage {
 					}
 				}
 
+				// console.log(target.id);
 				target.appendChild(this.createLongTone(this.calculateLongToneWidth(passedTones, y)));
 				this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1],Math.abs(passedTones)+1);
 				this.sound.setBeatGridAtPos(+target.id.split("-")[0],+target.id.split("-")[1], Math.abs(passedTones) + 1);
