@@ -14,6 +14,7 @@ import { GestureType } from '../../classes/gesture-type';
 
 //services
 import { GesturesService } from '../../services/gestures.service';
+import { ClientMetricSync } from '../../services/metric-sync.client.service';
 
 @Component({
 	selector: 'page-edit',
@@ -45,9 +46,12 @@ export class EditPage {
 	popover:Popover;
 
 	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN, GestureType.IDLE_IN];
+	cursor: HTMLElement;
+	cursorPosition:number = 0;
+
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
-		private popoverCtrl:PopoverController) {
+		private popoverCtrl:PopoverController, private metricSync:ClientMetricSync) {
 		this.sound = new Sequence(SoundType.Bass);
 		this.sound.clearBeatGrid();
 		this.beatGrid = this.sound.getBeatGrid();
@@ -106,6 +110,41 @@ export class EditPage {
 		this.vw = (this.beatgridWrapper.offsetWidth / 100);
 
 		this.beatgrid.style.transform = "translate( -5vw , 0)";
+
+		this.cursor = document.getElementById('cursor');
+
+		//move the cursor every second.
+		//TODO: move this to the metric sync scheduler
+		// setInterval(() => {this.moveCursorNext();}, 250);
+		this.initMetrics();
+	}
+
+    initMetrics() {
+	    this.metricSync.start((cmd, ...args) => {}, (cmd, callback) => {}).then(() => {
+	      	this.metricSync.addMetronome((measure, beat) => {
+	        	this.moveCursorTo((measure % 4) * 8 + beat);
+	        	console.log('metro:', measure % 4, beat);
+	      	}, 8, 8);
+	    });
+    }
+
+	moveCursorNext(){
+		this.cursorPosition++;
+		if (this.cursorPosition >= 32){
+			this.cursorPosition = 0;
+		}
+
+		this.moveCursorTo(this.cursorPosition);
+	}
+
+	moveCursorTo(pos: number = 0){
+		if (pos < 0 || pos >= 32) return;
+		this.cursorPosition = pos;
+
+		var translation: number = this.cursorPosition * 12;
+		translation += Math.floor((this.cursorPosition) / 8) * 8;
+
+		this.cursor.style.transform = "translate(" + translation + "vw, 0px)";
 	}
 
 	reloadGrid(){
