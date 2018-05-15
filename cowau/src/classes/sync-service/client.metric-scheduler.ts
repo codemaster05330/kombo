@@ -307,6 +307,14 @@ export class ClientMetricScheduler {
 			receiveFunction('metric-scheduler:clear', this._onClear);
 		});
 
+		//@@@
+		this._onInit({
+			syncTime: 0,
+			metricPosition: 0,
+			tempo: 120,
+			tempoUnit: 1/4,
+		});
+
 		return promise;
 	}
 

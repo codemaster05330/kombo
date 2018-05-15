@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, Platform, Events } from 'ionic-angular';
+import { ClientMetricSync } from '../../services/metric-sync.client.service';
 
 import { Socket } from 'ng-socket-io';
 
@@ -20,7 +21,7 @@ export class IdlePage {
 	lookOfEvents:Array<GestureType> = [];
 
     constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private socket:Socket,
-    			private gesturesService:GesturesService) {
+    			private metricSync:ClientMetricSync, private gesturesService:GesturesService) {
     	platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
 				this.gesturesService.watchForGesture(this.lookOfEvents);
@@ -39,6 +40,7 @@ export class IdlePage {
 
     ionViewDidLoad() {
         initCircle();
+        this.initMetrics();
     }
 
     joinChat() {
@@ -50,6 +52,13 @@ export class IdlePage {
     	})
     }
 
+    initMetrics() {
+        this.metricSync.start((cmd, ...args) => {}, (cmd, callback) => {}).then(() => {
+          this.metricSync.addMetronome((measure, beat) => {
+              console.log('metro:', measure, beat);
+          }, 8, 8);
+        });
+    }
 }
 
 function initCircle(){

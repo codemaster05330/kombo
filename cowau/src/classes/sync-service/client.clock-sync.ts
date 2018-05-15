@@ -1,4 +1,6 @@
-// import { audioContext } from 'soundworks/client';
+import * as audio from 'waves-audio';
+
+const audioContext = audio.audioContext;
 
 export class ClientClockSync {
 	_resolveStartPromise:any;
@@ -26,8 +28,6 @@ export class ClientClockSync {
 	_sendFunction:any;
 
 	_timeoutId:any;
-
-	audioContext; //################# wie übergeben??
 
 	constructor() {
 		this._resolveStartPromise = null;
@@ -59,7 +59,7 @@ export class ClientClockSync {
 	}
 
 	_pingLoop() {
-		const time = this.audioContext.currentTime;
+		const time = audioContext.currentTime;
 		this._sendFunction('clock-sync:ping', this._pingCount, time);
 
 		let interval;
@@ -75,7 +75,7 @@ export class ClientClockSync {
 	}
 
 	_onPong(pingCount, pingTime, serverTime) {
-		const time = this.audioContext.currentTime;
+		const time = audioContext.currentTime;
 		const travelDuration = time - pingTime;
 		const clientTime = pingTime + 0.5 * travelDuration;
 		let error = null;
@@ -151,7 +151,12 @@ export class ClientClockSync {
 			this._pingLoop();
 		});
 
-		return promise;
+		//@@@
+		this._syncClientTime = 0;
+		this._syncServerTime = 0;
+
+		return Promise.resolve();
+		//@@@ return promise;
 	}
 
 	stop() {
@@ -174,7 +179,7 @@ export class ClientClockSync {
 	}
 
 	get syncTime() {
-		const time = this.audioContext.currentTime;
+		const time = audioContext.currentTime;
 		return this._syncServerTime + time - this._syncClientTime;
 	}
 
