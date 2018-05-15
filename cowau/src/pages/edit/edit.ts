@@ -38,7 +38,7 @@ export class EditPage {
 	relativeX: number;
 
 	wasEmpty: boolean = true;
-	orignalTarget: HTMLElement;
+	originalTarget: HTMLElement;
 	previousPassedTones: number;
 
 	popover:Popover;
@@ -176,7 +176,7 @@ export class EditPage {
 			elem.parentElement.removeChild(elem);
 		}
 
-		this.deltaTime = 10000000;
+		//this.deltaTime = 0;
 	}
 
 
@@ -226,9 +226,11 @@ export class EditPage {
 		}*/
 
 		//detect if a new pan has been started.
-		if(evt.deltaTime < this.deltaTime){
-			//if the delay between the click and the movement is above 300ms don't scroll but move the screen
-			//TODO: MAKE SURE IT WORKS WITH LONG PAUSES (e.g. through timestamps)
+		// if(evt.deltaTime < this.deltaTime){
+		// console.log(evt.timeStamp-evt.deltaTime, this.deltaTime);
+		if (evt.timeStamp - evt.deltaTime - 20 > this.deltaTime){
+			//if the delay between the click and the movement is above 200ms don't scroll but move the screen
+			//TODO: Haptic Feedback when passing the time threshold
 			if (evt.deltaTime > 200 && !(evt.target.classList.contains("beatgrid") || evt.target.classList.contains("beatrow"))){
 				this.isScrolling = false;
 			} else {
@@ -245,20 +247,36 @@ export class EditPage {
 				var startX: number = evt.center.x - evt.deltaX;
 
 				this.relativeX = startX - middleX;
+
 			}
 
-			this.orignalTarget = evt.target;				
+			this.originalTarget = evt.target;				
 			this.wasEmpty = true;
 
 			if (evt.target.classList.contains("tone-long")){
 				this.wasEmpty = false;
-				this.orignalTarget = this.orignalTarget.parentElement;
+				this.originalTarget = this.originalTarget.parentElement;
+				if(this.sound.getBeatGrid()[this.originalTarget.id.split("-")[0]][this.originalTarget.id.split("-")[0]] == 1){
+					//if clicked tone is a single long tone, remove that tone and revert to standard "new tone" procedure
+					this.wasEmpty = true;
+					this.sound.setBeatGridAtPos(+this.originalTarget.id.split("-")[0], +this.originalTarget.id.split("-")[0], 0);
+					this.setPreview(+this.originalTarget.id.split("-")[0], +this.originalTarget.id.split("-")[0], 0);
+					this.originalTarget.removeChild(this.originalTarget.children[0]);
+				} else {
+					//if clicked tone is a longer longtone, calculate which part of the note you were clicking on, specifically if it was
+					//the first beat, the last beat or any beat inbetween 
+					//TODO: calculate which "beat" I am starting my movement at
+					
+				}
+
+
+
 			}
-			//console.log(this.orignalTarget);
+			//console.log(this.originalTarget);
 			this.previousPassedTones = 0;
+			this.deltaTime = evt.timeStamp - evt.deltaTime;
 
 		}
-		this.deltaTime = evt.deltaTime;
 
 		
 		if(this.isScrolling){		//if the current pan gesture is a scroll gesture, move the screen
@@ -290,8 +308,8 @@ export class EditPage {
 			// }
 
 			//calculate passed tones
-			var y: number = +this.orignalTarget.id.split("-")[1];
-			var x: number = +this.orignalTarget.id.split("-")[0];
+			var y: number = +this.originalTarget.id.split("-")[1];
+			var x: number = +this.originalTarget.id.split("-")[0];
 			var passedTones = Math.floor(((this.relativeX + evt.deltaX) / this.vw) / 11.1);	//11.1vw is the width of one tone + one side of the margin	
 			if(passedTones < 0)
 				passedTones++;
@@ -315,7 +333,7 @@ export class EditPage {
 
 			//remove obsolete divs from left
 			if(this.previousPassedTones < 0){
-				var target: HTMLElement = this.orignalTarget;
+				var target: HTMLElement = this.originalTarget;
 				for(var i: number = this.previousPassedTones; i < 0; i++){
 					if(target.previousElementSibling != null){
 						target = <HTMLElement> target.previousElementSibling;
@@ -331,7 +349,7 @@ export class EditPage {
 
 			// if it was an empty one originally
 			if(this.wasEmpty){
-				var target: HTMLElement = this.orignalTarget;
+				var target: HTMLElement = this.originalTarget;
 				if(target.children.length > 0){
 					target.removeChild(target.children[0]);
 				}
@@ -341,7 +359,7 @@ export class EditPage {
 				//prevent drawing over notes to the left
 				if(passedTones < 0){
 					var beatGrid = this.sound.getBeatGrid();
-					for(var i: number = 0; i < y - 1; i++){
+					for(var i: number = 0; i < y; i++){
 						if(i + beatGrid[x][i] > y + passedTones && beatGrid[x][i] > 0){
 							passedTones = (y - (beatGrid[x][i] + i)) * -1;
 							//set previous Passed Tones so it won't get removed anyways in the next iteration
@@ -387,7 +405,7 @@ export class EditPage {
 
 			//if it was an occupied one originally change it's size
 			else {
-				
+				this.previousPassedTones = 0;
 			}
 
 			//console.log(passedTones);
