@@ -14,6 +14,7 @@ import { GestureType } from '../../classes/gesture-type';
 
 //services
 import { GesturesService } from '../../services/gestures.service';
+import { ClientMetricSync } from '../../services/metric-sync.client.service';
 
 @Component({
 	selector: 'page-edit',
@@ -50,7 +51,7 @@ export class EditPage {
 
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
-		private popoverCtrl:PopoverController) {
+		private popoverCtrl:PopoverController, private metricSync:ClientMetricSync) {
 		this.sound = new Sequence(SoundType.Bass);
 		this.sound.clearBeatGrid();
 		this.beatGrid = this.sound.getBeatGrid();
@@ -112,8 +113,18 @@ export class EditPage {
 
 		//move the cursor every second.
 		//TODO: move this to the metric sync scheduler
-		setInterval(() => {this.moveCursorNext();}, 250);
+		// setInterval(() => {this.moveCursorNext();}, 250);
+		this.initMetrics();
 	}
+
+    initMetrics() {
+	    this.metricSync.start((cmd, ...args) => {}, (cmd, callback) => {}).then(() => {
+	      	this.metricSync.addMetronome((measure, beat) => {
+	        	this.moveCursorTo((measure % 4) * 8 + beat);
+	        	console.log('metro:', measure % 4, beat);
+	      	}, 8, 8);
+	    });
+    }
 
 	moveCursorNext(){
 		this.cursorPosition++;
