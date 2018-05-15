@@ -8,7 +8,7 @@
     <author email="johannes.schiel@hs-furtwangen.de">Johannes Schiel</author>
     <author email="patrick.schmid@hs-furtwangen.de">Patrick Schmid</author>
     <author email="norbert.schnell@hs-furtwangen.de">Prof. Dr. Norbert Schnell</author>
-    <content original-src="index.html" src="http://141.28.130.138:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -96,4 +96,5 @@
     <allow-navigation href="http://192.3.2.113:8100" />
     <allow-navigation href="http://141.28.131.150:8100" />
     <allow-navigation href="http://141.28.130.138:8100" />
+    <allow-navigation href="http://141.28.128.5:8100" />
 </widget>

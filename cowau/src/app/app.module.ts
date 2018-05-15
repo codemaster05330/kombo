@@ -27,7 +27,9 @@ import { ServerPage } from '../pages/server/server';
 
 //services
 import { GesturesService } from '../services/gestures.service';
-import { AudioProvider } from '../providers/audio/audio';
+
+// import { ClientMetricSync } from '../services/metric-sync.client.service';
+// import { ServerMetricSync } from '../services/metric-sync.server.service';
 
 //classes
 import { Variables } from '../classes/variables';
@@ -67,10 +69,11 @@ import { Variables } from '../classes/variables';
     Gyroscope,
     DeviceMotion,
     GesturesService,
-    HTTP,
     Variables,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    AudioProvider
+ //    ClientMetricSync,
+	// ServerMetricSync
   ]
 })
 export class AppModule {}
+

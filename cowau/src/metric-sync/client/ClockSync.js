@@ -1,4 +1,4 @@
-import { audioContext } from 'soundworks/client';
+// import { audioContext } from 'soundworks/client';
 
 class ClockSync {
 	constructor() {
