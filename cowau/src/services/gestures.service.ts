@@ -33,6 +33,7 @@ export class GesturesService {
 	outOfIdleArray:Array<any> = new Array<any>();
 
 	throwTimeout:boolean = false;
+	idleOutTimeout:boolean = false;
 
 	stillStandingTreshold:number = 3;
 	
@@ -94,6 +95,7 @@ export class GesturesService {
 
 		if(outOfIdle) {
 			this.sendEvent(GestureType.IDLE_OUT, acceleration);
+			this.startIdleOutTimer();
 			outOfIdle = false;
 		}
 	}
@@ -139,7 +141,7 @@ export class GesturesService {
 					}
 				});
 
-				if(flipDown && flipUp && flipGyroUp && flipGyroDown && checkFlip) {
+				if(flipDown && flipUp && flipGyroUp && flipGyroDown && checkFlip && !this.idleOutTimeout) {
 					flipDown = flipUp = flipGyroDown = flipGyroUp = false;
 					this.sendEvent(GestureType.FLIPPED, acceleration);
 					this.flipArray = new Array<number>();
@@ -264,14 +266,8 @@ export class GesturesService {
 		
 	}
 
-	public stopGestureWatch(ev:Events, name:GestureType|Array<GestureType>) {
-		if(typeof(name) === "number") {
-			ev.unsubscribe(name.toString());
-		} else {
-			name.forEach((value) => {
-				ev.unsubscribe(value.toString());
-			});
-		}
+	public stopGestureWatch(ev:Events, name:GestureType) {
+		ev.unsubscribe(name.toString());
 		this.devMotionSubscription.unsubscribe();
 	}
 
@@ -304,6 +300,15 @@ export class GesturesService {
 	    setTimeout(() => {
 	    	this.throwTimeout = false;
 	    	console.log(this.throwTimeout);
+	    }, 2000);
+	}
+
+	private startIdleOutTimer() {
+		this.idleOutTimeout = true;
+		console.log(this.idleOutTimeout);
+	    setTimeout(() => {
+	    	this.idleOutTimeout = false;
+	    	console.log(this.idleOutTimeout);
 	    }, 2000);
 	}
 }

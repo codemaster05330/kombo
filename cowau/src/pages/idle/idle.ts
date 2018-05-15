@@ -17,7 +17,7 @@ import { GestureType } from '../../classes/gesture-type';
 })
 
 export class IdlePage {
-	lookOfEvents:Array<GestureType> = [];
+	lookOfEvents:Array<GestureType> = [GestureType.IDLE_OUT];
 
     constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private socket:Socket,
     			private gesturesService:GesturesService) {
@@ -29,12 +29,12 @@ export class IdlePage {
 
 		this.joinChat();
 
-		// events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
-		// 	setTimeout(() => {
-		// 		this.navCtrl.setRoot(EmojiPage);
-		// 		this.gesturesService.stopGestureWatch(this.events, [GestureType.IDLE_OUT]);
-		// 	}, 500);
-		// });
+		events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
+			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
+			setTimeout(() => {
+				this.navCtrl.setRoot(EmojiPage);
+			}, 500);
+		});
     }
 
     ionViewDidLoad() {
@@ -42,7 +42,6 @@ export class IdlePage {
     }
 
     joinChat() {
-    	console.log('join chat');
     	this.socket.connect();
     	this.socket.emit('set-nickname', 'KaFu');
     	this.socket.on('users-changed', (data) => {

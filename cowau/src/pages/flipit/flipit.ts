@@ -50,14 +50,16 @@ export class FlipitPage {
 		events.subscribe(GestureType.FLIPPED.toString(), (acceleration) => {
 			console.log('FLIPPED flipitpage');
 			this.popover.show(NewSoundPopoverPage, 1000);
-			this.gesturesService.stopGestureWatch(this.events, [GestureType.FLIPPED, GestureType.IDLE_IN]);
+			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
+			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			setTimeout(() => {
 				this.navCtrl.setRoot(EditPage);
 			}, 300);
 		});
 
 		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
-			this.gesturesService.stopGestureWatch(this.events, [GestureType.FLIPPED, GestureType.IDLE_IN]);
+			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
+			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			this.navCtrl.setRoot(IdlePage);
 		});
 	}

@@ -36,7 +36,7 @@ export class EmojiPage {
 			}
 		});
 		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
-			this.gesturesService.stopGestureWatch(this.events, [GestureType.IDLE_IN]);
+			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			this.navCtrl.setRoot(IdlePage);
 		});
 	}

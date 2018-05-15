@@ -81,7 +81,9 @@ export class EditPage {
 		//IDLE IN
 		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
 			this.navCtrl.setRoot(IdlePage);
-			this.gesturesService.stopGestureWatch(this.events, [GestureType.THROWN, GestureType.FLIPPED, GestureType.IDLE_IN]);
+			this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);
+			this.gesturesService.stopGestureWatch(this.events,  GestureType.FLIPPED);
+			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 		});
 	}
 
