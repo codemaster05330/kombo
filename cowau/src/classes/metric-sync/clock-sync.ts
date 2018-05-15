@@ -151,12 +151,7 @@ export class ClientClockSync {
 			this._pingLoop();
 		});
 
-		//@@@
-		this._syncClientTime = 0;
-		this._syncServerTime = 0;
-
-		return Promise.resolve();
-		//@@@ return promise;
+		return promise;
 	}
 
 	stop() {

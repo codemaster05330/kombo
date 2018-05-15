@@ -30,7 +30,7 @@ import { ServerPage } from '../pages/server/server';
 //services
 import { GesturesService } from '../services/gestures.service';
 
-import { ClientMetricSync } from '../services/metric-sync.client.service';
+import { ClientMetricSync } from '../services/metric-sync.service';
 // import { ServerMetricSync } from '../services/metric-sync.server.service';
 
 //classes

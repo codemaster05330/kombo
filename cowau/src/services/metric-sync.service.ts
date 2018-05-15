@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import * as audio from 'waves-audio';
-import { ClientClockSync } from '../classes/sync-service/client.clock-sync';
-import { ClientSyncScheduler} from '../classes/sync-service/client.sync-scheduler';
-import { ClientMetricScheduler } from '../classes/sync-service/client.metric-scheduler';
+import { ClientClockSync } from '../classes/metric-sync/clock-sync';
+import { ClientSyncScheduler} from '../classes/metric-sync/sync-scheduler';
+import { ClientMetricScheduler } from '../classes/metric-sync/metric-scheduler';
 
 const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();

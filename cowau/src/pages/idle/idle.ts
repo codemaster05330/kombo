@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, Platform, Events } from 'ionic-angular';
-import { ClientMetricSync } from '../../services/metric-sync.client.service';
+import { ClientMetricSync } from '../../services/metric-sync.service';
 
 import { Socket } from 'ng-socket-io';
 
@@ -11,6 +11,12 @@ import { EmojiPage } from '../emoji/emoji';
 
 //classes
 import { GestureType } from '../../classes/gesture-type';
+import { audioContext } from 'waves-audio';
+import { AudioBufferLoader } from 'waves-loaders';
+
+import * as audio from 'waves-audio';
+const audioContext = audio.audioContext;
+const audioScheduler = audio.getScheduler();
 
 @Component({
   selector: 'page-idle',
@@ -28,7 +34,6 @@ export class IdlePage {
 			}
 		});
 
-		this.joinChat();
 
 		// events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
 		// 	setTimeout(() => {
@@ -40,23 +45,49 @@ export class IdlePage {
 
     ionViewDidLoad() {
         initCircle();
-        this.initMetrics();
+
+        this.initServerConnection().then(() => {
+            this.initMetrics();
+        });
     }
 
-    joinChat() {
-    	console.log('join chat');
-    	this.socket.connect();
-    	this.socket.emit('set-nickname', 'KaFu');
-    	this.socket.on('users-changed', (data) => {
-    		console.log(JSON.stringify(data));
-    	})
+    initServerConnection() {
+        const socket = this.socket;
+
+    	socket.connect();
+    	socket.emit('request');
+
+        const promise = new Promise((resolve, reject) => {
+            socket.on('acknowledge', (data) => {
+                console.log('Connected to server!');
+                resolve();
+            });            
+        });
+
+        return promise;
     }
 
     initMetrics() {
-        this.metricSync.start((cmd, ...args) => {}, (cmd, callback) => {}).then(() => {
-          this.metricSync.addMetronome((measure, beat) => {
-              console.log('metro:', measure, beat);
-          }, 8, 8);
+        const socket = this.socket;
+        const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
+        const receiveFunction = (cmd, ...args) => socket.on(cmd, ...args);
+
+        const loader = new AudioBufferLoader();
+
+        loader.load(['assets/sounds/909-HH-closed.wav', 'assets/sounds/909-HH-open.wav'])
+        .then((buffers) => {
+            this.metricSync.start(sendFunction, receiveFunction).then(() => {
+                this.metricSync.addMetronome((measure, beat) => {
+                    const time = audioScheduler.currentTime;
+                    const src = audioContext.createBufferSource();
+                    src.connect(audioContext.destination);
+                    src.buffer = (beat !== 7) ? buffers[0] : buffers[1];
+                    src.start(time);
+                    console.log('metro:', measure, beat);
+                }, 8, 8);
+            });
+        }).catch(function(err) {
+            console.log("loader error:", err.message);
         });
     }
 }

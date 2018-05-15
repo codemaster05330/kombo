@@ -1,9 +1,8 @@
 import * as audio from 'waves-audio';
-
 const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
 
-import { ClientClockSync } from './client.clock-sync';
+import { ClientClockSync } from './clock-sync';
 
 class SyncTimeSchedulingQueue extends audio.SchedulingQueue {
 	_clockSync:ClientClockSync;

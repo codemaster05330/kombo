@@ -1,22 +1,42 @@
-let app = require('express')();
-let http = require('http').Server(app);
-let io = require('socket.io')(http);
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const MetricSync = require('./metric-sync/');
+
+const clients = new Set(); // set of connected clients
+
+// client data structure (may be helpful one day)
+class Client {
+	constructor(socket) {
+		this.socket = socket;
+		clients.add(this);
+	}
+
+	disconnect() {
+		clients.delete(this);
+	}
+}
+
+// create metric synth with broadcast function (sending to all connected clients)
+const broadcastFunction = (cmd, ...args) => io.emit(cmd, ...args);
+const metricSync = new MetricSync(broadcastFunction);
 
 io.on('connection', (socket) => {
+	const client = new Client(socket);
 
 	socket.on('disconnect', () => {
-		io.emit('users-changed', {user: socket.nickname, event: 'left'});
+		client.disconnect();
 	});
 
-	socket.on('set-nickname', (nickname) => {
-		socket.nickname = nickname;
-		console.log(socket.nickname + 'joined chat');
-		io.emit('users-changed', {user: nickname, event: 'joined'});
-	});
+	// start metric sync with send and receive functions
+  const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
+  const receiveFunction = (cmd, callback) => socket.on(cmd, callback);
+  metricSync.start(sendFunction, receiveFunction);
 
-	socket.on('add-message', (message) => {
-		io.emit('message', { text: message.text, from: socket.nickname, created: new Date() });
-	})
+  // anwser to client request
+	socket.on('request', () => {
+		io.emit('acknowledge');
+	});
 });
 
 var port = process.env.PORT || 3001;

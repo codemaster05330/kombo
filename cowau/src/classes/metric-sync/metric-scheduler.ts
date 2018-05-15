@@ -4,8 +4,8 @@ const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
 const EPSILON = 1e-12;
 
-import { ClientSyncScheduler } from './client.sync-scheduler';
-import { ClientClockSync } from './client.clock-sync';
+import { ClientSyncScheduler } from './sync-scheduler';
+import { ClientClockSync } from './clock-sync';
 
 class SyncSchedulerHook extends audio.TimeEngine {
 	_nextPosition:number;
@@ -303,14 +303,6 @@ export class ClientMetricScheduler {
 			receiveFunction('metric-scheduler:init', this._onInit);
 			receiveFunction('metric-scheduler:set', this._onSet);
 			receiveFunction('metric-scheduler:clear', this._onClear);
-		});
-
-		//@@@
-		this._onInit({
-			syncTime: 0,
-			metricPosition: 0,
-			tempo: 120,
-			tempoUnit: 1/4,
 		});
 
 		return promise;
