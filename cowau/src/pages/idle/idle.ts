@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, Platform, Events } from 'ionic-angular';
-import { ClientMetricSync } from '../../services/metric-sync.service';
+import { MetricSync } from '../../services/metric-sync.service';
 
 import { Socket } from 'ng-socket-io';
 
@@ -24,10 +24,10 @@ const audioScheduler = audio.getScheduler();
 })
 
 export class IdlePage {
-	lookOfEvents:Array<GestureType> = [];
+	lookOfEvents:Array<GestureType> = [GestureType.IDLE_OUT];
 
     constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private socket:Socket,
-    			private metricSync:ClientMetricSync, private gesturesService:GesturesService) {
+    			private metricSync:MetricSync, private gesturesService:GesturesService) {
     	platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
 				this.gesturesService.watchForGesture(this.lookOfEvents);
@@ -35,12 +35,12 @@ export class IdlePage {
 		});
 
 
-		// events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
-		// 	setTimeout(() => {
-		// 		this.navCtrl.setRoot(EmojiPage);
-		// 		this.gesturesService.stopGestureWatch(this.events, [GestureType.IDLE_OUT]);
-		// 	}, 500);
-		// });
+		events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
+			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
+			setTimeout(() => {
+				this.navCtrl.setRoot(EmojiPage);
+			}, 500);
+		});
     }
 
     ionViewDidLoad() {
@@ -57,6 +57,7 @@ export class IdlePage {
     	socket.connect();
     	socket.emit('request');
 
+        // client/server handshake
         const promise = new Promise((resolve, reject) => {
             socket.on('acknowledge', (data) => {
                 console.log('Connected to server!');

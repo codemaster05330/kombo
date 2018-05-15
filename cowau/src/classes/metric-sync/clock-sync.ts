@@ -2,7 +2,7 @@ import * as audio from 'waves-audio';
 
 const audioContext = audio.audioContext;
 
-export class ClientClockSync {
+export class ClockSync {
 	_resolveStartPromise:any;
 	_resolveRestartPromise:any;
 	_listeners:any;
