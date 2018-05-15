@@ -45,6 +45,7 @@ export class SequenceDraw {
         this.lifeTimeValue  = 100;                           // The lifetime of the object 100-0
         this.soundWaves     = [];                            // The Soundwaves from this object
         this.emojiImg       = new Image();                   // Create new object
+        this.ratio          = ratio;
         this.velocity       = {
             x: this.returnRandomValue(-1,1),                 // velocity in the x direction
             y: this.returnRandomValue(-1,1)                  // velocity in the y direction
@@ -65,15 +66,19 @@ export class SequenceDraw {
         // Update the this.radius var to the new value
         this.newRadius = this.radius * (this.lifeTimeValue/100);
 
-        // just for Testing
-        this.createSoundWave();
+        if(this.returnRandomValue(0,50) == 14) {
+            this.createSoundWave();
+        }
 
         // Function to fire the update function from every Soundwave created
         // by this sequence object
-        for(var i = 0; i < this.soundWaves.length;i++) {
-            var newSoundWave = this.soundWaves[i];
-            newSoundWave.updateSoundWave();
-        }
+        // for(var i = 0; i < this.soundWaves.length;i++) {
+        //     this.soundWaves[i].updateSoundWave();
+        // }
+
+        this.soundWaves.forEach((soundwave:SoundWave) => {
+            soundwave.updateSoundWave();
+        })
 
         this.borderDetectionSound();                    // Controll if the object hits the wall
         this.moveSound();                               // move the object random
@@ -135,7 +140,7 @@ export class SequenceDraw {
 
     // Function to create Soundwaves of this Sequence Object.
     public createSoundWave() : void {
-        let soundWave = new SoundWave(this.soundWaves,this.radius,this.x,this.y,2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
+        let soundWave = new SoundWave(this.soundWaves,this.radius,this.x,this.y,(this.lifeTimeValue/100),this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
         this.soundWaves.push(soundWave);
     }
 
