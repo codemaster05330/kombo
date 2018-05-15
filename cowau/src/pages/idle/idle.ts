@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, Platform, Events } from 'ionic-angular';
+
+import { Socket } from 'ng-socket-io';
+
 import { GesturesService } from '../../services/gestures.service';
 
 //pages
@@ -14,9 +17,9 @@ import { GestureType } from '../../classes/gesture-type';
 })
 
 export class IdlePage {
-	lookOfEvents:Array<GestureType> = [GestureType.IDLE_OUT];
+	lookOfEvents:Array<GestureType> = [];
 
-    constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, 
+    constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private socket:Socket,
     			private gesturesService:GesturesService) {
     	platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
@@ -24,16 +27,27 @@ export class IdlePage {
 			}
 		});
 
-		events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
-			setTimeout(() => {
-				this.navCtrl.setRoot(EmojiPage);
-				this.gesturesService.stopGestureWatch(this.events, [GestureType.IDLE_OUT]);
-			}, 500);
-		});
+		this.joinChat();
+
+		// events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
+		// 	setTimeout(() => {
+		// 		this.navCtrl.setRoot(EmojiPage);
+		// 		this.gesturesService.stopGestureWatch(this.events, [GestureType.IDLE_OUT]);
+		// 	}, 500);
+		// });
     }
 
     ionViewDidLoad() {
         initCircle();
+    }
+
+    joinChat() {
+    	console.log('join chat');
+    	this.socket.connect();
+    	this.socket.emit('set-nickname', 'KaFu');
+    	this.socket.on('users-changed', (data) => {
+    		console.log(JSON.stringify(data));
+    	})
     }
 
 }
