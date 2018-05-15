@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule, Popover } from 'ionic-angular';
+import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
+const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
 
 import { HttpModule } from '@angular/http';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -49,7 +51,8 @@ import { Variables } from '../classes/variables';
   imports: [
     BrowserModule,
     HttpModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    SocketIoModule.forRoot(config)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -71,7 +74,7 @@ import { Variables } from '../classes/variables';
     GesturesService,
     Variables,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
- //    ClientMetricSync,
+    // ClientMetricSync,
 	// ServerMetricSync
   ]
 })
