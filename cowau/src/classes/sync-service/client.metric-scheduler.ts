@@ -85,7 +85,6 @@ class NextRefEngine extends audio.TimeEngine {
 
 class BeatEngine extends audio.TimeEngine {
 	_metro:any;
-	master:any;
 
 	constructor(metro) {
 		super();
@@ -119,8 +118,8 @@ class BeatEngine extends audio.TimeEngine {
 	destroy() {
 		this._metro = null;
 
-		if (this.master)
-			this.master.remove(this);
+		if (super.master)
+			super.master.remove(this);
 	}
 }
 
@@ -135,7 +134,6 @@ class MetronomeEngine extends audio.TimeEngine {
 	measureCount:number;
 	beatCount:number;
 	beatEngine:BeatEngine;
-	master:any;
 
 	constructor(startPosition, numBeats, beatLength, startOnBeat, callback) {
 		super();
@@ -234,8 +232,8 @@ class MetronomeEngine extends audio.TimeEngine {
 		if (this.beatEngine)
 			this.beatEngine.destroy();
 
-		if (this.master)
-			this.master.remove(this);
+		if (super.master)
+			super.master.remove(this);
 	}
 }
 
