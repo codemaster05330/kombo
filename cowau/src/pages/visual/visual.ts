@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { SequenceDraw } from '../../classes/sequence-draw';
 import * as wavesAudio from 'waves-audio';
 import * as wavesLoaders from 'waves-loaders';
-import {SequenceDraw} from '../../classes/sequence-draw';
 
 @Component({
   selector: 'page-visual',
@@ -10,16 +10,6 @@ import {SequenceDraw} from '../../classes/sequence-draw';
 })
 
 export class VisualPage {
-
-    // ##########################################################################
-    // ##########################################################################
-    // ##########################################################################
-    // Test for Audio PlayCrontrol & Audio Playback
-    audioContext : any      = wavesAudio.audioContext;
-    loader : any            = new wavesLoaders.SuperLoader();
-    // ##########################################################################
-    // ##########################################################################
-    // ##########################################################################
 
     cvs : any;                                                      // Define the Canvas Element
     ctx : any;                                                      // Setup the Canvas to 2D
@@ -30,31 +20,6 @@ export class VisualPage {
     soundsArray:Array<SequenceDraw>  = [];                          // Array of all circles
 
     constructor( public navCtrl: NavController, public navParams: NavParams) {}
-
-    playSound(soundUrl) {
-        // load audio and marker files
-        this.loader.load(soundUrl).then(function(loaded) {
-            var audioBuffer = loaded[0];
-            var markerBuffer = loaded[1];
-            var beatDuration = audioBuffer.duration / 4;
-
-            // create player engine
-            var playerEngine = new wavesAudio.PlayerEngine();
-            playerEngine.buffer = audioBuffer;
-            playerEngine.cyclic = true;
-            playerEngine.connect(this.audioContext.destination);
-
-            // create play control
-            var playControl = new wavesAudio.PlayControl(playerEngine);
-            playControl.setLoopBoundaries(0, 2 * audioBuffer.duration);
-            // playControl.loop = true;
-            playControl.start();
-            setTimeout(function(){
-                playControl.stop();
-            }, 200);
-
-        });
-    }
 
     ionViewDidLoad() {
 
@@ -74,12 +39,8 @@ export class VisualPage {
         this.canvasWidth = this.canvasWidth * this.ratio;        // Set the widdth of the canvas
         this.canvasHeight = this.canvasHeight * this.ratio;      // Set the hight of the canvas
 
+        // TODO: Create two sequence objects to test everything.
         // Create a click event to test the canvas
-        this.createSequenceObject();
-        this.createSequenceObject();
-        this.createSequenceObject();
-        this.createSequenceObject();
-        this.createSequenceObject();
         this.createSequenceObject();
         this.createSequenceObject();
 
@@ -137,20 +98,3 @@ export class VisualPage {
         return Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2) ) - (r2 + r1);
     }
 }
-
-    //         // just for Testing
-    //         var test = this.returnRandomValue(0, 30);
-    //         if(test == 2){
-    //             this.createSoundWave();
-    //         }
-    //
-    //         // Function to fire the update function from every Soundwave created
-    //         // by this sequence object
-    //         for(var i = 0; i < this.soundWaves.length;i++) {
-    //             var newSoundWave = this.soundWaves[i];
-    //             newSoundWave.update();
-    //         }
-    //     this.createSoundWave = function() {
-    //         var soundWave = new Soundwave(this.soundWaves,this.newRadius,this.x,this.y,2);
-    //         this.soundWaves.push(soundWave);
-    //     }
