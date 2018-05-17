@@ -17,6 +17,8 @@ class Client {
 	}
 }
 
+var emojis = [false, false, false, false, false, false, false, false, false, false, false, false];
+
 // create metric synth with broadcast function (sending to all connected clients)
 const broadcastFunction = (cmd, ...args) => io.emit(cmd, ...args);
 const metricSync = new MetricSync(broadcastFunction);
@@ -29,13 +31,39 @@ io.on('connection', (socket) => {
 	});
 
 	// start metric sync with send and receive functions
-  const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
-  const receiveFunction = (cmd, callback) => socket.on(cmd, callback);
-  metricSync.start(sendFunction, receiveFunction);
+	const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
+	const receiveFunction = (cmd, callback) => socket.on(cmd, callback);
+	metricSync.start(sendFunction, receiveFunction);
 
-  // anwser to client request
+  	// anwser to client request
 	socket.on('request', () => {
 		io.emit('acknowledge');
+	});
+
+	//recieve and distribute sequence object
+	socket.on('new-sequence', (sequence) => {
+		console.log("new sequence of type " + sequence.type);
+		io.emit('new-sequence', sequence);
+	});
+
+	//emoji is being taken
+	socket.on('take-emoji', (emojiID) =>{
+		console.log("Emoji " + emojiID + " has been taken.");
+		emojis[emojiID] = true;
+		io.emit('emoji-taken', emojiID);
+	});
+
+	//emoji is set free
+	socket.on('free-emoji', (emojiID) => {
+		console.log("Emoji " + emojiID + " isn't taken anymore.");
+		emojis[emojiID] = false;
+		io.emit('emoji-untaken', emojiID);
+	});
+
+	//return emoji List
+	socket.on('get-emojis', () => {
+		console.log("Requested Emoji List");
+		io.emit('emojis-get', emojis);
 	});
 });
 
