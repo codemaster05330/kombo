@@ -8,10 +8,12 @@ import { GesturesService } from '../../services/gestures.service';
 import { EmojiPage } from '../emoji/emoji';
 
 // Import every classes
+import { Sequence, SoundType } from '../../classes/sequence';
 import { GestureType } from '../../classes/gesture-type';
 import { audioContext } from 'waves-audio';
 import { AudioBufferLoader } from 'waves-loaders';
 import { SoundWave } from '../../classes/sound-wave';
+import * as soundsData from '../../assets/sounds/sounds.json';
 
 import * as audio from 'waves-audio';
 const audioContext = audio.audioContext;
@@ -55,9 +57,9 @@ export class IdlePage {
         }
 
     ionViewDidLoad() {
-        this.ratio = window.devicePixelRatio;
-        this.canvasWidth = window.innerWidth;
-        this.canvasHeight = window.innerHeight;
+        this.ratio = window.devicePixelRatio;                                   // Define the Pixel Ratio of the Device
+        this.canvasWidth = window.innerWidth;                                   // Define the Width of the Device
+        this.canvasHeight = window.innerHeight;                                 // Define the Hight of the Device
         this.cvs = document.getElementById('canvas');                           // Define the canvas tag
         this.ctx = this.cvs.getContext('2d');                                   // Define the canvas context
 
@@ -71,8 +73,10 @@ export class IdlePage {
         this.canvasWidth = this.canvasWidth * this.ratio;                       // Set the widdth of the canvas
         this.canvasHeight = this.canvasHeight * this.ratio;                     // Set the hight of the canvas
 
+        // Start the Canvas Animation
         this.draw();
 
+        // Start the Sync and the Audio Playback
         this.initServerConnection().then(() => {
             this.initMetrics();
         });
@@ -81,10 +85,8 @@ export class IdlePage {
 
     initServerConnection() {
         const socket = this.socket;
-
-    	socket.connect();
+    	socket.connect();                           
     	socket.emit('request');
-
         // client/server handshake
         const promise = new Promise((resolve, reject) => {
             socket.on('acknowledge', (data) => {
@@ -92,33 +94,52 @@ export class IdlePage {
                 resolve();
             });
         });
-
         return promise;
     }
+
 
     initMetrics() {
         const socket = this.socket;
         const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
         const receiveFunction = (cmd, ...args) => socket.on(cmd, ...args);
         const loader = new AudioBufferLoader();
+        var soundsArrayString = [];
 
-        loader.load(['assets/sounds/909-BD-high.wav', 'assets/sounds/909-HH-open.wav'])
-        .then((buffers) => {
+        // Function that lists the sound array and
+        // creates a large array of all the objects.
+        soundsData[0].forEach(soundsData => {
+            soundsArrayString = soundsArrayString.concat(soundsData.pitches);   // New "big" Sound Array
+        });
+
+
+        loader.load(soundsArrayString)                                          // Load every Sound
+        .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
             this.metricSync.start(sendFunction, receiveFunction).then(() => {
                 this.metricSync.addMetronome((measure, beat) => {
-                    const time = audioScheduler.currentTime;
-                    const src = audioContext.createBufferSource();
-                    src.connect(audioContext.destination);
-                    src.buffer = (beat !== 7) ? buffers[0] : buffers[1];
-                    src.start(time);
-                    console.log('metro:', measure, beat);
-                    let soundWave = new SoundWave(this.soundWaves,0,this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
-                    this.soundWaves.push(soundWave);
+                    this.playSound(SoundType.Bass,1,1,buffers);                 // Play Sound
+                    // console.log('metro:', measure, beat);
                 }, 8, 8);
             });
         }).catch(function(err) {
             console.log("loader error:", err.message);
         });
+
+    }
+
+    // Function that plays specific sounds when needed.
+    playSound(type:SoundType,pitch:number,length:number,buffers) {
+        // Get Time from Server
+        const time = audioScheduler.currentTime;                                // Sync Time
+        const src = audioContext.createBufferSource();                          // Create Source
+
+        // Play Audio File
+        src.connect(audioContext.destination);                                  // Connect Autio Context
+        src.buffer = buffers[((type-1)*5)+pitch];                               // Define witch sound the fucktion is playing
+        src.start(time);                                                        // Start Sound
+
+        // Create a SoundWave everythime a new Sound is Playing
+        let soundWave = new SoundWave(this.soundWaves,0,length,this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
+        this.soundWaves.push(soundWave);
     }
 
     // Function that get triggert 60 times every second

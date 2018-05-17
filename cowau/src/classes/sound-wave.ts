@@ -20,6 +20,7 @@ export class SoundWave {
 
     constructor(soundWave:any,
                 radius:number,
+                speed:number,
                 xPos:number,
                 yPos:number,
                 opacity:number,
@@ -30,7 +31,7 @@ export class SoundWave {
         this.radius = radius;
         this.xPos = xPos;
         this.yPos = yPos;
-        this.speed = 6;
+        this.speed = (30/speed);
         this.opacity = opacity;
         this.ctx = ctx;
         this.canvasWidth = canvasWidth;
