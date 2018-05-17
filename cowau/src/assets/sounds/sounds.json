@@ -1,0 +1,21 @@
+[
+    {
+        "type": "SoundType.Bass",
+        "pitches": [
+            "assets/sounds/bass-01.wav",
+            "assets/sounds/bass-02.wav",
+            "assets/sounds/bass-03.wav",
+            "assets/sounds/bass-04.wav",
+            "assets/sounds/bass-05.wav"
+        ]
+    },{
+        "type": "SoundType.Marimba",
+        "pitches": [
+            "assets/sounds/marimba-01.wav",
+            "assets/sounds/marimba-02.wav",
+            "assets/sounds/marimba-03.wav",
+            "assets/sounds/marimba-04.wav",
+            "assets/sounds/marimba-05.wav"
+        ]
+    }
+]
