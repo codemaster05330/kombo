@@ -91,8 +91,8 @@ export class IdlePage {
 
     initMetrics() {
         const socket = this.socket;
-        const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
-        const receiveFunction = (cmd, ...args) => socket.on(cmd, ...args);
+        const sendFunction = (cmd, args) => socket.emit(cmd, args);
+        const receiveFunction = (cmd, args) => socket.on(cmd, args);
 
         const loader = new AudioBufferLoader();
 
