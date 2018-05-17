@@ -9,21 +9,21 @@ import { EmojiPage } from '../emoji/emoji';
 
 // Import every classes
 import { GestureType } from '../../classes/gesture-type';
-import { audioContext } from 'waves-audio';
-import { AudioBufferLoader } from 'waves-loaders';
 import { SoundWave } from '../../classes/sound-wave';
 
+
+import { AudioBufferLoader } from 'waves-loaders';
 import * as audio from 'waves-audio';
 const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
 
 @Component({
-  selector: 'page-idle',
-  templateUrl: 'idle.html',
+	selector: 'page-idle',
+	templateUrl: 'idle.html',
 })
 
 export class IdlePage {
-	lookOfEvents:Array<GestureType>        = [];
+	lookOfEvents:Array<GestureType>        = [GestureType.IDLE_OUT];
     soundWaves:Array<SoundWave>            = [];                                // The Soundwaves from this object
     cvs:any;                                                                    // Canvas Element
     ctx:any;                                                                    // Setup the Canvas to 2D
@@ -99,7 +99,7 @@ export class IdlePage {
     initMetrics() {
         const socket = this.socket;
         const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
-        const receiveFunction = (cmd, ...args) => socket.on(cmd, ...args);
+        const receiveFunction = (cmd, args) => socket.on(cmd, args);
 
         const loader = new AudioBufferLoader();
 

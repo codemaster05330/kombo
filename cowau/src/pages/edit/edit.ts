@@ -49,7 +49,6 @@ export class EditPage {
 	cursor: HTMLElement;
 	cursorPosition:number = 0;
 
-
 	constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync) {
 		this.sound = new Sequence(SoundType.Bass);
@@ -79,15 +78,15 @@ export class EditPage {
 		
 		//FLIPPING
 		this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
-			this.popover.show(NewSoundPopoverPage, 1000);
+			this.popover.show(NewSoundPopoverPage, 2000);
 		});
 
 		//IDLE IN
 		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
-			this.navCtrl.setRoot(IdlePage);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);
 			this.gesturesService.stopGestureWatch(this.events,  GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
+			this.navCtrl.setRoot(IdlePage);
 		});
 	}
 

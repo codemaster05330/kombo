@@ -65,7 +65,7 @@ export class FlipitPage {
 	}
 
 	ionViewWillEnter() {
-		this.playVid();
+		// this.playVid();
 	}
 
 	public switchScreen() {
@@ -73,7 +73,7 @@ export class FlipitPage {
 	}
 
 	public playVid() {
-		console.log("video");
+		// console.log("video");
 		this.videoplayer.nativeElement.play();
 		this.videoplayer.nativeElement.loop = true;
 	}
