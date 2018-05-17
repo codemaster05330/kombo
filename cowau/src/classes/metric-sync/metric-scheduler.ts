@@ -4,17 +4,17 @@ const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
 const EPSILON = 1e-12;
 
-import { ClientSyncScheduler } from './client.sync-scheduler';
-import { ClientClockSync } from './client.clock-sync';
+import { SyncScheduler } from './sync-scheduler';
+import { ClockSync } from './clock-sync';
 
 class SyncSchedulerHook extends audio.TimeEngine {
 	_nextPosition:number;
 	_nextTime:number;
 
-	_syncScheduler:ClientSyncScheduler;
-	_metricScheduler:ClientMetricScheduler;
+	_syncScheduler:SyncScheduler;
+	_metricScheduler:MetricScheduler;
 
-	constructor(syncScheduler, metricScheduler:ClientMetricScheduler) {
+	constructor(syncScheduler, metricScheduler:MetricScheduler) {
 		super();
 
 		this._nextPosition = Infinity;
@@ -52,12 +52,12 @@ class SyncSchedulerHook extends audio.TimeEngine {
 }
 
 class NextRefEngine extends audio.TimeEngine {
-	_syncScheduler:ClientSyncScheduler;
-	_metricScheduler:ClientMetricScheduler;
+	_syncScheduler:SyncScheduler;
+	_metricScheduler:MetricScheduler;
 	_ref:any;
 
 
-	constructor(syncScheduler:ClientSyncScheduler, metricScheduler:ClientMetricScheduler) {
+	constructor(syncScheduler:SyncScheduler, metricScheduler:MetricScheduler) {
 		super();
 
 		this._syncScheduler = syncScheduler;
@@ -85,7 +85,6 @@ class NextRefEngine extends audio.TimeEngine {
 
 class BeatEngine extends audio.TimeEngine {
 	_metro:any;
-	master:any;
 
 	constructor(metro) {
 		super();
@@ -119,8 +118,8 @@ class BeatEngine extends audio.TimeEngine {
 	destroy() {
 		this._metro = null;
 
-		if (this.master)
-			this.master.remove(this);
+		if (super.master)
+			super.master.remove(this);
 	}
 }
 
@@ -135,7 +134,6 @@ class MetronomeEngine extends audio.TimeEngine {
 	measureCount:number;
 	beatCount:number;
 	beatEngine:BeatEngine;
-	master:any;
 
 	constructor(startPosition, numBeats, beatLength, startOnBeat, callback) {
 		super();
@@ -234,14 +232,14 @@ class MetronomeEngine extends audio.TimeEngine {
 		if (this.beatEngine)
 			this.beatEngine.destroy();
 
-		if (this.master)
-			this.master.remove(this);
+		if (super.master)
+			super.master.remove(this);
 	}
 }
 
-export class ClientMetricScheduler {
-	_clockSync:ClientClockSync;
-	_syncScheduler:ClientSyncScheduler;
+export class MetricScheduler {
+	_clockSync:ClockSync;
+	_syncScheduler:SyncScheduler;
 	_engineQueue:any;
 	_engineSet:any;
 	_metronomeEngineMap:any;
@@ -253,7 +251,7 @@ export class ClientMetricScheduler {
 	_callingEventListeners:any;
 	_promiseResolve:any;
 
-	constructor(sync:ClientClockSync, syncScheduler:ClientSyncScheduler) {
+	constructor(sync:ClockSync, syncScheduler:SyncScheduler) {
 		this._clockSync = sync;
 		this._syncScheduler = syncScheduler;
 
@@ -305,14 +303,6 @@ export class ClientMetricScheduler {
 			receiveFunction('metric-scheduler:init', this._onInit);
 			receiveFunction('metric-scheduler:set', this._onSet);
 			receiveFunction('metric-scheduler:clear', this._onClear);
-		});
-
-		//@@@
-		this._onInit({
-			syncTime: 0,
-			metricPosition: 0,
-			tempo: 120,
-			tempoUnit: 1/4,
 		});
 
 		return promise;

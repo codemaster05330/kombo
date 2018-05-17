@@ -1,28 +1,25 @@
+import { Injectable } from '@angular/core';
+
 import * as audio from 'waves-audio';
-import ClockSync from './ClockSync';
-import SyncScheduler from './SyncScheduler';
-import MetricScheduler from './MetricScheduler';
+import { ClockSync } from '../classes/metric-sync/clock-sync';
+import { SyncScheduler} from '../classes/metric-sync/sync-scheduler';
+import { MetricScheduler } from '../classes/metric-sync/metric-scheduler';
 
 const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
 
-class MetricSync {
+@Injectable()
+export class MetricSync {
+	_clockSync:ClockSync;
+	_syncScheduler:SyncScheduler;
+	_metricScheduler:MetricScheduler;
+
+
 	constructor() {
-
-		const clockSync = new ClockSync();
-		const syncScheduler = new SyncScheduler(clockSync);
-		this._clockSync = clockSync;
-		this._syncScheduler = syncScheduler;
-		this._metricScheduler = new MetricScheduler(clockSync, syncScheduler);
+		this._clockSync = new ClockSync();
+		this._syncScheduler = new SyncScheduler(this._clockSync);
+		this._metricScheduler = new MetricScheduler(this._clockSync, this._syncScheduler);
 	}
-
-	// send/recive commands to /from server
-	//   sendFunction = (cmd, ...args) => { }
-	//   receiveFunction = (cmd, callback) => { }
-	// 
-	// e.g. for soundworks:
-	//   sendFunction = (cmd, ...args) => this.send(cmd, ...args);
-	//   receiveFunction = (cmd, callback) => this.receive(cmd, callback);
 
 	start(sendFunction, receiveFunction) {
 		const promise = new Promise((resolve, reject) => {
@@ -89,7 +86,7 @@ class MetricSync {
 	}
 
 	get metricPosition() {
-		return this._metricScheduler.position;
+		return this._metricScheduler.metricPosition;
 	}
 
 	getMetricPositionAtAudioTime(audioTime) {
@@ -113,5 +110,3 @@ class MetricSync {
 		return audioContext;
 	}
 }
-
-export default MetricSync;

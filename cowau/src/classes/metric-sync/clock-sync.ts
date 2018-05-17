@@ -2,7 +2,7 @@ import * as audio from 'waves-audio';
 
 const audioContext = audio.audioContext;
 
-export class ClientClockSync {
+export class ClockSync {
 	_resolveStartPromise:any;
 	_resolveRestartPromise:any;
 	_listeners:any;
@@ -151,12 +151,7 @@ export class ClientClockSync {
 			this._pingLoop();
 		});
 
-		//@@@
-		this._syncClientTime = 0;
-		this._syncServerTime = 0;
-
-		return Promise.resolve();
-		//@@@ return promise;
+		return promise;
 	}
 
 	stop() {

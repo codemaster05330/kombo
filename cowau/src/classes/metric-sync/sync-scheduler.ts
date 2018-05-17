@@ -1,16 +1,15 @@
 import * as audio from 'waves-audio';
-
 const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
 
-import { ClientClockSync } from './client.clock-sync';
+import { ClockSync } from './clock-sync';
 
 class SyncTimeSchedulingQueue extends audio.SchedulingQueue {
-	_clockSync:ClientClockSync;
+	_clockSync:ClockSync;
 	_nextSyncTime:any;
 	master:any;
 
-	constructor(clockSync:ClientClockSync) {
+	constructor(clockSync:ClockSync) {
 		super();
 
 		this._clockSync = clockSync;
@@ -56,11 +55,11 @@ class SyncTimeSchedulingQueue extends audio.SchedulingQueue {
 	}
 }
 
-export class ClientSyncScheduler {
-	_clockSync:ClientClockSync;
+export class SyncScheduler {
+	_clockSync:ClockSync;
 	_syncedQueue:any;
 
-	constructor(clockSync:ClientClockSync) {
+	constructor(clockSync:ClockSync) {
 		this._clockSync = clockSync;
 		this._syncedQueue = null;
 	}

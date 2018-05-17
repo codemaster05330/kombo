@@ -9,7 +9,13 @@ import { EmojiPage } from '../emoji/emoji';
 
 // Import every classes
 import { GestureType } from '../../classes/gesture-type';
+import { audioContext } from 'waves-audio';
+import { AudioBufferLoader } from 'waves-loaders';
 import { SoundWave } from '../../classes/sound-wave';
+
+import * as audio from 'waves-audio';
+const audioContext = audio.audioContext;
+const audioScheduler = audio.getScheduler();
 
 @Component({
   selector: 'page-idle',
@@ -17,13 +23,7 @@ import { SoundWave } from '../../classes/sound-wave';
 })
 
 export class IdlePage {
-	lookOfEvents:Array<GestureType>     = [];                                   // Define of the gesture types
-    soundWaves:Array<SoundWave>         = [];                                   // The Soundwaves from this object
-    cvs:any;                                                                    // Canvas Element
-    ctx:any;                                                                    // Setup the Canvas to 2D
-    ratio:number;                                                               // Define the DPI of the Screen
-    canvasWidth:number;                                                         // Hight of the Canvas
-    canvasHeight:number;                                                        // Width of the Canvas
+	lookOfEvents:Array<GestureType> = [];
 
     constructor(
         public navCtrl: NavController,
@@ -40,14 +40,12 @@ export class IdlePage {
     			}
     		});
 
-    		this.joinChat();
-
-		// events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
-		// 	setTimeout(() => {
-		// 		this.navCtrl.setRoot(EmojiPage);
-		// 		this.gesturesService.stopGestureWatch(this.events, [GestureType.IDLE_OUT]);
-		// 	}, 500);
-		// });
+		events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
+			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
+			setTimeout(() => {
+				this.navCtrl.setRoot(EmojiPage);
+			}, 500);
+		});
     }
 
     ionViewDidLoad() {
@@ -67,25 +65,53 @@ export class IdlePage {
         this.canvasWidth = this.canvasWidth * this.ratio;                       // Set the widdth of the canvas
         this.canvasHeight = this.canvasHeight * this.ratio;                     // Set the hight of the canvas
 
-        this.initMetrics();
         this.draw();
 
+        this.initServerConnection().then(() => {
+            this.initMetrics();
+        });
     }
 
-    joinChat() {
-    	this.socket.connect();
-    	this.socket.emit('set-nickname', 'KaFu');
-    	this.socket.on('users-changed', (data) => {
-    		console.log(JSON.stringify(data));
-    	})
+    initServerConnection() {
+        const socket = this.socket;
+
+    	socket.connect();
+    	socket.emit('request');
+
+        // client/server handshake
+        const promise = new Promise((resolve, reject) => {
+            socket.on('acknowledge', (data) => {
+                console.log('Connected to server!');
+                resolve();
+            });            
+        });
+
+        return promise;
     }
 
     initMetrics() {
-        this.metricSync.start((cmd, ...args) => {}, (cmd, callback) => {}).then(() => {
-            this.metricSync.addMetronome((measure, beat) => {
-                let soundWave = new SoundWave(this.soundWaves,0,this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
-                this.soundWaves.push(soundWave);
-            }, 8, 8);
+        const socket = this.socket;
+        const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
+        const receiveFunction = (cmd, ...args) => socket.on(cmd, ...args);
+
+        const loader = new AudioBufferLoader();
+
+        loader.load(['assets/sounds/909-HH-closed.wav', 'assets/sounds/909-HH-open.wav'])
+        .then((buffers) => {
+            this.metricSync.start(sendFunction, receiveFunction).then(() => {
+                this.metricSync.addMetronome((measure, beat) => {
+                    const time = audioScheduler.currentTime;
+                    const src = audioContext.createBufferSource();
+                    src.connect(audioContext.destination);
+                    src.buffer = (beat !== 7) ? buffers[0] : buffers[1];
+                    src.start(time);
+                    console.log('metro:', measure, beat);
+                                   this.soundWaves.push(soundWave);
+                let soundWave = new SoundWave(this.soundWaves,0,this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio); 
+                }, 8, 8);
+            });
+        }).catch(function(err) {
+            console.log("loader error:", err.message);
         });
     }
 
