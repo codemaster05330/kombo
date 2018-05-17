@@ -29,7 +29,6 @@ import { ServerPage } from '../pages/server/server';
 
 //services
 import { GesturesService } from '../services/gestures.service';
-
 import { MetricSync } from '../services/metric-sync.service';
 
 //classes
@@ -77,4 +76,3 @@ import { Variables } from '../classes/variables';
   ]
 })
 export class AppModule {}
-

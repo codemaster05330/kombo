@@ -3,7 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { SequenceDraw } from '../../classes/sequence-draw';
 import * as wavesAudio from 'waves-audio';
 import * as wavesLoaders from 'waves-loaders';
-import { ClientMetricSync } from '../../services/metric-sync.client.service';
+import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
 import { GesturesService } from '../../services/gestures.service';
 
@@ -23,7 +23,7 @@ export class VisualPage {
     soundsArray:Array<SequenceDraw>  = [];                          // Array of all circles
 
     constructor(public navCtrl: NavController, public navParams: NavParams, private socket:Socket,
-    			private metricSync:ClientMetricSync) {}
+    			private metricSync:MetricSync) {}
 
     initMetrics() {
         this.metricSync.start((cmd, ...args) => {}, (cmd, callback) => {}).then(() => {

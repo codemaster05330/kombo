@@ -30,7 +30,7 @@ export class SoundWave {
         this.radius = radius;
         this.xPos = xPos;
         this.yPos = yPos;
-        this.speed = 3;
+        this.speed = 6;
         this.opacity = opacity;
         this.ctx = ctx;
         this.canvasWidth = canvasWidth;
@@ -44,7 +44,6 @@ export class SoundWave {
         this.radius += (this.speed * this.ratio);                               // Update the radius of this circle
         this.opacity += -0.01;                                                  // Percentage subtracted with each frame
         if(this.opacity < 0) {this.opacity = 0;}                                // Fallback to prevent a Error if the Value is negativ
-        console.log(this.opacity);
         this.drawSoundWave();
         this.killSoundWave();
     }
