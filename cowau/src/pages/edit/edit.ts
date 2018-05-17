@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NgForOf } from '@angular/common';
 import { NavController, NavParams, PopoverController, Platform, Events } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
+import { audioContext } from 'waves-audio';
+import { AudioBufferLoader } from 'waves-loaders';
 
 //pages
 import { IdlePage } from '../idle/idle';
@@ -20,6 +22,12 @@ import { MetricSync } from '../../services/metric-sync.service';
 
 //server
 import { Socket } from 'ng-socket-io';
+
+import * as soundsData from '../../assets/sounds/sounds.json';
+
+import * as audio from 'waves-audio';
+const audioContext = audio.audioContext;
+const audioScheduler = audio.getScheduler();
 
 @Component({
 	selector: 'page-edit',
@@ -118,7 +126,9 @@ export class EditPage {
 
 		this.cursor = document.getElementById('cursor');
 
-		this.socket.connect();
+		this.initServerConnection().then(() => {
+			this.initMetrics();
+		});
 		this.getNewSequence().subscribe(data => {
 			
 		});
@@ -126,7 +136,24 @@ export class EditPage {
 		//move the cursor every second.
 		//TODO: move this to the metric sync scheduler
 		// setInterval(() => {this.moveCursorNext();}, 250);
-		this.initMetrics();
+		//this.initMetrics();
+	}
+
+	initServerConnection() {
+		const socket = this.socket;
+
+		socket.connect();
+		socket.emit('request');
+
+		// client/server handshake
+		const promise = new Promise((resolve, reject) => {
+			socket.on('acknowledge', (data) => {
+				console.log('Connected to server!');
+				resolve();
+			});
+		});
+
+		return promise;
 	}
 
 	getNewSequence(){
@@ -138,13 +165,49 @@ export class EditPage {
 		return observable;
 	}
 
-    initMetrics() {
-	    this.metricSync.start((cmd, ...args) => {}, (cmd, callback) => {}).then(() => {
-	      	this.metricSync.addMetronome((measure, beat) => {
-	        	this.moveCursorTo((measure % 4) * 8 + beat);
-	        	console.log('metro:', measure % 4, beat);
-	      	}, 8, 8);
-	    });
+	initMetrics() {
+		const loader = new AudioBufferLoader();
+        var soundsArrayString = [];
+
+		soundsData[0].forEach(soundsData => {
+            soundsArrayString = soundsArrayString.concat(soundsData.pitches);   // New "big" Sound Array
+        });
+
+
+        loader.load(soundsArrayString)                                          // Load every Sound
+        .then((buffers) => {
+			const sendFunction = (cmd, ...args) => this.socket.emit(cmd, ...args);
+	        const receiveFunction = (cmd, args) => this.socket.on(cmd, args);
+			this.metricSync.start(sendFunction, receiveFunction).then(() => {
+				console.log(buffers);
+				this.metricSync.addMetronome((measure, beat) => {
+					this.moveCursorTo((measure % 4) * 8 + beat);
+					//console.log('metro:', measure % 4, beat);
+					let beatGrid = this.sound.getBeatGrid();
+					//console.log((measure % 4) * 4 + beat);
+					let i: number = 0;
+					beatGrid.forEach(beatRow => {
+						if(beatRow[(measure % 4) * 4 + beat] > 0){
+							this.playSound(this.sound.type, i, beatRow[(measure % 4) * 4 + beat], buffers);
+						}
+						i++;
+					});
+				}, 8, 8);
+			});
+		});
+	}
+
+	// Function that plays specific sounds when needed.
+    playSound(type:SoundType,pitch:number,length:number,buffers) {
+        // Get Time from Server
+        const time = audioScheduler.currentTime;                                // Sync Time
+        const src = audioContext.createBufferSource();                          // Create Source
+
+        // Play Audio File
+        src.connect(audioContext.destination);                                  // Connect Autio Context
+        src.buffer = buffers[((type)*5)+pitch];                               // Define witch sound the fucktion is playing
+        src.start(time);                                                        // Start Sound
+
     }
 
 	moveCursorNext(){
