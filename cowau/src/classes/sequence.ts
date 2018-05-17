@@ -34,6 +34,10 @@ export class Sequence {
 		return this.id; 
 	}
 
+	public setId(_id: number){
+		this.id = _id;
+	}
+
 	public getType() : SoundType {
 		return this.type;
 	}

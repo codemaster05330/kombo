@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NgForOf } from '@angular/common';
 import { NavController, NavParams, PopoverController, Platform, Events } from 'ionic-angular';
+import { Observable } from 'rxjs/Observable';
 
 //pages
 import { IdlePage } from '../idle/idle';
@@ -11,10 +12,14 @@ import { ThrowItPopoverPage } from '../../throwit-popover/throwit-popover';
 import { Sequence, SoundType } from '../../classes/sequence';
 import { Popover } from '../../classes/popover';
 import { GestureType } from '../../classes/gesture-type';
+import { Variables } from '../../classes/variables';
 
 //services
 import { GesturesService } from '../../services/gestures.service';
 import { MetricSync } from '../../services/metric-sync.service';
+
+//server
+import { Socket } from 'ng-socket-io';
 
 @Component({
 	selector: 'page-edit',
@@ -51,7 +56,7 @@ export class EditPage {
 
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
-		private popoverCtrl:PopoverController, private metricSync:MetricSync) {
+		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, public globalVars: Variables) {
 		this.sound = new Sequence(SoundType.Bass);
 		this.sound.clearBeatGrid();
 		this.beatGrid = this.sound.getBeatGrid();
@@ -113,10 +118,24 @@ export class EditPage {
 
 		this.cursor = document.getElementById('cursor');
 
+		this.socket.connect();
+		this.getNewSequence().subscribe(data => {
+			
+		});
+
 		//move the cursor every second.
 		//TODO: move this to the metric sync scheduler
 		// setInterval(() => {this.moveCursorNext();}, 250);
 		this.initMetrics();
+	}
+
+	getNewSequence(){
+		let observable = new Observable(observer => {
+			this.socket.on('new-sequence', (data) =>{
+				console.log(data);
+			});
+		});
+		return observable;
 	}
 
     initMetrics() {
@@ -174,11 +193,13 @@ export class EditPage {
 
 
 	clearSound(){
-		this.sound.clearBeatGrid();
-		this.clearSmallGrid();
+		this.sound.fillBeatGridAtRandom();
+		this.sound.setId(1);
+		this.socket.emit('new-sequence', this.sound); //TODO: add emoji ID
+		// this.sound.clearBeatGrid();
+		// this.clearSmallGrid();
 
-		// this.sound.fillBeatGridAtRandom();
-		this.reloadGrid();
+		// this.reloadGrid();
 		// console.log(this.sound.getBeatGrid());
 	}
 

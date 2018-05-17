@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, Platform, Events } from 'ionic-angular';
+import { Observable } from 'rxjs/Observable';
 
 //pages
 import { IdlePage } from '../idle/idle';
@@ -12,6 +13,9 @@ import { Variables } from '../../classes/variables';
 
 //services
 import { GesturesService } from '../../services/gestures.service';
+
+//server
+import { Socket } from 'ng-socket-io';
 
 /**
  * Generated class for the EmojiPage page.
@@ -29,7 +33,7 @@ export class EmojiPage {
 	lookOfEvents:Array<GestureType> = [GestureType.IDLE_IN];
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events,
-			public globalVars: Variables, private gesturesService:GesturesService) {
+			public globalVars: Variables, private gesturesService:GesturesService, private socket:Socket) {
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
 				this.gesturesService.watchForGesture(this.lookOfEvents);
@@ -39,15 +43,47 @@ export class EmojiPage {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			this.navCtrl.setRoot(IdlePage);
 		});
+
+		
+		this.initServerConnection();
+		this.getEmojiList().subscribe(data => {});
+		this.socket.emit('get-emojis', null);
 	}
 
 	ionViewDidLoad() {
 		console.log('ionViewDidLoad EmojiPage');
-		this.isDisabled(this.id);
+	}
+
+	initServerConnection() {
+        const socket = this.socket;
+
+    	socket.connect();
+    	socket.emit('request');
+
+        // client/server handshake
+        const promise = new Promise((resolve, reject) => {
+            socket.on('acknowledge', (data) => {
+                console.log('Connected to server!');
+                resolve();
+            });
+        });
+
+        return promise;
+    }
+
+	getEmojiList(){
+		let observable = new Observable(observer => {
+			this.socket.on('emojis-get', (data) =>{
+				console.log(data);
+				this.isDisabled(data);
+			});
+		});
+
+		return observable;
 	}
 
 	//simulates server information
-	id : boolean[] = [true, true, false, false, true, true, false, false, false, false, false, true];
+	//id : boolean[] = [true, true, false, false, true, true, false, false, false, false, false, true];
 
 	//checks if emojis are occupied
 	isDisabled (id: boolean[]) {
@@ -73,6 +109,7 @@ export class EmojiPage {
     	}
 
 		this.globalVars.emojiID = Number(elem.id);
+		this.socket.emit('take-emoji', this.globalVars.emojiID);
     	this.navCtrl.setRoot(FlipitPage);	
     }
 }
