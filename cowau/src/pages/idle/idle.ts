@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, Platform, Events } from 'ionic-angular';
-import { ClientMetricSync } from '../../services/metric-sync.client.service';
+import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
 import { GesturesService } from '../../services/gestures.service';
 
@@ -23,7 +23,13 @@ const audioScheduler = audio.getScheduler();
 })
 
 export class IdlePage {
-	lookOfEvents:Array<GestureType> = [];
+	lookOfEvents:Array<GestureType>        = [];
+    soundWaves:Array<SoundWave>            = [];                                // The Soundwaves from this object
+    cvs:any;                                                                    // Canvas Element
+    ctx:any;                                                                    // Setup the Canvas to 2D
+    ratio:number;                                                               // Define the DPI of the Screen
+    canvasWidth:number;                                                         // Hight of the Canvas
+    canvasHeight:number;                                                        // Width of the Canvas
 
     constructor(
         public navCtrl: NavController,
@@ -31,7 +37,7 @@ export class IdlePage {
         private platform:Platform,
         private events:Events,
         private socket:Socket,
-    	private metricSync:ClientMetricSync,
+    	private metricSync:MetricSync,
         private gesturesService:GesturesService) {
 
         	platform.ready().then((readySource) => {
@@ -40,13 +46,13 @@ export class IdlePage {
     			}
     		});
 
-		events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
-			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
-			setTimeout(() => {
-				this.navCtrl.setRoot(EmojiPage);
-			}, 500);
-		});
-    }
+        	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
+        		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
+        		setTimeout(() => {
+        			this.navCtrl.setRoot(EmojiPage);
+        		}, 500);
+        	});
+        }
 
     ionViewDidLoad() {
         this.ratio = window.devicePixelRatio;
@@ -70,6 +76,7 @@ export class IdlePage {
         this.initServerConnection().then(() => {
             this.initMetrics();
         });
+
     }
 
     initServerConnection() {
@@ -83,7 +90,7 @@ export class IdlePage {
             socket.on('acknowledge', (data) => {
                 console.log('Connected to server!');
                 resolve();
-            });            
+            });
         });
 
         return promise;
@@ -93,10 +100,9 @@ export class IdlePage {
         const socket = this.socket;
         const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
         const receiveFunction = (cmd, ...args) => socket.on(cmd, ...args);
-
         const loader = new AudioBufferLoader();
 
-        loader.load(['assets/sounds/909-HH-closed.wav', 'assets/sounds/909-HH-open.wav'])
+        loader.load(['assets/sounds/909-BD-high.wav', 'assets/sounds/909-HH-open.wav'])
         .then((buffers) => {
             this.metricSync.start(sendFunction, receiveFunction).then(() => {
                 this.metricSync.addMetronome((measure, beat) => {
@@ -106,8 +112,8 @@ export class IdlePage {
                     src.buffer = (beat !== 7) ? buffers[0] : buffers[1];
                     src.start(time);
                     console.log('metro:', measure, beat);
-                                   this.soundWaves.push(soundWave);
-                let soundWave = new SoundWave(this.soundWaves,0,this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio); 
+                    let soundWave = new SoundWave(this.soundWaves,0,this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
+                    this.soundWaves.push(soundWave);
                 }, 8, 8);
             });
         }).catch(function(err) {
@@ -118,17 +124,13 @@ export class IdlePage {
     // Function that get triggert 60 times every second
     // so this function creaetes the animation in the background
     draw() {
-
         // This line clear the canvas every Frame,
         // without this line, every circles would stay
         this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
         this.soundWaves.forEach(soundWaves => {
             soundWaves.updateSoundWave();
         });
-
         // this line request this function every frame
         requestAnimationFrame(() => {this.draw()});
-
     }
-
 }
