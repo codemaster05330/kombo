@@ -10,7 +10,6 @@ import { EmojiPage } from '../pages/emoji/emoji';
 import { VisualPage } from '../pages/visual/visual';
 import { ServerPage } from '../pages/server/server';
 
-
 @Component({
 	templateUrl: 'app.html'
 })

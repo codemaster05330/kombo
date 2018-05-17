@@ -2,8 +2,11 @@
 //
 // This class is used to create, move
 // and disappear Sound Sequence Objects.
+// ############################################################################
+// ############################################################################
 
 import {SoundWave} from './sound-wave';
+
 
 export class SequenceDraw {
 
@@ -66,16 +69,6 @@ export class SequenceDraw {
         // Update the this.radius var to the new value
         this.newRadius = this.radius * (this.lifeTimeValue/100);
 
-        if(this.returnRandomValue(0,50) == 14) {
-            this.createSoundWave();
-        }
-
-        // Function to fire the update function from every Soundwave created
-        // by this sequence object
-        // for(var i = 0; i < this.soundWaves.length;i++) {
-        //     this.soundWaves[i].updateSoundWave();
-        // }
-
         this.soundWaves.forEach((soundwave:SoundWave) => {
             soundwave.updateSoundWave();
         })
@@ -102,7 +95,7 @@ export class SequenceDraw {
     // Calculates the lifetime for the sequence object.
     public lifeTime() {
         if((this.lifeTimeValue/100) > 0.01) {
-            this.lifeTimeValue = this.lifeTimeValue - 0.1;
+            this.lifeTimeValue = this.lifeTimeValue - 0.05;
         } else {
             this.soundsArray.splice(this.soundsArray.indexOf(this),1);
         }
@@ -140,7 +133,7 @@ export class SequenceDraw {
 
     // Function to create Soundwaves of this Sequence Object.
     public createSoundWave() : void {
-        let soundWave = new SoundWave(this.soundWaves,this.radius,this.x,this.y,(this.lifeTimeValue/100),this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
+        let soundWave = new SoundWave(this.soundWaves,this.newRadius,this.x,this.y,(this.lifeTimeValue/100),this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
         this.soundWaves.push(soundWave);
     }
 

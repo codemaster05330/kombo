@@ -3,6 +3,9 @@ import { NavController, NavParams } from 'ionic-angular';
 import { SequenceDraw } from '../../classes/sequence-draw';
 import * as wavesAudio from 'waves-audio';
 import * as wavesLoaders from 'waves-loaders';
+import { ClientMetricSync } from '../../services/metric-sync.client.service';
+import { Socket } from 'ng-socket-io';
+import { GesturesService } from '../../services/gestures.service';
 
 @Component({
   selector: 'page-visual',
@@ -19,13 +22,25 @@ export class VisualPage {
     canvasHeight : number   = window.innerHeight;                   // Width of the Canvas
     soundsArray:Array<SequenceDraw>  = [];                          // Array of all circles
 
-    constructor( public navCtrl: NavController, public navParams: NavParams) {}
+    constructor(public navCtrl: NavController, public navParams: NavParams, private socket:Socket,
+    			private metricSync:ClientMetricSync) {}
+
+    initMetrics() {
+        this.metricSync.start((cmd, ...args) => {}, (cmd, callback) => {}).then(() => {
+          this.metricSync.addMetronome((measure, beat) => {
+              this.soundsArray.forEach(soundArray => {
+                  soundArray.createSoundWave();
+              });
+          }, 8, 8);
+        });
+    }
 
     ionViewDidLoad() {
 
+        this.initMetrics();
+
         // Create a new sound element just for testing
         // this part of the code can be removed in the final version
-        var cta = document.getElementById('canvas');
         this.cvs = document.getElementById('canvas');
         this.ctx = this.cvs.getContext('2d');
 
@@ -41,6 +56,8 @@ export class VisualPage {
 
         // TODO: Create two sequence objects to test everything.
         // Create a click event to test the canvas
+        this.createSequenceObject();
+        this.createSequenceObject();
         this.createSequenceObject();
         this.createSequenceObject();
 
