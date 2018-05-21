@@ -32,6 +32,13 @@ body, html {
 // to match your app's branding. Ionic uses a Sass map of
 // colors so you can add, rename and remove colors as needed.
 // The "primary" color is the only required color in the map.
+$colors: (
+	primary:		#fe8965,
+	secondary:		#ff65a5,
+	primary-dark:	#FE7982,
+	secondary-dark:	#24242F,
+	font: 			#000
+);
 
 $primary: #fe8965;
 $secondary: #ff65a5;

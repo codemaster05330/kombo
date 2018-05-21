@@ -39,7 +39,7 @@ export class GesturesService {
 	
 	constructor(public devMotion:DeviceMotion, public gyro:Gyroscope, public platform:Platform, public events:Events) {}
 
-	public watchForGesture(watchForEvents:Array<GestureType>, timeForGesture:number = 1500, frequency:number = 50) {
+	public watchForGesture(watchForEvents:Array<GestureType>, timeForGesture:number = 3000, frequency:number = 50) {
 		let motionOpts:DeviceMotionAccelerometerOptions = {
 			frequency: frequency
 		}
@@ -136,7 +136,6 @@ export class GesturesService {
 					
 					//controll check
 					if(value.devmo.y > (this.acMedianY + this.stillStandingTreshold) || value.devmo.y < (this.acMedianY - this.stillStandingTreshold)) {
-						// console.log(value.devmo.y, this.acMedianY);
 						checkFlip = false;
 					}
 				});
@@ -160,69 +159,93 @@ export class GesturesService {
 
 		this.gyro.getCurrent().then((orientation:GyroscopeOrientation) => {
 			this.throwArray[this.countAccelerationDataForThrow] = { 'acc': acceleration, 'gyro': orientation };
-		});
 
-		let startIndex = -1;
-		let startDir = '';
-		let gyroRightRotate = false;
-		let gyroLeftRotate = false;
-		let endFor = false;
+			if(this.throwArray.length > 0 && !this.throwTimeout) {
+				let startIndex = -1;
+				let startIndexBack = -1;
+				let gyroRightRotate = false;
+				let gyroLeftRotate = false;
 
+				let backAccRight = false;
+				let backAccLeft = false;
 
-		this.throwArray.forEach((value, index) => {
-			if(value.gyro.y < -4) {
-				gyroRightRotate = true;
-			}
-			if(value.gyro.y > 4) {
-				gyroLeftRotate = true;
-			}
-			if(!endFor) {
-				if(value.acc.x > 15) {
-					startDir = 'positive';
-					startIndex = index;
-					endFor = true;
-				}
-				if(value.acc.x < -15) {
-					startDir = 'negative';
-					startIndex = index;
-					endFor = true;
-				}
-			}
-		});
+				let endFor = false;
+				let endForRotate = false;
 
-		if(startDir != '' && startIndex != -1 && this.throwArray.length > 0 && !this.throwTimeout) {
-			for(let i=startIndex; i<this.throwArray.length; i++) {
-				if(startDir == 'positive' && gyroRightRotate) {
-					if(this.throwArray[i].acc.x < -25) {
-						console.log('throw gesture right hand');
-						startDir = '';
-						startIndex = -1;
-						gyroRightRotate = false;
-						gyroLeftRotate = false;
-						this.sendEvent(GestureType.THROWN, this.throwArray[i]);
-						this.startThrowTimer();
-						this.throwArray = new Array<any>();
-						this.flipArray = new Array<number>();
-
-						this.countAccelerationDataForThrow = 0;
+				this.throwArray.forEach((value, index) => {
+					if(!endForRotate) {
+						if(value.gyro.y < -2) {
+							gyroRightRotate = true;
+							startIndexBack = index;
+							endForRotate = true;
+						}
+						if(value.gyro.y > 2) {
+							gyroLeftRotate = true;
+							startIndexBack = index;
+							endForRotate = true;
+						}
 					}
-				} else if(startDir == 'negative' && gyroLeftRotate) {
-					if(this.throwArray[i].acc.x > 25) {
-						console.log('throw gesture left hand');
-						startDir = '';
-						startIndex = -1;
-						gyroRightRotate = false;
-						gyroLeftRotate = false;
-						this.sendEvent(GestureType.THROWN, this.throwArray[i]);
-						this.startThrowTimer();
-						this.throwArray = new Array<any>();
-						this.flipArray = new Array<number>();
+				});
 
-						this.countAccelerationDataForThrow = 0;
+				if(startIndexBack != -1) {
+					for(let i=startIndexBack; i<this.throwArray.length; i++) {
+						if(!endFor) {
+							if(gyroRightRotate) {
+								if(this.throwArray[i].acc.x > 8) {
+									startIndex = i;
+									backAccRight = true;
+									endFor = true;
+								}
+							}
+							
+							if(gyroLeftRotate) {
+								if(this.throwArray[i].acc.x < -8) {
+									startIndex = i;
+									backAccLeft = true;
+									endFor = true;
+								}
+							}
+						}
 					}
 				}
+
+				if(startIndex != -1) {
+					for(let i=startIndex; i<this.throwArray.length; i++) {
+						if(backAccRight && gyroRightRotate && this.throwArray[i].acc.x < -15) {
+							// console.log('throw gesture right hand');
+							this.sendEvent(GestureType.THROWN, this.throwArray[i]);
+							this.startThrowTimer(1000);
+							
+							startIndex = -1;
+							startIndexBack = -1;
+							gyroRightRotate = false;
+							gyroLeftRotate = false;
+							backAccRight = false;
+							backAccLeft = false;
+							this.countAccelerationDataForThrow = 0;
+
+							this.throwArray = new Array<any>();
+							this.flipArray = new Array<number>();
+						} else if(backAccLeft && gyroLeftRotate && this.throwArray[i].acc.x > 15) {
+							// console.log('throw gesture left hand');
+							this.sendEvent(GestureType.THROWN, this.throwArray[i]);
+							this.startThrowTimer(1000);
+							
+							startIndex = -1;
+							startIndexBack = -1;
+							gyroRightRotate = false;
+							gyroLeftRotate = false;
+							backAccRight = false;
+							backAccLeft = false;
+							this.countAccelerationDataForThrow = 0;
+							
+							this.throwArray = new Array<any>();
+							this.flipArray = new Array<number>();
+						}
+					}
+				}
 			}
-		}
+		});
 	}
 
 	private isIdleMode(arraySize:number, acceleration:DeviceMotionAccelerationData) {
@@ -246,9 +269,6 @@ export class GesturesService {
 
 		if(this.goToIdleArray.length == arraySize) {
 			this.goToIdleArray.forEach((acc, index) => {
-				// console.log(acc.x, this.acMedianX);
-				// console.log(index, acc.y, this.acMedianY);
-				// console.log(acc.z, this.acMedianZ);
 
 				if(	acc.x < (this.acMedianX - xTreshold) || acc.x > (this.acMedianX + xTreshold) ||
 					acc.y < (this.acMedianY - yTreshold) || acc.y > (this.acMedianY + yTreshold) ||
@@ -294,22 +314,18 @@ export class GesturesService {
 
 	}
 
-	private startThrowTimer() {
+	private startThrowTimer(time:number = 2500) {
 		this.throwTimeout = true;
-		console.log(this.throwTimeout);
 	    setTimeout(() => {
 	    	this.throwTimeout = false;
-	    	console.log(this.throwTimeout);
-	    }, 2000);
+	    }, time);
 	}
 
-	private startIdleOutTimer() {
+	private startIdleOutTimer(time:number = 2500) {
 		this.idleOutTimeout = true;
-		console.log(this.idleOutTimeout);
 	    setTimeout(() => {
 	    	this.idleOutTimeout = false;
-	    	console.log(this.idleOutTimeout);
-	    }, 2000);
+	    }, time);
 	}
 }
 
