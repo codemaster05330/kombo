@@ -16,7 +16,6 @@ export class SequenceDraw {
     x:number;                                   // y position of the sequence
     y:number;                                   // x positon of the sequence
     mass:number;                                // Mass of the sequence
-    tones:number;                               // Count the Tones in the sequence
     lifeTimeValue:number;                       // The lifetime of the object 100-0
     soundWaves:Array<SoundWave> = [];           // The Soundwaves from this object
     emojiImg:any;                               // Create new object
@@ -31,7 +30,6 @@ export class SequenceDraw {
                 x:number,
                 y:number,
                 mass:number,
-                tones:number,
                 emoji:number,
                 ctx:any,
                 soundsArray:any,
@@ -44,14 +42,13 @@ export class SequenceDraw {
         this.x              = x;                             // y position of the sequence
         this.y              = y;                             // x positon of the sequence
         this.mass           = mass;                          // Mass of the sequence
-        this.tones          = tones;                         // Count the Tones in the sequence
         this.lifeTimeValue  = 100;                           // The lifetime of the object 100-0
         this.soundWaves     = [];                            // The Soundwaves from this object
         this.emojiImg       = new Image();                   // Create new object
         this.ratio          = ratio;
         this.velocity       = {
-            x: this.returnRandomValue(-1,1),                 // velocity in the x direction
-            y: this.returnRandomValue(-1,1)                  // velocity in the y direction
+            x: this.returnRandomValue(-5,5),                 // velocity in the x direction
+            y: this.returnRandomValue(-5,5)                  // velocity in the y direction
         };
         this.ctx            = ctx;                           // Canvas Object
         this.soundsArray    = soundsArray;                    // Sound Array Objects
@@ -60,7 +57,12 @@ export class SequenceDraw {
 
         // Emoji
         this.emojiImg.src   = '../../assets/imgs/' + this.emoji + '.svg';
+
 	}
+
+    test() : void {
+
+    }
 
     // Function to update the sequence element
     // this function is used for Collision ditection,
@@ -68,6 +70,8 @@ export class SequenceDraw {
     public updateSound() : void {
         // Update the this.radius var to the new value
         this.newRadius = this.radius * (this.lifeTimeValue/100);
+        this.mass = this.mass * (this.lifeTimeValue/100);
+        if(this.mass <= 50) {this.mass = 50;}
 
         this.soundWaves.forEach((soundwave:SoundWave) => {
             soundwave.updateSoundWave();
@@ -133,7 +137,7 @@ export class SequenceDraw {
 
     // Function to create Soundwaves of this Sequence Object.
     public createSoundWave() : void {
-        let soundWave = new SoundWave(this.soundWaves,this.newRadius,this.x,this.y,(this.lifeTimeValue/100),this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
+        let soundWave = new SoundWave(this.soundWaves,this.newRadius,5,this.x,this.y,(this.lifeTimeValue/100),this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
         this.soundWaves.push(soundWave);
     }
 

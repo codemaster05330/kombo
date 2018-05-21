@@ -6,6 +6,8 @@ import * as wavesLoaders from 'waves-loaders';
 import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
 import { GesturesService } from '../../services/gestures.service';
+import { Socket } from 'ng-socket-io';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'page-visual',
@@ -22,22 +24,15 @@ export class VisualPage {
     canvasHeight : number   = window.innerHeight;                   // Width of the Canvas
     soundsArray:Array<SequenceDraw>  = [];                          // Array of all circles
 
-    constructor(public navCtrl: NavController, public navParams: NavParams, private socket:Socket,
-    			private metricSync:MetricSync) {}
-
-    initMetrics() {
-        this.metricSync.start((cmd, ...args) => {}, (cmd, callback) => {}).then(() => {
-          this.metricSync.addMetronome((measure, beat) => {
-              this.soundsArray.forEach(soundArray => {
-                  soundArray.createSoundWave();
-              });
-          }, 8, 8);
-        });
-    }
+    constructor(public navCtrl: NavController, public navParams: NavParams, private socket:Socket) {}
 
     ionViewDidLoad() {
 
-        this.initMetrics();
+        // Connect to server
+        this.initServerConnection();
+        this.observeServer().subscribe(data => {
+
+        });
 
         // Create a new sound element just for testing
         // this part of the code can be removed in the final version
@@ -54,16 +49,63 @@ export class VisualPage {
         this.canvasWidth = this.canvasWidth * this.ratio;        // Set the widdth of the canvas
         this.canvasHeight = this.canvasHeight * this.ratio;      // Set the hight of the canvas
 
-        // TODO: Create two sequence objects to test everything.
-        // Create a click event to test the canvas
-        this.createSequenceObject();
-        this.createSequenceObject();
-        this.createSequenceObject();
-        this.createSequenceObject();
-
         // Start the Canvas Animation
         this.draw();
 
+    }
+
+    initServerConnection() {
+        const socket = this.socket;
+    	socket.connect();
+    	socket.emit('request');
+        // client/server handshake
+        const promise = new Promise((resolve, reject) => {
+            socket.on('acknowledge', (data) => {
+                console.log('Connected to server!');
+                resolve();
+            });
+        });
+        return promise;
+    }
+
+    observeServer() {
+        let observable = new Observable(observer => {
+            this.socket.on('new-sequence', (data)=> {
+
+
+                console.log("New Sequence");
+
+                let m = 0;                                                      // Mass of the Sequence Object
+
+                // Method to define the Size/Mass of the Sequence Objects
+                // Count every tone in the BeatGrid
+                data.beatGrid.forEach(beatrow => {
+                    beatrow.forEach(beat => {
+                        m += beat;
+                    });
+                });
+
+                let x = this.canvasWidth/2;                                     // xPos
+                let y = this.canvasHeight/2;                                    // yPos
+                let c = 0;                                                      // Count Value
+                let r = m*this.ratio*1.5;                                       // Size of the Sequence Object
+
+                for(let j = 0; j < this.soundsArray.length; j++){
+                    if(c >= 20) {break;}
+                    c++;
+                    if(this.getDistance(x,this.soundsArray[j].x, y, this.soundsArray[j].y, r, this.soundsArray[j].radius) < 0 ){
+                        x = this.returnRandomValue(0+r,this.canvasWidth-r);
+                        y = this.returnRandomValue(0+r,this.canvasHeight-r);
+                        j = -1;
+                    }
+                }
+
+                var newSound = new SequenceDraw(r,x,y,m,data.id,this.ctx,this.soundsArray,this.canvasWidth,this.canvasHeight,this.ratio);
+                this.soundsArray.push(newSound);                
+
+            });
+        });
+        return observable;
     }
 
     // Function to update the Animation, this will draw a new Frame every 60 seconds
@@ -73,30 +115,6 @@ export class VisualPage {
             soundArray.updateSound();
         });
         requestAnimationFrame(() => {this.draw()});
-    }
-
-    // TODO: Change this Funtion from random generated values to real values form a Sequence Object
-    // This function creraete a new, random Sequence Element
-    createSequenceObject() : void {
-        let r = this.returnRandomValue(20,200);
-        let x = this.returnRandomValue(0+r,this.canvasWidth-r);
-        let y = this.returnRandomValue(0+r,this.canvasHeight-r);
-        let t = this.returnRandomValue(0,256);
-        let m = 250;
-        let c = 0;
-
-        for(let j = 0; j < this.soundsArray.length; j++){
-            if(c >= 20) {break;}
-            c++;
-            if(this.getDistance(x,this.soundsArray[j].x, y, this.soundsArray[j].y, r, this.soundsArray[j].radius) < 0 ){
-                x = this.returnRandomValue(0+r,this.canvasWidth-r);
-                y = this.returnRandomValue(0+r,this.canvasHeight-r);
-                j = -1;
-            }
-        }
-
-        var newSound = new SequenceDraw(r,x,y,m,t,this.returnRandomValue(0,11),this.ctx,this.soundsArray,this.canvasWidth,this.canvasHeight,this.ratio);
-        this.soundsArray.push(newSound);
     }
 
     // Function to create a random int number

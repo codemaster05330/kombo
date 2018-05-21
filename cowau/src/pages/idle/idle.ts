@@ -85,7 +85,7 @@ export class IdlePage {
 
     initServerConnection() {
         const socket = this.socket;
-    	socket.connect();                           
+    	socket.connect();
     	socket.emit('request');
         // client/server handshake
         const promise = new Promise((resolve, reject) => {
@@ -96,7 +96,6 @@ export class IdlePage {
         });
         return promise;
     }
-
 
     initMetrics() {
         const socket = this.socket;

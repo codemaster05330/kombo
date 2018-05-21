@@ -31,7 +31,7 @@ export class SoundWave {
         this.radius = radius;
         this.xPos = xPos;
         this.yPos = yPos;
-        this.speed = (30/speed);
+        this.speed = (32/speed);
         this.opacity = opacity;
         this.ctx = ctx;
         this.canvasWidth = canvasWidth;
