@@ -1,5 +1,14 @@
 [
     {
+        "type": "SoundType.Drums",
+        "pitches": [
+            "assets/sounds/909-BD-high.wav",
+            "assets/sounds/909-SD-high.wav",
+            "assets/sounds/909-HH-closed.wav",
+            "assets/sounds/909-HH-open.wav",
+            "assets/sounds/909-PC-clap.wav"
+        ]
+    },{
         "type": "SoundType.Bass",
         "pitches": [
             "assets/sounds/bass-01.wav",
