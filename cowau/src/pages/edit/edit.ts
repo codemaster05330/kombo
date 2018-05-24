@@ -62,7 +62,7 @@ export class EditPage {
 	cursor: HTMLElement;
 	cursorPosition:number = 0;
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
+	constructor(private navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, public globalVars: Variables) {
 		this.sound = new Sequence(SoundType.Drums);
 		this.sound.clearBeatGrid();

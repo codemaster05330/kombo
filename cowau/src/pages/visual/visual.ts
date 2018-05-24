@@ -6,7 +6,6 @@ import * as wavesLoaders from 'waves-loaders';
 import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
 import { GesturesService } from '../../services/gestures.service';
-import { Socket } from 'ng-socket-io';
 import { Observable } from 'rxjs/Observable';
 
 @Component({

@@ -37,7 +37,7 @@ export class FlipitPage {
 
 	@ViewChild('videoPlayer') videoplayer: any;
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform, 
+	constructor(private navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform, 
 		public popoverCtrl:PopoverController, private events:Events) {
 		this.popover = new Popover(popoverCtrl);
 		
@@ -48,7 +48,6 @@ export class FlipitPage {
 		});
 
 		events.subscribe(GestureType.FLIPPED.toString(), (acceleration) => {
-			console.log('FLIPPED flipitpage');
 			this.popover.show(NewSoundPopoverPage, 1000);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
@@ -58,8 +57,8 @@ export class FlipitPage {
 		});
 
 		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
-			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
+			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
 			this.navCtrl.setRoot(IdlePage);
 		});
 	}
