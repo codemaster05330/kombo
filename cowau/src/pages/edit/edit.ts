@@ -64,7 +64,7 @@ export class EditPage {
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, public globalVars: Variables) {
-		this.sound = new Sequence(SoundType.Bass);
+		this.sound = new Sequence(SoundType.Drums);
 		this.sound.clearBeatGrid();
 		this.beatGrid = this.sound.getBeatGrid();
 
@@ -166,17 +166,17 @@ export class EditPage {
 
 	initMetrics() {
 		const loader = new AudioBufferLoader();
-        var soundsArrayString = [];
+		var soundsArrayString = [];
 
 		soundsData[0].forEach(soundsData => {
-            soundsArrayString = soundsArrayString.concat(soundsData.pitches);   // New "big" Sound Array
-        });
+			soundsArrayString = soundsArrayString.concat(soundsData.pitches);   // New "big" Sound Array
+		});
 
 
-        loader.load(soundsArrayString)                                          // Load every Sound
-        .then((buffers) => {
+		loader.load(soundsArrayString)                                          // Load every Sound
+		.then((buffers) => {
 			const sendFunction = (cmd, ...args) => this.socket.emit(cmd, ...args);
-	        const receiveFunction = (cmd, args) => this.socket.on(cmd, args);
+			const receiveFunction = (cmd, args) => this.socket.on(cmd, args);
 			this.metricSync.start(sendFunction, receiveFunction).then(() => {
 				console.log(buffers);
 				this.metricSync.addMetronome((measure, beat) => {
@@ -184,30 +184,29 @@ export class EditPage {
 					//console.log('metro:', measure % 4, beat);
 					let beatGrid = this.sound.getBeatGrid();
 					//console.log((measure % 4) * 4 + beat);
-					let i: number = 0;
-					beatGrid.forEach(beatRow => {
-						if(beatRow[(measure % 4) * 4 + beat] > 0){
-							this.playSound(this.sound.type, i, beatRow[(measure % 4) * 4 + beat], buffers);
+					
+					for(let i: number = 0; i < beatGrid.length; i++){
+						if(beatGrid[i][(measure % 4) * 8 + beat] > 0){
+							this.playSound(this.sound.type, 4 - i, beatGrid[i][(measure % 4) * 8 + beat], buffers);
 						}
-						i++;
-					});
+					}
 				}, 8, 8);
 			});
 		});
 	}
 
 	// Function that plays specific sounds when needed.
-    playSound(type:SoundType,pitch:number,length:number,buffers) {
-        // Get Time from Server
-        const time = audioScheduler.currentTime;                                // Sync Time
-        const src = audioContext.createBufferSource();                          // Create Source
+	playSound(type:SoundType,pitch:number,length:number,buffers) {
+		// Get Time from Server
+		const time = audioScheduler.currentTime;                                // Sync Time
+		const src = audioContext.createBufferSource();                          // Create Source
 
-        // Play Audio File
-        src.connect(audioContext.destination);                                  // Connect Autio Context
-        src.buffer = buffers[((type)*5)+pitch];                               // Define witch sound the fucktion is playing
-        src.start(time);                                                        // Start Sound
+		// Play Audio File
+		src.connect(audioContext.destination);                                  // Connect Autio Context
+		src.buffer = buffers[((type)*5)+pitch];                               	// Define witch sound the function is playing
+		src.start(time);                                                        // Start Sound
 
-    }
+	}
 
 	moveCursorNext(){
 		this.cursorPosition++;
@@ -255,12 +254,12 @@ export class EditPage {
 
 
 	clearSound(){
-		this.sound.fillBeatGridAtRandom();
-		this.sound.setId(1);
-		this.socket.emit('new-sequence', this.sound); //TODO: add emoji ID
+		// this.sound.fillBeatGridAtRandom();
+		// this.sound.setId(1);
+		// this.socket.emit('new-sequence', this.sound); //TODO: add emoji ID
 		// this.sound.clearBeatGrid();
-		// this.clearSmallGrid();
-
+		this.clearSmallGrid();
+		this.cloneFirstMeasure();
 		// this.reloadGrid();
 		// console.log(this.sound.getBeatGrid());
 	}
@@ -610,6 +609,20 @@ export class EditPage {
 				}
 			}
 		}
+	}
+
+	cloneFirstMeasure(){
+		//var beatGrid = this.sound.getBeatGrid();
+
+		for(let i: number = 0; i < this.sound.beatGrid.length; i++){
+			for(let j: number = 0; j < 8; j++){
+				this.sound.setBeatGridAtPos(i, j + 8, this.sound.getBeatGrid()[i][j]);
+				this.sound.setBeatGridAtPos(i, j + 16, this.sound.getBeatGrid()[i][j]);
+				this.sound.setBeatGridAtPos(i, j + 24, this.sound.getBeatGrid()[i][j]);
+			}
+		}
+
+		this.reloadGrid();
 	}
 
 }
