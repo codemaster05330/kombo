@@ -8,6 +8,7 @@ import { Socket } from 'ng-socket-io';
 import { Sequence, SoundType } from '../../classes/sequence';
 import { GesturesService } from '../../services/gestures.service';
 import { Observable } from 'rxjs/Observable';
+import * as soundsData from '../../assets/sounds/sounds.json';
 
 const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
@@ -105,7 +106,8 @@ export class VisualPage {
                     }
                 }
 
-                var newSound = new SequenceDraw(r,x,y,m,data.id,this.ctx,this.soundsArray,this.canvasWidth,this.canvasHeight,this.ratio);
+                console.log(data.type);
+                var newSound = new SequenceDraw(r,x,y,m,data.id,this.ctx,this.soundsArray,this.canvasWidth,this.canvasHeight,this.ratio,data.beatGrid,data.type);
                 this.soundsArray.push(newSound);
 
             });
@@ -120,22 +122,28 @@ export class VisualPage {
         const loader = new AudioBufferLoader();
         var soundsArrayString = [];
 
+        soundsData[0].forEach(soundsData => {
+			soundsArrayString = soundsArrayString.concat(soundsData.pitches);   // New "big" Sound Array
+		});
 
         loader.load(soundsArrayString)                                          // Load every Sound
         .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
             this.metricSync.start(sendFunction, receiveFunction).then(() => {
                 this.metricSync.addMetronome((measure, beat) => {
-                    this.playSound(SoundType.Drums,1,1,buffers);                 // Play Sound
                     console.log('metro:', measure, beat);
                     this.soundsArray.forEach(soundArray => {
-                        soundArray.createSoundWave();
+                        for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
+    						if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
+                            soundArray.createSoundWave();
+    							this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], buffers);
+    						}
+    					}
                     });
                 }, 8, 8);
             });
         }).catch(function(err) {
             console.log("loader error:", err.message);
         });
-
     }
 
     // Function that plays specific sounds when needed.
@@ -146,7 +154,7 @@ export class VisualPage {
 
         // Play Audio File
         src.connect(audioContext.destination);                                  // Connect Autio Context
-        src.buffer = buffers[((type)*5)+pitch];                               // Define witch sound the fucktion is playing
+        src.buffer = buffers[((type)*5)+pitch];                                 // Define witch sound the fucktion is playing
         src.start(time);                                                        // Start Sound
     }
 
