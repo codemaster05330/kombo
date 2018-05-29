@@ -25,6 +25,8 @@ export class SequenceDraw {
     canvasWidth:number;                         // Width of the Canvas Object
     canvasHeight:number;                        // Hight of the Canvas Object
     ratio:number;                               // Value of the Screen Ratio
+    beatGrid:number[];                          // Beatgrid Array
+    sequenceType:number;                      // Sound Type
 
 	constructor(radius:number,
                 x:number,
@@ -35,7 +37,9 @@ export class SequenceDraw {
                 soundsArray:any,
                 canvasWidth:any,
                 canvasHeight:any,
-                ratio:number){
+                ratio:number,
+                beatGrid:number[],
+                sequenceType:number){
         this.radius         = radius;                        // radius of the sequence
         this.newRadius;                                      // radius with lifetime value
         this.emoji          = emoji                          // emoji id of this sequence
@@ -46,6 +50,8 @@ export class SequenceDraw {
         this.soundWaves     = [];                            // The Soundwaves from this object
         this.emojiImg       = new Image();                   // Create new object
         this.ratio          = ratio;
+        this.beatGrid       = beatGrid;
+        this.sequenceType   = sequenceType;
         this.velocity       = {
             x: this.returnRandomValue(-5,5),                 // velocity in the x direction
             y: this.returnRandomValue(-5,5)                  // velocity in the y direction
@@ -59,6 +65,14 @@ export class SequenceDraw {
         this.emojiImg.src   = '../../assets/imgs/' + this.emoji + '.svg';
 
 	}
+
+    returnSoundArt() : number {
+        return this.sequenceType;
+    }
+
+    retrunBeatGrid() : number[] {
+        return this.beatGrid;
+    }
 
     // Function to update the sequence element
     // this function is used for Collision ditection,
@@ -95,7 +109,7 @@ export class SequenceDraw {
     // Calculates the lifetime for the sequence object.
     public lifeTime() {
         if((this.lifeTimeValue/100) > 0.01) {
-            this.lifeTimeValue = this.lifeTimeValue - 0.05;
+            this.lifeTimeValue = this.lifeTimeValue - 0;
         } else {
             this.soundsArray.splice(this.soundsArray.indexOf(this),1);
         }
