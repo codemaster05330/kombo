@@ -13,7 +13,6 @@ import { GestureType } from '../../classes/gesture-type';
 import { SoundWave } from '../../classes/sound-wave';
 import * as soundsData from '../../assets/sounds/sounds.json';
 
-
 import { AudioBufferLoader } from 'waves-loaders';
 import * as audio from 'waves-audio';
 const audioContext = audio.audioContext;

@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { SequenceDraw } from '../../classes/sequence-draw';
-import * as wavesAudio from 'waves-audio';
-import * as wavesLoaders from 'waves-loaders';
+import { AudioBufferLoader } from 'waves-loaders';
+import * as audio from 'waves-audio';
 import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
+import { Sequence, SoundType } from '../../classes/sequence';
 import { GesturesService } from '../../services/gestures.service';
-import { Socket } from 'ng-socket-io';
 import { Observable } from 'rxjs/Observable';
+
+const audioContext = audio.audioContext;
+const audioScheduler = audio.getScheduler();
 
 @Component({
   selector: 'page-visual',
@@ -24,12 +27,17 @@ export class VisualPage {
     canvasHeight : number   = window.innerHeight;                   // Width of the Canvas
     soundsArray:Array<SequenceDraw>  = [];                          // Array of all circles
 
-    constructor(public navCtrl: NavController, public navParams: NavParams, private socket:Socket) {}
+    constructor(
+        public navCtrl: NavController,
+        public navParams: NavParams,
+        private metricSync:MetricSync,
+        private socket:Socket) {}
 
     ionViewDidLoad() {
 
         // Connect to server
         this.initServerConnection();
+        this.initMetrics();
         this.observeServer().subscribe(data => {
 
         });
@@ -71,10 +79,7 @@ export class VisualPage {
     observeServer() {
         let observable = new Observable(observer => {
             this.socket.on('new-sequence', (data)=> {
-
-
                 console.log("New Sequence");
-
                 let m = 0;                                                      // Mass of the Sequence Object
 
                 // Method to define the Size/Mass of the Sequence Objects
@@ -101,11 +106,48 @@ export class VisualPage {
                 }
 
                 var newSound = new SequenceDraw(r,x,y,m,data.id,this.ctx,this.soundsArray,this.canvasWidth,this.canvasHeight,this.ratio);
-                this.soundsArray.push(newSound);                
+                this.soundsArray.push(newSound);
 
             });
         });
         return observable;
+    }
+
+    initMetrics() {
+        const socket = this.socket;
+        const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
+        const receiveFunction = (cmd, args) => socket.on(cmd, args);
+        const loader = new AudioBufferLoader();
+        var soundsArrayString = [];
+
+
+        loader.load(soundsArrayString)                                          // Load every Sound
+        .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
+            this.metricSync.start(sendFunction, receiveFunction).then(() => {
+                this.metricSync.addMetronome((measure, beat) => {
+                    this.playSound(SoundType.Drums,1,1,buffers);                 // Play Sound
+                    console.log('metro:', measure, beat);
+                    this.soundsArray.forEach(soundArray => {
+                        soundArray.createSoundWave();
+                    });
+                }, 8, 8);
+            });
+        }).catch(function(err) {
+            console.log("loader error:", err.message);
+        });
+
+    }
+
+    // Function that plays specific sounds when needed.
+    playSound(type:SoundType,pitch:number,length:number,buffers) {
+        // Get Time from Server
+        const time = audioScheduler.currentTime;                                // Sync Time
+        const src = audioContext.createBufferSource();                          // Create Source
+
+        // Play Audio File
+        src.connect(audioContext.destination);                                  // Connect Autio Context
+        src.buffer = buffers[((type)*5)+pitch];                               // Define witch sound the fucktion is playing
+        src.start(time);                                                        // Start Sound
     }
 
     // Function to update the Animation, this will draw a new Frame every 60 seconds

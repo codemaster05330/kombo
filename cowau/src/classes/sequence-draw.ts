@@ -60,10 +60,6 @@ export class SequenceDraw {
 
 	}
 
-    test() : void {
-
-    }
-
     // Function to update the sequence element
     // this function is used for Collision ditection,
     // movement and the drawing of the element
