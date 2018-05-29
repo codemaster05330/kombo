@@ -31,9 +31,9 @@ export class IdlePage {
     ratio:number;                                                               // Define the DPI of the Screen
     canvasWidth:number;                                                         // Hight of the Canvas
     canvasHeight:number;                                                        // Width of the Canvas
-
+    
     constructor(
-        public navCtrl: NavController,
+        private navCtrl: NavController,
         public navParams: NavParams,
         private platform:Platform,
         private events:Events,
@@ -41,19 +41,18 @@ export class IdlePage {
     	private metricSync:MetricSync,
         private gesturesService:GesturesService) {
 
-        	platform.ready().then((readySource) => {
-    			if(readySource == 'cordova' || readySource == 'mobile') {
-    				this.gesturesService.watchForGesture(this.lookOfEvents);
-    			}
-    		});
-
-        	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
-        		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
-        		setTimeout(() => {
-        			this.navCtrl.setRoot(EmojiPage);
-        		}, 500);
-        	});
-        }
+    	platform.ready().then((readySource) => {
+			if(readySource == 'cordova' || readySource == 'mobile') {
+				this.gesturesService.watchForGesture(this.lookOfEvents);
+			}
+		});
+    	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
+    		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
+    		setTimeout(() => {
+    			this.navCtrl.setRoot(EmojiPage);
+    		}, 500);
+    	});
+    }
 
     ionViewDidLoad() {
         this.ratio = window.devicePixelRatio;                                   // Define the Pixel Ratio of the Device
@@ -73,7 +72,7 @@ export class IdlePage {
         this.canvasHeight = this.canvasHeight * this.ratio;                     // Set the hight of the canvas
 
         // Start the Canvas Animation
-        this.draw();
+        // this.draw();
 
         // Start the Sync and the Audio Playback
         this.initServerConnection().then(() => {

@@ -42,6 +42,17 @@ export class Sequence {
 		return this.type;
 	}
 
+	public setType(_type: SoundType){
+		this.type = _type;
+	}
+
+	public nextType(){
+		this.type++;
+		if (this.type >= 3){
+			this.type = SoundType.Drums;
+		}
+	}
+
 	public getBeatGrid() : number[][]{
 		return this.beatGrid;
 	}
@@ -107,4 +118,11 @@ export enum SoundType {
 	Drums,
 	Bass,
 	Marimba
+}
+
+// Enum to hold the "fancy names" of the Sounds. please add the possible soundnames here in the same order as above.
+export enum SoundName {
+	"Umpf",
+	"Brmmm",
+	"Duing"
 }

@@ -32,7 +32,7 @@ import { Socket } from 'ng-socket-io';
 export class EmojiPage {
 	lookOfEvents:Array<GestureType> = [GestureType.IDLE_IN];
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events,
+	constructor(private navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events,
 			public globalVars: Variables, private gesturesService:GesturesService, private socket:Socket) {
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {

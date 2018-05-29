@@ -34,6 +34,11 @@ const audioScheduler = audio.getScheduler();
 	templateUrl: 'edit.html',
 })
 export class EditPage {
+
+	//////////////////////////////////////////////////////////////////////////
+	//		SETUP
+	//////////////////////////////////////////////////////////////////////////
+
 	sound: Sequence;
 	beatGrid: number[][];
 	tmpBeatGrid :number[][] = [];
@@ -62,10 +67,11 @@ export class EditPage {
 	cursor: HTMLElement;
 	cursorPosition:number = 0;
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
+	constructor(private navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, public globalVars: Variables) {
-		this.sound = new Sequence(SoundType.Bass);
+		this.sound = new Sequence(SoundType.Drums);
 		this.sound.clearBeatGrid();
+		this.sound.setId(this.globalVars.emojiID);
 		this.beatGrid = this.sound.getBeatGrid();
 
 		for (var i : number = 0; i < 5; i++){
@@ -87,11 +93,21 @@ export class EditPage {
 		this.events.subscribe(GestureType.THROWN.toString(), (value) => {
 			// console.log('thrown event');
 			this.popover.show(ThrowItPopoverPage, 1000);
+			
+			/* // what to do when thrown. TODO: remove comment when gestures are stable, remove the popover page from above
+			this.socket.emit('new-sequence', this.sound);
+			// add a fancy animation for throwing here
+			this.clearSound();
+			*/
 		});
 		
 		//FLIPPING
 		this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
 			this.popover.show(NewSoundPopoverPage, 2000);
+			/* // what to do when flipped. TODO: remove comment when gestures are stable, remove above popover call when it's been rewritten
+			this.sound.nextType();
+			this.popover.show(NewSoundPopoverPage, 2000, this.sound.getType());
+			*/
 		});
 
 		//IDLE IN
@@ -104,6 +120,7 @@ export class EditPage {
 	}
 
 	ionViewDidLoad() {
+		// getting a bunch of variables that are needed many times later.
 		this.beatgridWrapper = document.getElementById('beatgrid-wrapper');
 		this.beatgrid= document.getElementById('beatgrid');
 		this.beatgridWrapper.style.height = (this.beatgrid.offsetHeight)+"px";
@@ -112,32 +129,38 @@ export class EditPage {
 		this.beatrowPreview = document.getElementById('beatrow-preview');
 		this.beatgridWrapperPreview.style.width = (this.beatrowPreview.offsetWidth +1)+"px";
 
+		this.cursor = document.getElementById('cursor');
 
 		this.beatPreviewSlider = document.getElementById('beatpreview-slider');
-
 		this.beatgridPreview = document.getElementsByClassName('tone-preview');
 
+
+		// set some initial offsets/transforms
 		this.beatPreviewSlider.style.left = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + "px";
 		
 		this.vw = (this.beatgridWrapper.offsetWidth / 100);
 
 		this.beatgrid.style.transform = "translate( -5vw , 0)";
 
-		this.cursor = document.getElementById('cursor');
 
+		// init metric sync
 		this.initServerConnection().then(() => {
 			this.initMetrics();
 		});
+
+		// debug thingy to test that the sent sequence indeed was sent to the server and can be recieved again.
+		// TODO: can be removed when the visual screen is getting it's sequences from the server correctly
 		this.getNewSequence().subscribe(data => {
 			
 		});
-
-		//move the cursor every second.
-		//TODO: move this to the metric sync scheduler
-		// setInterval(() => {this.moveCursorNext();}, 250);
-		//this.initMetrics();
 	}
 
+	//////////////////////////////////////////////////////////////////////////
+	//	SYNCRONISED THINGS
+	//////////////////////////////////////////////////////////////////////////
+
+	// connects to the server and prints a success message into the log when connected.
+	// change IP adress in app.module.ts' config var
 	initServerConnection() {
 		const socket = this.socket;
 
@@ -155,6 +178,8 @@ export class EditPage {
 		return promise;
 	}
 
+	// debug thingy to test that the sent sequence indeed was sent to the server and can be recieved again.
+	// TODO: can be removed when the visual screen is getting it's sequences from the server correctly
 	getNewSequence(){
 		let observable = new Observable(observer => {
 			this.socket.on('new-sequence', (data) =>{
@@ -164,70 +189,81 @@ export class EditPage {
 		return observable;
 	}
 
+
+	// initialises MetricSync which also adds functions for the movement of the cursor and plays the sounds of the preview
 	initMetrics() {
 		const loader = new AudioBufferLoader();
-        var soundsArrayString = [];
+		var soundsArrayString = [];
 
 		soundsData[0].forEach(soundsData => {
-            soundsArrayString = soundsArrayString.concat(soundsData.pitches);   // New "big" Sound Array
-        });
+			soundsArrayString = soundsArrayString.concat(soundsData.pitches);   // New "big" Sound Array
+		});
 
 
-        loader.load(soundsArrayString)                                          // Load every Sound
-        .then((buffers) => {
+		loader.load(soundsArrayString)                                          // Load every Sound
+		.then((buffers) => {
 			const sendFunction = (cmd, ...args) => this.socket.emit(cmd, ...args);
-	        const receiveFunction = (cmd, args) => this.socket.on(cmd, args);
+			const receiveFunction = (cmd, args) => this.socket.on(cmd, args);
 			this.metricSync.start(sendFunction, receiveFunction).then(() => {
 				console.log(buffers);
 				this.metricSync.addMetronome((measure, beat) => {
-					this.moveCursorTo((measure % 4) * 8 + beat);
-					//console.log('metro:', measure % 4, beat);
+					this.moveCursorTo((measure % 4) * 8 + beat);				// Cursor Movement
 					let beatGrid = this.sound.getBeatGrid();
-					//console.log((measure % 4) * 4 + beat);
-					let i: number = 0;
-					beatGrid.forEach(beatRow => {
-						if(beatRow[(measure % 4) * 4 + beat] > 0){
-							this.playSound(this.sound.type, i, beatRow[(measure % 4) * 4 + beat], buffers);
+
+					for(let i: number = 0; i < beatGrid.length; i++){			// Shift through the beatgrid
+						if(beatGrid[i][(measure % 4) * 8 + beat] > 0){			// Play sound if there is one in the grid at the next beat.
+																				// (measure % maxMeasures) * beatsPerMeasure
+							this.playSound(this.sound.type, 4 - i, beatGrid[i][(measure % 4) * 8 + beat], buffers); // 4 - i because lowest row is highest number
 						}
-						i++;
-					});
+					}
 				}, 8, 8);
 			});
 		});
 	}
 
 	// Function that plays specific sounds when needed.
-    playSound(type:SoundType,pitch:number,length:number,buffers) {
-        // Get Time from Server
-        const time = audioScheduler.currentTime;                                // Sync Time
-        const src = audioContext.createBufferSource();                          // Create Source
+	playSound(type:SoundType,pitch:number,length:number,buffers) {
+		// Get Time from Server
+		const time = audioScheduler.currentTime;                                // Sync Time
+		const src = audioContext.createBufferSource();                          // Create Source
 
-        // Play Audio File
-        src.connect(audioContext.destination);                                  // Connect Autio Context
-        src.buffer = buffers[((type)*5)+pitch];                               // Define witch sound the fucktion is playing
-        src.start(time);                                                        // Start Sound
+		// Play Audio File
+		src.connect(audioContext.destination);                                  // Connect Autio Context
+		src.buffer = buffers[((type)*5)+pitch];                               	// Define witch sound the function is playing
+		src.start(time);                                                        // Start Sound
 
-    }
+	}
 
+	// Legacy Function that moves Cursor to the next position. Used originally when there was no server available. Can probably be removed.
 	moveCursorNext(){
 		this.cursorPosition++;
-		if (this.cursorPosition >= 32){
+		if (this.cursorPosition >= 32){											// Jump back to 0 if end reached
 			this.cursorPosition = 0;
 		}
 
-		this.moveCursorTo(this.cursorPosition);
+		this.moveCursorTo(this.cursorPosition);									// call generalised function
 	}
 
+	// Function to move the cursor in the screen to the correct position using translation
 	moveCursorTo(pos: number = 0){
-		if (pos < 0 || pos >= 32) return;
+		if (pos < 0 || pos >= 32) return;										// Don't do anything if the position is out of bounds
 		this.cursorPosition = pos;
 
-		var translation: number = this.cursorPosition * 12;
-		translation += Math.floor((this.cursorPosition) / 8) * 8;
+		var translation: number = this.cursorPosition * 12;						// move cursor over by 12vw per passed tone (tone-width 10vw + 1vw margin each side)
+		translation += Math.floor((this.cursorPosition) / 8) * 8;				// add an additional 8vw for each passed measure to bridge the gap (left-margin 1vw -> 9vw)
 
-		this.cursor.style.transform = "translate(" + translation + "vw, 0px)";
+		this.cursor.style.transform = "translate(" + translation + "vw, 0px)";	// actually move the cursor
 	}
 
+
+	//////////////////////////////////////////////////////////////////////////
+	//		CLEAR & RESET SOUND & GRID
+	//////////////////////////////////////////////////////////////////////////
+
+	// reload the viewable grid according to the beatgrid
+	// called mostly after doing mass-changes to the grid automatically, such as random filling.
+	// probably not used in production
+	// also fills the small grid, but doesn't clear the small one previously
 	reloadGrid(){
 		var cvs: HTMLCollectionOf<Element> = document.getElementsByClassName('tone');
 		for(var i: number=0; i < cvs.length; i++){
@@ -235,36 +271,35 @@ export class EditPage {
 			var y = +cvs[i].id.split("-")[1];
 
 			if(cvs[i].children.length > 0){
-				cvs[i].removeChild(cvs[i].children[0]);
+				cvs[i].removeChild(cvs[i].children[0]);							// remove every longtone on the visual grid
 			}
 
 			var num: number = this.sound.getBeatGrid()[x][y];
 
 			if(num > 0){
 				var tone : HTMLElement = this.createLongTone(this.calculateLongToneWidth(num - 1,y));
-				cvs[i].appendChild(tone);
-				this.setPreview(x, y, num);
+				cvs[i].appendChild(tone);										// add new tone in the grid
+				this.setPreview(x, y, num);										// add new tone in the preview
 			}
 		}
 	}
 
 
-	/*
-	*		CLEAR SOUND TEXT
-	*/
-
-
+	// function called when the clear sound button is pressed.
+	// often used during development to test different functionalities, thus so many commented function calls.
+	// TODO: clean up for production but NOT before that. it's a good position to test functionality
 	clearSound(){
-		this.sound.fillBeatGridAtRandom();
-		this.sound.setId(1);
-		this.socket.emit('new-sequence', this.sound); //TODO: add emoji ID
+		// this.sound.fillBeatGridAtRandom();
+		// this.sound.setId(1);
+		// this.socket.emit('new-sequence', this.sound);
 		// this.sound.clearBeatGrid();
-		// this.clearSmallGrid();
-
+		this.clearSmallGrid();
+		this.cloneFirstMeasure();
 		// this.reloadGrid();
 		// console.log(this.sound.getBeatGrid());
 	}
 
+	//removes 
 	clearSmallGrid(){
 		for(var i = 0; i < this.beatgridPreview.length; i++){
 			this.beatgridPreview[i].classList.remove("tone-selected-preview");
@@ -276,96 +311,55 @@ export class EditPage {
 
 
 
-	/*
-	*		ACTUAL TONES
-	*/
+	//////////////////////////////////////////////////////////////////////////
+	//		USER INPUT & GRID HANDLING
+	//////////////////////////////////////////////////////////////////////////
 
 
+	// function called when a tone is clicked
 	clickedTone(evt: MouseEvent){
 
 		var elem : HTMLDivElement = <HTMLDivElement> evt.target;
-		
 
-		if(elem.classList.contains("tone")){
+		if(elem.classList.contains("tone")){							// clicked element is an empty tone: create tone with length 1
 			var x: number = +elem.id.split("-")[0];
 			var y: number = +elem.id.split("-")[1];
 			this.sound.setBeatGridAtPos(x, y, 1);
 			this.setPreview(x, y, 1);
 			elem.appendChild(this.createLongTone());
 
-		} else if (elem.classList.contains("tone-long")) {
+		} else if (elem.classList.contains("tone-long")) {				// clicked element is an existing tone: remove the tone
 			var x: number = +elem.parentElement.id.split("-")[0];
 			var y: number = +elem.parentElement.id.split("-")[1];
 			this.sound.setBeatGridAtPos(x, y, 0);
 			this.setPreview(parseInt(elem.parentElement.id.split("-")[0]), parseInt(elem.parentElement.id.split("-")[1]),0);
 			elem.parentElement.removeChild(elem);
 		}
-
-		//this.deltaTime = 0;
 	}
 
 
-	//TODO: Prevent overlapping
-	//TODO: Account for measure gaps
+	// function called when a pan gesture happening (aka moving your finger left/right)
 	panTone(evt: any){
-
-		/*var panLength :number = evt.deltaX;
-		var passedTones: number = Math.floor((panLength / this.vw) / 11.1);
-
 		
-		if(passedTones >= 0){
-			var tone:HTMLElement = <HTMLElement> evt.target;
-
-			if (tone.classList.contains("tone-long")){
-				var tmp = tone;
-				tone = tone.parentElement;
-			}
-
-			if (tone.children.length > 0){
-				tone.removeChild(tone.children[0]);
-			}
-
-			var y: number = +tone.id.split("-")[1];
-			//console.log(y + " " + ((10 + ((7 - (y % 8)) * 12)) * this.vw) + " " + panLength + "; " + ((10 + ((7 - (y % 8)) * 12)) * this.vw <= panLength));
-			if (Math.floor((10 + ((7 - (y % 8)) * 12)) * this.vw) <= panLength){
-				passedTones -= 1;
-				panLength -= 9 * this.vw;
-			}
-			//console.log(passedTones);
-
-			var longtone :HTMLElement = document.createElement("div");
-			longtone.classList.add("tone-long");
-			var width = 10 + 12 * (passedTones);
-			if (((y % 8) - ((y+passedTones)% 8 + 1) >= 0 ) || ((passedTones) / 8 >= 1)){
-				width += 9;
-			}
-
-			longtone.style.width =  width+"vw";
-			tone.appendChild(longtone);
-
-			this.setPreview(parseInt(tone.id.split("-")[0]), parseInt(tone.id.split("-")[1]), (passedTones + 1));
-			this.sound.setBeatGridAtPos(parseInt(tone.id.split("-")[0]), parseInt(tone.id.split("-")[1]), (passedTones + 1));
-
-		} else {
+		// detect if a new pan has been started and start a new (internal) event accordingly. internal because angular will thrown an event every time the finger is being moved slightly, even when inside the same pan gesture
+		//this.deltaTime holds the starttime of the event. 20 because the evt.timeStamp - evt.deltaTime sometimes fluctuates a little bit.
+		if (evt.timeStamp - evt.deltaTime - 20 > this.deltaTime){		// is entered if it's a new gesture		
 			
-		}*/
-
-		//detect if a new pan has been started.
-		// if(evt.deltaTime < this.deltaTime){
-		// console.log(evt.timeStamp-evt.deltaTime, this.deltaTime);
-		if (evt.timeStamp - evt.deltaTime - 20 > this.deltaTime){
-			//if the delay between the click and the movement is above 200ms don't scroll but move the screen
+			//if the delay between the click and the movement is above 200ms or the use didn't click on a tone, don't scroll but create a long tone instead.
 			//TODO: Haptic Feedback when passing the time threshold
 			if (evt.deltaTime > 200 && !(evt.target.classList.contains("beatgrid") || evt.target.classList.contains("beatrow"))){
 				this.isScrolling = false;
 			} else {
 				this.isScrolling = true;
 			}
-			//get the current translation of the main beatgrid to be able to move it accordingly.
+
+			//get the current translation of the main beatgrid at the start of the event to be able to move it accordingly later
 			this.translation = parseInt(this.beatgrid.style.transform.slice(10).split("vw")[0]);
 			
 			if(!this.isScrolling){
 				//save the relative X of the start of the event relative to the parent element
+				//this is used to make the drawing of new tones while panning more consistent
+
 				//get middle x coordinate of the parent element1
 				var middleX: number = evt.target.getBoundingClientRect().left + (evt.target.offsetWidth / 2);
 				//get starting point of the users click
@@ -380,7 +374,7 @@ export class EditPage {
 
 			if (evt.target.classList.contains("tone-long")){
 				this.wasEmpty = false;
-				this.originalTarget = this.originalTarget.parentElement;
+				this.originalTarget = this.originalTarget.parentElement;			//move the saved target up the hierarchy so it is the empty tone, not the filled one
 				if(this.sound.getBeatGrid()[this.originalTarget.id.split("-")[0]][this.originalTarget.id.split("-")[0]] == 1){
 					//if clicked tone is a single long tone, remove that tone and revert to standard "new tone" procedure
 					this.wasEmpty = true;
@@ -388,67 +382,57 @@ export class EditPage {
 					this.setPreview(+this.originalTarget.id.split("-")[0], +this.originalTarget.id.split("-")[0], 0);
 					this.originalTarget.removeChild(this.originalTarget.children[0]);
 				} else {
+					//this part is used to detect which part of the tone the movement starts from. only needed if tones need to be redrawn.
+					//can be removed if this functionality won't be needed.
+
 					//if clicked tone is a longer longtone, calculate which part of the note you were clicking on, specifically if it was
 					//the first beat, the last beat or any beat inbetween 
-					//TODO: calculate which "beat" I am starting my movement at
+					//Theoretical-todo: calculate which "beat" I am starting my movement at
 					
 				}
-
-
-
 			}
-			//console.log(this.originalTarget);
+
 			this.previousPassedTones = 0;
 			this.deltaTime = evt.timeStamp - evt.deltaTime;
 
 		}
 
-		
-		if(this.isScrolling){		//if the current pan gesture is a scroll gesture, move the screen
+
+		//if the current pan gesture is a scroll gesture, move the screen
+		if(this.isScrolling){
 			var translate: number = (this.translation * this.vw + evt.deltaX) / this.vw;
-			translate = Math.max(Math.min(-5,translate),-319);
+			translate = Math.max(Math.min(-5,translate),-319);						//319 & 5 are an empirical number. if there is a better source for a more accurate number, it should be entered here.
 
 			this.beatgrid.style.transform = "translate( " + translate + "vw , 0)";
 
 			//move the preview as well
 			var prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
-			var x: number = -1 * ( ( ( translate + 5) / 314 ) * (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) + prevXMin;
+			var x: number = -1 * ( ( ( translate + 5) / 314 ) * (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) + prevXMin;		//again, 319 and 5 are the empirical numbers from above.
 			var prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 
 			this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
 		} 
 
 
-		else {						// if the current pan gesture is a drawing gesture, create the new tones
-			// var tone:HTMLElement = <HTMLElement> evt.target;
-			// //if the target is a long one, get the actual target
-			// if (tone.classList.contains("tone-long")){
-			// 	var tmp = tone;
-			// 	tone = tone.parentElement;
-			// }
-			// //if it already has a long one inside of it, remove it
-			// if (tone.children.length > 0 && tone.classList.contains("tone")){
-			// 	tone.removeChild(tone.children[0]);
-			// 	this.setPreview(+tone.id.split("-")[0],+tone.id.split("-")[1], 0);
-			// }
-
-			//calculate passed tones
+		// if the current pan gesture is a drawing gesture, create the new tones
+		else {						
+			
+			//calculate how many tones have been passed
 			var y: number = +this.originalTarget.id.split("-")[1];
 			var x: number = +this.originalTarget.id.split("-")[0];
-			var passedTones = Math.floor(((this.relativeX + evt.deltaX) / this.vw) / 11.1);	//11.1vw is the width of one tone + one side of the margin	
+			var passedTones = Math.floor(((this.relativeX + evt.deltaX) / this.vw) / 11.1);	//11.1vw is the width of one tone + one side of the margin (.1 because of the border)	
 			if(passedTones < 0)
-				passedTones++;
+				passedTones++;							// account for an error in the upper calculation if the drawing gesture is to the left
 
-			//if we pass a gap, wait longer.
+			//if we pass a gap, wait longer before a new tone is passed
 			if (Math.floor((y + passedTones) / 8) != Math.floor(y / 8)){
 				if(evt.deltaX > 0)
 					passedTones = Math.floor(((this.relativeX + evt.deltaX - (Math.sign(evt.deltaX) * 9 * this.vw)) / this.vw) / 11.1);
 				else
 					passedTones = Math.floor(((this.relativeX + evt.deltaX - (Math.sign(evt.deltaX) * 9 * this.vw * 2)) / this.vw) / 11.1);
-				//console.log("tones " + passedTones);
 			}
 
-			//if we are at one of the ends, cut it short
+			//if we are at one of the ends, cut it off if it somehow were to be bigger than the actual available tones.
 			if (y+passedTones < 0){
 				passedTones = -y;
 			} else if (y+passedTones >= 32){
@@ -456,7 +440,7 @@ export class EditPage {
 			}
 
 
-			//remove obsolete divs from left
+			//remove obsolete divs from the left that are leftover from creating new ones when drawing to the left
 			if(this.previousPassedTones < 0){
 				var target: HTMLElement = this.originalTarget;
 				for(var i: number = this.previousPassedTones; i < 0; i++){
@@ -472,8 +456,9 @@ export class EditPage {
 			}
 			this.previousPassedTones = passedTones;
 
-			// if it was an empty one originally
+			// if it was an empty one originally we draw new tones
 			if(this.wasEmpty){
+
 				var target: HTMLElement = this.originalTarget;
 				if(target.children.length > 0){
 					target.removeChild(target.children[0]);
@@ -487,7 +472,7 @@ export class EditPage {
 					for(var i: number = 0; i < y; i++){
 						if(i + beatGrid[x][i] > y + passedTones && beatGrid[x][i] > 0){
 							passedTones = (y - (beatGrid[x][i] + i)) * -1;
-							//set previous Passed Tones so it won't get removed anyways in the next iteration
+							//set previous Passed Tones so it won't get removed anyway in the next iteration
 							this.previousPassedTones = passedTones;
 						}
 					}
@@ -496,13 +481,10 @@ export class EditPage {
 				//remove additionally added tones & move target to the left if passedTones is negative
 				for(var i: number = passedTones; i < 0; i++){
 					if(target.previousElementSibling != null){
-						// console.log(target.id);
 						target = <HTMLElement> target.previousElementSibling;
 						if(target.children.length > 0){
 							target.removeChild(target.children[0]);
 						}
-						// this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1], 0);
-						// this.sound.setBeatGridAtPos(+target.id.split("-")[0],+target.id.split("-")[1], 0);
 					}
 				}
 
@@ -512,9 +494,7 @@ export class EditPage {
 					if(tmp.nextElementSibling != null){
 						tmp = <HTMLElement> tmp.nextElementSibling;
 						if(tmp.children.length > 0){
-							//tmp.removeChild(tmp.children[0])
 							passedTones = i;
-							//console.log(passedTones, i);
 							break;
 						}
 						this.setPreview(+tmp.id.split("-")[0],+tmp.id.split("-")[1], 0);
@@ -522,25 +502,25 @@ export class EditPage {
 					}
 				}
 
-				// console.log(target.id);
+				//actually draw the new tones in both the preview and the grid
 				target.appendChild(this.createLongTone(this.calculateLongToneWidth(passedTones, y)));
 				this.setPreview(+target.id.split("-")[0],+target.id.split("-")[1],Math.abs(passedTones)+1);
 				this.sound.setBeatGridAtPos(+target.id.split("-")[0],+target.id.split("-")[1], Math.abs(passedTones) + 1);
 			}
 
-			//if it was an occupied one originally change it's size
+			//if it was an occupied one originally
 			else {
-				this.previousPassedTones = 0;
+				//if a redrawing of the tones should be possible, it needs to be implemented here.
+				this.previousPassedTones = 0;		//make sure it won't delete tones to the left by accident
 			}
-
-			//console.log(passedTones);
 		}
 	}
 
-	/*
-	*		LONG TONE SUPPORT FUNCTIONS
-	*/
+	//////////////////////////////////////////////////////////////////////////
+	//		LONG TONE SUPPORT FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////
 
+	//handle creation of a new tone element with a defined width. 10 is the width of a single tone
 	createLongTone(width :number = 10): HTMLElement{
 		var longtone :HTMLElement = document.createElement("div");
 		longtone.classList.add("tone-long");
@@ -548,18 +528,20 @@ export class EditPage {
 		return longtone;
 	}
 
+	//calculate the width of a tone according to the amount of passed tones (which is the length - 1) and the y position
 	calculateLongToneWidth(passedTones:number, y: number){
-		var width = 10 + 12 * Math.abs(passedTones);
+		var width = 10 + 12 * Math.abs(passedTones);					//10 vw per tone, 12 per additional tone (10 + 1 margin on each side)
 		if ((Math.floor(y / 8) != Math.floor((y+passedTones)/ 8) || ((passedTones) / 8 >= 1))){
-			width += 8;
+			width += 8;													//8 additional if a measure gap is crossed (additional 8vw margin on the left of a tone)
 		}
 		return width;
 	}
 
-	/*
-	*		PREVIEW SLIDER
-	*/
+	//////////////////////////////////////////////////////////////////////////
+	//		PREVIEW SLIDER
+	//////////////////////////////////////////////////////////////////////////
 
+	//called when the slider on the preview is pulled, moves the slider to the clicking position & the beatgrid to the according position
 	panPreview(evt: any){
 		
 		var x: number = evt.srcEvent.clientX - (this.beatPreviewSlider.offsetWidth/2);
@@ -570,7 +552,7 @@ export class EditPage {
 		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 314) - 5) + "vw , 0)";
 	}
 
-
+	//called, when the slider or the preview itself is clicked, moves the slider to the correct position as well as the beatgrid
 	clickPreview(evt: any){
 		var x: number = evt.x - (this.beatPreviewSlider.offsetWidth/2);
 		var prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
@@ -581,6 +563,7 @@ export class EditPage {
 
 	}
 
+	//sets a tone inside the preview grid
 	setPreview(x: number, y: number, length: number){
 		for(var i = 0; i < this.beatgridPreview.length; i++){
 			var xp:number = +this.beatgridPreview[i].id.split("-")[0];
@@ -592,7 +575,6 @@ export class EditPage {
 
 				if(length == 0){
 					this.beatgridPreview[i].classList.remove("tone-selected-preview");
-					// console.log(this.beatgridPreview[i].id)
 					break;
 				} else if (length == 1){
 					this.beatgridPreview[i].classList.add("tone-selected-preview");
@@ -610,6 +592,25 @@ export class EditPage {
 				}
 			}
 		}
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////
+	//			Support Functions
+	//////////////////////////////////////////////////////////////////////////
+
+	//just a small fun function that allows you to clone what you created in the first measure to all the other measures.
+	//probably will never be used in the release, but it's a good for testing things quickly.
+	cloneFirstMeasure(){
+		for(let i: number = 0; i < this.sound.beatGrid.length; i++){
+			for(let j: number = 0; j < 8; j++){
+				this.sound.setBeatGridAtPos(i, j + 8, this.sound.getBeatGrid()[i][j]);
+				this.sound.setBeatGridAtPos(i, j + 16, this.sound.getBeatGrid()[i][j]);
+				this.sound.setBeatGridAtPos(i, j + 24, this.sound.getBeatGrid()[i][j]);
+			}
+		}
+
+		this.reloadGrid();
 	}
 
 }
