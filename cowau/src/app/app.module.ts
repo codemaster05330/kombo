@@ -25,7 +25,6 @@ import { NewSoundPopoverPage } from '../newsound-popover/newsound-popover';
 import { ThrowItPopoverPage } from '../throwit-popover/throwit-popover';
 
 import { VisualPage } from '../pages/visual/visual';
-import { ServerPage } from '../pages/server/server';
 
 //services
 import { GesturesService } from '../services/gestures.service';
@@ -42,7 +41,6 @@ import { Variables } from '../classes/variables';
     IdlePage,
     EditPage,
     VisualPage,
-    ServerPage,
     NewSoundPopoverPage,
     ThrowItPopoverPage,
   ],
@@ -60,7 +58,6 @@ import { Variables } from '../classes/variables';
     IdlePage,
     EditPage,
     VisualPage,
-    ServerPage,
     NewSoundPopoverPage,
     ThrowItPopoverPage,
   ],

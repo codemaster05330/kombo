@@ -8,14 +8,13 @@ import { IdlePage } from '../pages/idle/idle';
 import { EditPage } from '../pages/edit/edit';
 import { EmojiPage } from '../pages/emoji/emoji';
 import { VisualPage } from '../pages/visual/visual';
-import { ServerPage } from '../pages/server/server';
 
 @Component({
 	templateUrl: 'app.html'
 })
 
 export class MyApp {
-	rootPage:any = IdlePage;
+	rootPage:any = VisualPage;
 	// rootPage:any = ServerPage;
 
 	constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
