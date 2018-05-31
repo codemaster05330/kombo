@@ -48,9 +48,7 @@ export class IdlePage {
 		});
     	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
     		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
-    		setTimeout(() => {
-    			this.navCtrl.setRoot(EmojiPage);
-    		}, 500);
+    		this.navCtrl.setRoot(EmojiPage);
     	});
     }
 
