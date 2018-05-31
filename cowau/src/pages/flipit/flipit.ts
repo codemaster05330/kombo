@@ -32,7 +32,6 @@ import { GestureType } from '../../classes/gesture-type';
 export class FlipitPage {
 	popover:Popover;
 	motion_subscription: any;
-	videoSource:string = '../../assets/anim/flipit_android.mp4';
 	videoSource:string = 'assets/anim/flipit_android.mp4';
 	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.IDLE_IN];
 
@@ -52,9 +51,6 @@ export class FlipitPage {
 			this.popover.show(NewSoundPopoverPage, 1000);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			setTimeout(() => {
-				this.navCtrl.setRoot(EditPage);
-			}, 300);
 			this.navCtrl.setRoot(EditPage);
 		});
 
