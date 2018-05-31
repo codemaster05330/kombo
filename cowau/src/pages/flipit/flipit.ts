@@ -33,6 +33,7 @@ export class FlipitPage {
 	popover:Popover;
 	motion_subscription: any;
 	videoSource:string = '../../assets/anim/flipit_android.mp4';
+	videoSource:string = 'assets/anim/flipit_android.mp4';
 	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.IDLE_IN];
 
 	@ViewChild('videoPlayer') videoplayer: any;
@@ -54,6 +55,7 @@ export class FlipitPage {
 			setTimeout(() => {
 				this.navCtrl.setRoot(EditPage);
 			}, 300);
+			this.navCtrl.setRoot(EditPage);
 		});
 
 		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
