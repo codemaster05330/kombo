@@ -33,22 +33,25 @@ export class GesturesService {
 	outOfIdleArray:Array<any> = new Array<any>();
 
 	throwTimeout:boolean = false;
+	flipTimeout:boolean = false;
 	idleOutTimeout:boolean = false;
 	idleInTimeout:boolean = false;
 
 	stillStandingTreshold:number = 3;
-	
-	constructor(public devMotion:DeviceMotion, public gyro:Gyroscope, public platform:Platform, public events:Events) {}
 
-	public watchForGesture(watchForEvents:Array<GestureType>, timeForGesture:number = 3000, frequency:number = 50) {
-		console.log('Events ', JSON.stringify(watchForEvents));
+	watchForEvents:Array<GestureType> = new Array<GestureType>();
+	timeForGesture:number = 3000;
+	frequency:number = 50;
+	
+	constructor(public devMotion:DeviceMotion, public gyro:Gyroscope, public platform:Platform, public events:Events) {
+		console.log('Constructo: Events ', JSON.stringify(this.watchForEvents));
 
 
 		let motionOpts:DeviceMotionAccelerometerOptions = {
-			frequency: frequency
+			frequency: this.frequency
 		}
 
-		let arraySize = timeForGesture / motionOpts.frequency;
+		let arraySize = this.timeForGesture / motionOpts.frequency;
 
 		let timeTillIdle = 10000; //later 10000
 		let arraySizeIdle = timeTillIdle / motionOpts.frequency;
@@ -66,24 +69,32 @@ export class GesturesService {
 			if(acceleration) {
 				this.getAccelerationMedianXYZ(acceleration, arraySize);
 				
-				if(watchForEvents.indexOf(GestureType.IDLE_OUT) != -1 && !this.idleOutTimeout) {
+				if(this.watchForEvents.indexOf(GestureType.IDLE_OUT) != -1 && !this.idleOutTimeout) {
 					this.noIdleMode(arraySizeIdleOut, acceleration);
 				}
 
-				if(watchForEvents.indexOf(GestureType.FLIPPED) != -1) {
+				if(this.watchForEvents.indexOf(GestureType.FLIPPED) != -1 && !this.flipTimeout) {
 					this.isFlipItGesture(arraySize, acceleration);
 				}
 
-				if(watchForEvents.indexOf(GestureType.THROWN) != -1 && !this.throwTimeout) {
+				if(this.watchForEvents.indexOf(GestureType.THROWN) != -1 && !this.throwTimeout) {
 					this.throwItGesture(arraySize, acceleration);
 				}
 
-				if(watchForEvents.indexOf(GestureType.IDLE_IN) != -1 && !this.idleInTimeout) {
+				if(this.watchForEvents.indexOf(GestureType.IDLE_IN) != -1 && !this.idleInTimeout) {
 					this.isIdleMode(arraySizeIdle, acceleration);
 				}
 			}
 			
 		});
+	}
+
+	public watchForGesture(watchForEvents:Array<GestureType>, timeForGesture:number = 3000, frequency:number = 50) {
+		this.watchForEvents = watchForEvents
+		this.timeForGesture = timeForGesture;
+		this.frequency = frequency;
+
+		console.log(this.watchForEvents);
 	}
 
 	private noIdleMode(arraySize:number, acceleration:DeviceMotionAccelerationData) {
@@ -111,7 +122,9 @@ export class GesturesService {
 		if(this.countAccelerationDataForFlip == (arraySize-1)) {
 			this.countAccelerationDataForFlip = 0;
 		} else {
-			this.countAccelerationDataForFlip++;
+			if(this.flipArray[0]) {
+				this.countAccelerationDataForFlip++;
+			}
 		}
 
 		let flipDown:boolean = false;
@@ -121,36 +134,38 @@ export class GesturesService {
 		let checkFlip:boolean = true;
 
 		this.gyro.getCurrent().then((orientation:GyroscopeOrientation) => {
-			this.flipArray[this.countAccelerationDataForFlip] = {devmo: acceleration, gyro: orientation};
+			if(orientation) {
+				this.flipArray[this.countAccelerationDataForFlip] = {devmo: acceleration, gyro: orientation};
 
-			if(acceleration.z < (this.acMedianZ - this.stillStandingTreshold) || acceleration.z > (this.acMedianZ + this.stillStandingTreshold)) {
-				this.flipArray.forEach((value, index) => {
-					//check acceleration state
-					if(value.devmo.z < -8) {
-						flipDown = true;
-					}
-					if(value.devmo.z > 8) {
-						flipUp = true;
-					}
+				if(acceleration.z < (this.acMedianZ - this.stillStandingTreshold) || acceleration.z > (this.acMedianZ + this.stillStandingTreshold)) {
+					this.flipArray.forEach((value, index) => {
+						//check acceleration state
+						if(value.devmo.z < -8) {
+							flipDown = true;
+						}
+						if(value.devmo.z > 8) {
+							flipUp = true;
+						}
 
-					//check gyro state
-					if(value.gyro.y > 4) {
-						flipGyroUp = true;
-					}
-					if(value.gyro.y < -4){
-						flipGyroDown = true;
-					}
-					
-					//controll check
-					if(value.devmo.y > (this.acMedianY + this.stillStandingTreshold) || value.devmo.y < (this.acMedianY - this.stillStandingTreshold)) {
-						checkFlip = false;
-					}
-				});
+						//check gyro state
+						if(value.gyro.y > 3) {
+							flipGyroUp = true;
+						}
+						if(value.gyro.y < -3){
+							flipGyroDown = true;
+						}
+						
+						//controll check
+						if(value.devmo.y > (this.acMedianY + this.stillStandingTreshold) || value.devmo.y < (this.acMedianY - this.stillStandingTreshold)) {
+							checkFlip = false;
+						}
+					});
 
-				if(flipDown && flipUp && flipGyroUp && flipGyroDown && checkFlip && !this.idleOutTimeout) {
-					flipDown = flipUp = flipGyroDown = flipGyroUp = false;
-					this.sendEvent(GestureType.FLIPPED, acceleration);
-					console.log('FLIPPED');
+					if(flipDown && flipUp && flipGyroUp && flipGyroDown && checkFlip && !this.idleOutTimeout) {
+						flipDown = flipUp = flipGyroDown = flipGyroUp = false;
+						this.sendEvent(GestureType.FLIPPED, acceleration);
+						console.log('FLIPPED');
+					}
 				}
 			}
 		});
@@ -160,11 +175,10 @@ export class GesturesService {
 		if(this.countAccelerationDataForThrow == (arraySize-1)) {
 			this.countAccelerationDataForThrow = 0;
 		} else {
-			this.countAccelerationDataForThrow++;
+			if(this.throwArray[0]) {
+				this.countAccelerationDataForThrow++;
+			}
 		}
-
-		// console.log(this.countAccelerationDataForThrow);
-		// console.log(JSON.stringify(this.throwArray));
 
 		this.gyro.getCurrent().then((orientation:GyroscopeOrientation) => {
 			this.throwArray[this.countAccelerationDataForThrow] = { acce: acceleration, gyro: orientation };
@@ -199,7 +213,7 @@ export class GesturesService {
 
 				if(startIndexBack != -1) {
 					for(let i=startIndexBack; i<this.throwArray.length; i++) {
-						if(!endFor) {
+						if(!endFor && this.throwArray[i] != null) {
 							if(gyroRightRotate) {
 								if(this.throwArray[i].acce.x > 8) {
 									startIndex = i;
@@ -220,9 +234,8 @@ export class GesturesService {
 				}
 
 				if(startIndex != -1) {
-					// console.log('startIndex: ' + startIndex);
 					for(let i=startIndex; i<this.throwArray.length; i++) {
-						if(!endLastFor) {
+						if(!endLastFor && this.throwArray[i] != null) {
 							if(backAccRight && gyroRightRotate && this.throwArray[i].acce.x < -15) {
 								this.sendEvent(GestureType.THROWN, this.throwArray[i]);
 								console.log('THROWN RIGHT');
@@ -299,11 +312,11 @@ export class GesturesService {
 	public stopGestureWatch(ev:Events, name:GestureType) {
 		console.log('stop Events ', JSON.stringify(ev));
 		ev.unsubscribe(name.toString());
-		this.devMotionSubscription.unsubscribe();
+		// this.devMotionSubscription.unsubscribe();
 	}
 
 	private sendEvent(name:GestureType, value:any) {
-		console.log('send event', name);
+		console.log('send event', name.toString());
 		this.events.publish(name.toString(), value);
 		this.resetAllArraysAndCountersForEvents();
 	}
@@ -332,8 +345,8 @@ export class GesturesService {
 		this.countAccelerationDataForFlip = 0;
 		// this.countAccelerationDataForIdle = 0;
 		this.countAccelerationDataForNoMoreIdle= 0;
-		this.flipArray= new Array<any>();
-		this.throwArray= new Array<any>();
+		this.flipArray = new Array<any>();
+		this.throwArray = new Array<any>();
 		// this.goToIdleArray= new Array<any>();
 		this.outOfIdleArray = new Array<any>();
 
@@ -344,6 +357,13 @@ export class GesturesService {
 		this.throwTimeout = true;
 	    setTimeout(() => {
 	    	this.throwTimeout = false;
+	    }, time);
+	}
+
+	private startFlipTimer(time:number = 500) {
+		this.flipTimeout = true;
+	    setTimeout(() => {
+	    	this.flipTimeout = false;
 	    }, time);
 	}
 
