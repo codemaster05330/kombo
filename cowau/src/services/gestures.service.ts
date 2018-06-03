@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Platform, Events } from 'ionic-angular';
 
 //ionic native imports
-import { Gyroscope, GyroscopeOrientation } from '@ionic-native/gyroscope';
+// import { Gyroscope, GyroscopeOrientation } from '@ionic-native/gyroscope';
 import { DeviceMotion, DeviceMotionAccelerationData, DeviceMotionAccelerometerOptions } from '@ionic-native/device-motion';
 
 //classes
@@ -43,7 +43,8 @@ export class GesturesService {
 	timeForGesture:number = 3000;
 	frequency:number = 50;
 	
-	constructor(public devMotion:DeviceMotion, public gyro:Gyroscope, public platform:Platform, public events:Events) {
+	// constructor(public devMotion:DeviceMotion, public gyro:Gyroscope, public platform:Platform, public events:Events) {
+	constructor(public devMotion:DeviceMotion, public platform:Platform, public events:Events) {
 		console.log('Constructo: Events ', JSON.stringify(this.watchForEvents));
 
 
@@ -133,9 +134,10 @@ export class GesturesService {
 		let flipGyroUp:boolean = false;
 		let checkFlip:boolean = true;
 
-		this.gyro.getCurrent().then((orientation:GyroscopeOrientation) => {
-			if(orientation) {
-				this.flipArray[this.countAccelerationDataForFlip] = {devmo: acceleration, gyro: orientation};
+		// this.gyro.getCurrent().then((orientation:GyroscopeOrientation) => {
+			// if(orientation) {
+				// this.flipArray[this.countAccelerationDataForFlip] = {devmo: acceleration, gyro: orientation};
+				this.flipArray[this.countAccelerationDataForFlip] = {devmo: acceleration};
 
 				if(acceleration.z < (this.acMedianZ - this.stillStandingTreshold) || acceleration.z > (this.acMedianZ + this.stillStandingTreshold)) {
 					this.flipArray.forEach((value, index) => {
@@ -148,12 +150,12 @@ export class GesturesService {
 						}
 
 						//check gyro state
-						if(value.gyro.y > 3) {
-							flipGyroUp = true;
-						}
-						if(value.gyro.y < -3){
-							flipGyroDown = true;
-						}
+						// if(value.gyro.y > 3) {
+						// 	flipGyroUp = true;
+						// }
+						// if(value.gyro.y < -3){
+						// 	flipGyroDown = true;
+						// }
 						
 						//controll check
 						if(value.devmo.y > (this.acMedianY + this.stillStandingTreshold) || value.devmo.y < (this.acMedianY - this.stillStandingTreshold)) {
@@ -161,14 +163,15 @@ export class GesturesService {
 						}
 					});
 
-					if(flipDown && flipUp && flipGyroUp && flipGyroDown && checkFlip && !this.idleOutTimeout) {
+					// if(flipDown && flipUp && flipGyroUp && flipGyroDown && checkFlip && !this.idleOutTimeout) {
+					if(flipDown && flipUp && checkFlip && !this.idleOutTimeout) {		
 						flipDown = flipUp = flipGyroDown = flipGyroUp = false;
 						this.sendEvent(GestureType.FLIPPED, acceleration);
 						console.log('FLIPPED');
 					}
 				}
-			}
-		});
+		// 	}
+		// });
 	}
 
 	private throwItGesture(arraySize:number, acceleration:DeviceMotionAccelerationData) {
@@ -180,8 +183,9 @@ export class GesturesService {
 			}
 		}
 
-		this.gyro.getCurrent().then((orientation:GyroscopeOrientation) => {
-			this.throwArray[this.countAccelerationDataForThrow] = { acce: acceleration, gyro: orientation };
+		// this.gyro.getCurrent().then((orientation:GyroscopeOrientation) => {
+			// this.throwArray[this.countAccelerationDataForThrow] = { acce: acceleration, gyro: orientation };
+			this.throwArray[this.countAccelerationDataForThrow] = { acce: acceleration };
 
 			if(this.throwArray.length > 0) {
 				let startIndex = -1;
@@ -196,47 +200,49 @@ export class GesturesService {
 				let endForRotate = false;
 				let endLastFor = false;
 
-				this.throwArray.forEach((value, index) => {
-					if(!endForRotate) {
-						if(value.gyro.y < -2) {
-							gyroRightRotate = true;
-							startIndexBack = index;
-							endForRotate = true;
-						}
-						if(value.gyro.y > 2) {
-							gyroLeftRotate = true;
-							startIndexBack = index;
-							endForRotate = true;
-						}
-					}
-				});
+				// this.throwArray.forEach((value, index) => {
+				// 	if(!endForRotate) {
+				// 		if(value.gyro.y < -2) {
+				// 			gyroRightRotate = true;
+				// 			startIndexBack = index;
+				// 			endForRotate = true;
+				// 		}
+				// 		if(value.gyro.y > 2) {
+				// 			gyroLeftRotate = true;
+				// 			startIndexBack = index;
+				// 			endForRotate = true;
+				// 		}
+				// 	}
+				// });
 
-				if(startIndexBack != -1) {
-					for(let i=startIndexBack; i<this.throwArray.length; i++) {
+				// if(startIndexBack != -1) {
+					// for(let i=startIndexBack; i<this.throwArray.length; i++) {
+					for(let i=0; i<this.throwArray.length; i++) {
 						if(!endFor && this.throwArray[i] != null) {
-							if(gyroRightRotate) {
+							// if(gyroRightRotate) {
 								if(this.throwArray[i].acce.x > 8) {
 									startIndex = i;
 									backAccRight = true;
 									endFor = true;
 								}
-							}
+							// }
 							
-							if(gyroLeftRotate) {
+							// if(gyroLeftRotate) {
 								if(this.throwArray[i].acce.x < -8) {
 									startIndex = i;
 									backAccLeft = true;
 									endFor = true;
 								}
-							}
+							// }
 						}
 					}
-				}
+				// }
 
 				if(startIndex != -1) {
 					for(let i=startIndex; i<this.throwArray.length; i++) {
 						if(!endLastFor && this.throwArray[i] != null) {
-							if(backAccRight && gyroRightRotate && this.throwArray[i].acce.x < -15) {
+							// if(backAccRight && gyroRightRotate && this.throwArray[i].acce.x < -15) {
+							if(backAccRight && this.throwArray[i].acce.x < -15) {
 								this.sendEvent(GestureType.THROWN, this.throwArray[i]);
 								console.log('THROWN RIGHT');
 								this.startThrowTimer(1000);
@@ -249,7 +255,8 @@ export class GesturesService {
 								backAccLeft = false;
 
 								endLastFor = true;
-							} else if(backAccLeft && gyroLeftRotate && this.throwArray[i].acce.x > 15) {
+							// } else if(backAccLeft && gyroLeftRotate && this.throwArray[i].acce.x > 15) {
+							} else if(backAccLeft && this.throwArray[i].acce.x > 15) {
 								console.log('THROWN LEFT');
 								this.sendEvent(GestureType.THROWN, this.throwArray[i]);
 								this.startThrowTimer(1000);
@@ -267,7 +274,7 @@ export class GesturesService {
 					}
 				}
 			}
-		});
+		// });
 	}
 
 	private isIdleMode(arraySize:number, acceleration:DeviceMotionAccelerationData) {
