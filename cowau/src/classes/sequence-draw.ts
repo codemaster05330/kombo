@@ -7,7 +7,6 @@
 
 import {SoundWave} from './sound-wave';
 
-
 export class SequenceDraw {
 
     radius:number;                                                                  // radius of the sequence
@@ -21,7 +20,7 @@ export class SequenceDraw {
     emojiImg:any;                                                                   // Create new object
     velocity:any;                                                                   // The velocity of each object
     ctx:any;                                                                        // Canvas Object
-    sequenceArray:any;                                                                // Sound Array Objects
+    sequenceArray:any;                                                              // Sound Array Objects
     canvasWidth:number;                                                             // Width of the Canvas Object
     canvasHeight:number;                                                            // Hight of the Canvas Object
     ratio:number;                                                                   // Value of the Screen Ratio
@@ -62,6 +61,7 @@ export class SequenceDraw {
         this.canvasHeight   = canvasHeight;                                         // Hight of the Canvas Object
 
         // Emoji
+		if(this.emoji == null) { this.emoji = 0; }
         this.emojiImg.src   = '../../assets/imgs/' + this.emoji + '.svg';
 
 	}
@@ -83,9 +83,10 @@ export class SequenceDraw {
         if(this.mass <= 50) {this.mass = 50;}
 
         this.soundWaves.forEach((soundwave:SoundWave) => {
-            if(soundwave.returnSoundWave() == 0) {
-                this.soundWaves.splice(this.soundWaves.indexOf(soundwave),1);
-            }
+			console.log('test');
+            // if(soundwave.returnSoundWave() == 0) {
+            //     this.soundWaves.splice(this.soundWaves.indexOf(soundwave),1);
+            // }
             soundwave.updateSoundWave();
         })
 
@@ -182,7 +183,6 @@ export class SequenceDraw {
         };
         return rotatedVelocities;
     }
-
 
     // Calculates the physical changes in a collision between two objects.
     // This requires mass, acceleration and direction.

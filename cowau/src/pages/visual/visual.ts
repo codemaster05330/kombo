@@ -38,9 +38,7 @@ export class VisualPage {
     ionViewDidLoad() {
 
         this.initMetrics();
-        this.observeServer().subscribe(data => {
-
-        });
+        this.observeServer().subscribe(data => {});
 
         // Create a new sound element just for testing
         // this part of the code can be removed in the final version
@@ -65,7 +63,9 @@ export class VisualPage {
     observeServer() {
         let observable = new Observable(observer => {
             this.socket.on('new-sequence', (data)=> {
+
                 console.log('New Sequence');
+
                 let m = 0;                                                      // Mass of the Sequence Object
 
                 // Method to define the Size/Mass of the Sequence Objects
@@ -114,7 +114,7 @@ export class VisualPage {
         .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
             this.metricSync.start(sendFunction, receiveFunction).then(() => {
                 this.metricSync.addMetronome((measure, beat) => {
-                    // console.log('metro:', measure, beat);
+					console.log('metro:', measure, beat);
                     this.sequenceArray.forEach(soundArray => {
                         for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
     						if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
@@ -126,7 +126,7 @@ export class VisualPage {
                 }, 8, 8);
             });
         }).catch(function(err) {
-            // console.log("loader error:", err.message);
+            console.log("loader error:", err.message);
         });
     }
 
