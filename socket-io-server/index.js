@@ -24,6 +24,8 @@ const broadcastFunction = (cmd, ...args) => io.emit(cmd, ...args);
 const metricSync = new MetricSync(broadcastFunction);
 
 io.on('connection', (socket) => {
+	console.log('connected');
+	
 	const client = new Client(socket);
 
 	socket.on('disconnect', () => {

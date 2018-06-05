@@ -44,12 +44,13 @@ export class IdlePage {
     	platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
 				this.gesturesService.watchForGesture(this.lookOfEvents);
-			}
-		});
-    	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
-    		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
-    		this.navCtrl.setRoot(EmojiPage);
-    	});
+
+            	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
+            		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
+            		this.navCtrl.setRoot(EmojiPage);
+            	});
+            }
+        });
     }
 
     ionViewDidLoad() {
@@ -73,9 +74,9 @@ export class IdlePage {
         // this.draw();
 
         // Start the Sync and the Audio Playback
-        this.initServerConnection().then(() => {
+        // this.initServerConnection().then(() => {
             this.initMetrics();
-        });
+        // });
 
     }
 
@@ -112,7 +113,7 @@ export class IdlePage {
         .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
             this.metricSync.start(sendFunction, receiveFunction).then(() => {
                 this.metricSync.addMetronome((measure, beat) => {
-                    this.playSound(SoundType.Bass,1,1,buffers);                 // Play Sound
+                    // this.playSound(SoundType.Bass,1,1,buffers);                 // Play Sound
                     // console.log('metro:', measure, beat);
                 }, 8, 8);
             });

@@ -9,6 +9,7 @@ import { Sequence, SoundType } from '../../classes/sequence';
 import { GesturesService } from '../../services/gestures.service';
 import { Observable } from 'rxjs/Observable';
 import * as soundsData from '../../assets/sounds/sounds.json';
+import { ServerConnectionService } from '../../services/server-connection.service';
 
 
 const audioContext = audio.audioContext;
@@ -33,7 +34,8 @@ export class VisualPage {
         public navCtrl: NavController,
         public navParams: NavParams,
         private metricSync:MetricSync,
-        private socket:Socket) {}
+        private socket:Socket,
+        private serverCon:ServerConnectionService) {}
 
     ionViewDidLoad() {
 
@@ -65,7 +67,7 @@ export class VisualPage {
     observeServer() {
         let observable = new Observable(observer => {
             this.socket.on('new-sequence', (data)=> {
-                console.log("New Sequence");
+                // console.log("New Sequence");
                 let m = 0;                                                      // Mass of the Sequence Object
 
                 // Method to define the Size/Mass of the Sequence Objects
@@ -91,7 +93,7 @@ export class VisualPage {
                     }
                 }
 
-                console.log(data.type);
+                // console.log(data.type);
                 var newSound = new SequenceDraw(r,x,y,m,data.id,this.ctx,this.soundsArray,this.canvasWidth,this.canvasHeight,this.ratio,data.beatGrid,data.type);
                 this.soundsArray.push(newSound);
 
@@ -127,7 +129,7 @@ export class VisualPage {
                 }, 8, 8);
             });
         }).catch(function(err) {
-            console.log("loader error:", err.message);
+            // console.log("loader error:", err.message);
         });
     }
 

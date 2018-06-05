@@ -86,37 +86,32 @@ export class EditPage {
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
 				this.gesturesService.watchForGesture(this.lookOfEvents);
+				//THROW
+				this.events.subscribe(GestureType.THROWN.toString(), (value) => {
+					// what to do when thrown. TODO: remove comment when gestures are stable, remove the popover page from above
+					this.socket.emit('new-sequence', this.sound);
+					// add a fancy animation for throwing here
+					this.clearSound();
+				});
+				
+				//FLIPPING
+				this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
+					// what to do when flipped. TODO: remove comment when gestures are stable, remove above popover call when it's been rewritten
+					this.sound.nextType();
+					this.globalVars.currentSoundType = this.sound.getType();
+					this.popover.show(NewSoundPopoverPage, 2000);
+				});
+
+				//IDLE IN
+				this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
+					this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);
+					this.gesturesService.stopGestureWatch(this.events,  GestureType.FLIPPED);
+					this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
+					this.navCtrl.setRoot(IdlePage);
+				});
 			}
 		});
 		
-		//THROW
-		this.events.subscribe(GestureType.THROWN.toString(), (value) => {
-			// console.log('thrown event');
-			this.popover.show(ThrowItPopoverPage, 1000);
-			
-			/* // what to do when thrown. TODO: remove comment when gestures are stable, remove the popover page from above
-			this.socket.emit('new-sequence', this.sound);
-			// add a fancy animation for throwing here
-			this.clearSound();
-			*/
-		});
-		
-		//FLIPPING
-		this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
-			this.popover.show(NewSoundPopoverPage, 2000);
-			/* // what to do when flipped. TODO: remove comment when gestures are stable, remove above popover call when it's been rewritten
-			this.sound.nextType();
-			this.popover.show(NewSoundPopoverPage, 2000, this.sound.getType());
-			*/
-		});
-
-		//IDLE IN
-		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
-			this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);
-			this.gesturesService.stopGestureWatch(this.events,  GestureType.FLIPPED);
-			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			this.navCtrl.setRoot(IdlePage);
-		});
 	}
 
 	ionViewDidLoad() {
@@ -144,9 +139,9 @@ export class EditPage {
 
 
 		// init metric sync
-		this.initServerConnection().then(() => {
+		// this.initServerConnection().then(() => {
 			this.initMetrics();
-		});
+		// });
 
 		// debug thingy to test that the sent sequence indeed was sent to the server and can be recieved again.
 		// TODO: can be removed when the visual screen is getting it's sequences from the server correctly
@@ -161,22 +156,22 @@ export class EditPage {
 
 	// connects to the server and prints a success message into the log when connected.
 	// change IP adress in app.module.ts' config var
-	initServerConnection() {
-		const socket = this.socket;
+	// initServerConnection() {
+	// 	const socket = this.socket;
 
-		socket.connect();
-		socket.emit('request');
+	// 	socket.connect();
+	// 	socket.emit('request');
 
-		// client/server handshake
-		const promise = new Promise((resolve, reject) => {
-			socket.on('acknowledge', (data) => {
-				console.log('Connected to server!');
-				resolve();
-			});
-		});
+	// 	// client/server handshake
+	// 	const promise = new Promise((resolve, reject) => {
+	// 		socket.on('acknowledge', (data) => {
+	// 			console.log('Connected to server!');
+	// 			resolve();
+	// 		});
+	// 	});
 
-		return promise;
-	}
+	// 	return promise;
+	// }
 
 	// debug thingy to test that the sent sequence indeed was sent to the server and can be recieved again.
 	// TODO: can be removed when the visual screen is getting it's sequences from the server correctly
@@ -205,8 +200,8 @@ export class EditPage {
 			const sendFunction = (cmd, ...args) => this.socket.emit(cmd, ...args);
 			const receiveFunction = (cmd, args) => this.socket.on(cmd, args);
 			this.metricSync.start(sendFunction, receiveFunction).then(() => {
-				console.log(buffers);
 				this.metricSync.addMetronome((measure, beat) => {
+					console.log(measure, beat);
 					this.moveCursorTo((measure % 4) * 8 + beat);				// Cursor Movement
 					let beatGrid = this.sound.getBeatGrid();
 
@@ -292,10 +287,10 @@ export class EditPage {
 		// this.sound.fillBeatGridAtRandom();
 		// this.sound.setId(1);
 		// this.socket.emit('new-sequence', this.sound);
-		// this.sound.clearBeatGrid();
+		this.sound.clearBeatGrid();
 		this.clearSmallGrid();
-		this.cloneFirstMeasure();
-		// this.reloadGrid();
+		// this.cloneFirstMeasure();
+		this.reloadGrid();
 		// console.log(this.sound.getBeatGrid());
 	}
 

@@ -109,7 +109,7 @@ export class SequenceDraw {
     // Calculates the lifetime for the sequence object.
     public lifeTime() {
         if((this.lifeTimeValue/100) > 0.01) {
-            this.lifeTimeValue = this.lifeTimeValue - 0;
+            this.lifeTimeValue = this.lifeTimeValue - 0.05;
         } else {
             this.soundsArray.splice(this.soundsArray.indexOf(this),1);
         }
