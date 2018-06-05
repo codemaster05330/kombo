@@ -99,6 +99,7 @@ export class VisualPage {
         return observable;
     }
 
+asdasd
     initMetrics() {
         const socket = this.socket;
         const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
