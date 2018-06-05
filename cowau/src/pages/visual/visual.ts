@@ -65,7 +65,6 @@ export class VisualPage {
     observeServer() {
         let observable = new Observable(observer => {
             this.socket.on('new-sequence', (data)=> {
-                console.log("New Sequence");
                 let m = 0;                                                      // Mass of the Sequence Object
 
                 // Method to define the Size/Mass of the Sequence Objects
@@ -91,7 +90,6 @@ export class VisualPage {
                     }
                 }
 
-                console.log(data.type);
                 var newSound = new SequenceDraw(r,x,y,m,data.id,this.ctx,this.soundsArray,this.canvasWidth,this.canvasHeight,this.ratio,data.beatGrid,data.type);
                 this.soundsArray.push(newSound);
 
@@ -120,7 +118,7 @@ export class VisualPage {
                         for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
     						if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
                             soundArray.createSoundWave();
-    							this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], buffers);
+    							this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], buffers, soundArray.returnLifeTime());
     						}
     					}
                     });
@@ -132,13 +130,17 @@ export class VisualPage {
     }
 
     // Function that plays specific sounds when needed.
-    playSound(type:SoundType,pitch:number,length:number,buffers) {
+    playSound(type:SoundType,pitch:number,length:number,buffers,volume:number) {
         // Get Time from Server
         const time = audioScheduler.currentTime;                                // Sync Time
         const src = audioContext.createBufferSource();                          // Create Source
+        var gainNode = src.createGain();
 
         // Play Audio File
         src.connect(audioContext.destination);                                  // Connect Autio Context
+        src.connect(gainNode);
+        gainNode.connect(src.destination);
+        gainNode.gain.value = (volume/100);
         src.buffer = buffers[((type)*5)+pitch];                                 // Define witch sound the fucktion is playing
         src.start(time);                                                        // Start Sound
     }

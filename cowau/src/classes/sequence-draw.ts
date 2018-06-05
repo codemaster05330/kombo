@@ -66,13 +66,9 @@ export class SequenceDraw {
 
 	}
 
-    returnSoundArt() : number {
-        return this.sequenceType;
-    }
-
-    retrunBeatGrid() : number[] {
-        return this.beatGrid;
-    }
+    returnSoundArt() : number { return this.sequenceType; }
+    retrunBeatGrid() : number[] { return this.beatGrid; }
+    returnLifeTime() : number { return this.lifeTimeValue; }
 
     // Function to update the sequence element
     // this function is used for Collision ditection,
@@ -108,8 +104,8 @@ export class SequenceDraw {
     // TODO: Change this to a real LifeTime calculation.
     // Calculates the lifetime for the sequence object.
     public lifeTime() {
-        if((this.lifeTimeValue/100) > 0.01) {
-            this.lifeTimeValue = this.lifeTimeValue - 0;
+        if((this.lifeTimeValue/100) == 0.05) {
+            this.lifeTimeValue = this.lifeTimeValue - 0.05;
         } else {
             this.soundsArray.splice(this.soundsArray.indexOf(this),1);
         }
