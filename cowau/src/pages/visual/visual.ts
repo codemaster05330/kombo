@@ -6,7 +6,6 @@ import * as audio from 'waves-audio';
 import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
 import { Sequence, SoundType } from '../../classes/sequence';
-import { GesturesService } from '../../services/gestures.service';
 import { Observable } from 'rxjs/Observable';
 import * as soundsData from '../../assets/sounds/sounds.json';
 import { ServerConnectionService } from '../../services/server-connection.service';
