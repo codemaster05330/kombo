@@ -36,7 +36,6 @@ export class IdlePage {
     constructor(
         private navCtrl: NavController,
         public navParams: NavParams,
-        private platform:Platform,
         private events:Events,
         private socket:Socket,
     	private metricSync:MetricSync,
@@ -46,17 +45,13 @@ export class IdlePage {
         if(globalVars.emojiID != null) {
             socket.emit('free-emoji', globalVars.emojiID);
         }
+        
+		this.gesturesService.watchForGesture(this.lookOfEvents);
 
-    	platform.ready().then((readySource) => {
-			if(readySource == 'cordova' || readySource == 'mobile') {
-				this.gesturesService.watchForGesture(this.lookOfEvents);
-
-            	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
-            		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
-            		this.navCtrl.setRoot(EmojiPage);
-            	});
-            }
-        });
+    	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
+    		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
+    		this.navCtrl.setRoot(EmojiPage);
+    	});
     }
 
     ionViewDidLoad() {

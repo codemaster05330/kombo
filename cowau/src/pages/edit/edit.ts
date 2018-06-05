@@ -83,33 +83,30 @@ export class EditPage {
 
 		//Start Gesture Events
 		this.popover = new Popover(popoverCtrl);
-		platform.ready().then((readySource) => {
-			if(readySource == 'cordova' || readySource == 'mobile') {
-				this.gesturesService.watchForGesture(this.lookOfEvents);
-				//THROW
-				this.events.subscribe(GestureType.THROWN.toString(), (value) => {
-					// what to do when thrown. TODO: remove comment when gestures are stable, remove the popover page from above
-					this.socket.emit('new-sequence', this.sound);
-					// add a fancy animation for throwing here
-					this.clearSound();
-				});
-				
-				//FLIPPING
-				this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
-					// what to do when flipped. TODO: remove comment when gestures are stable, remove above popover call when it's been rewritten
-					this.sound.nextType();
-					this.globalVars.currentSoundType = this.sound.getType();
-					this.popover.show(NewSoundPopoverPage, 2000);
-				});
+		
+		this.gesturesService.watchForGesture(this.lookOfEvents);
+		//THROW
+		this.events.subscribe(GestureType.THROWN.toString(), (value) => {
+			// what to do when thrown. TODO: remove comment when gestures are stable, remove the popover page from above
+			this.socket.emit('new-sequence', this.sound);
+			// add a fancy animation for throwing here
+			this.clearSound();
+		});
+		
+		//FLIPPING
+		this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
+			// what to do when flipped. TODO: remove comment when gestures are stable, remove above popover call when it's been rewritten
+			this.sound.nextType();
+			this.globalVars.currentSoundType = this.sound.getType();
+			this.popover.show(NewSoundPopoverPage, 2000);
+		});
 
-				//IDLE IN
-				this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
-					this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);
-					this.gesturesService.stopGestureWatch(this.events,  GestureType.FLIPPED);
-					this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-					this.navCtrl.setRoot(IdlePage);
-				});
-			}
+		//IDLE IN
+		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
+			this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);
+			this.gesturesService.stopGestureWatch(this.events,  GestureType.FLIPPED);
+			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
+			this.navCtrl.setRoot(IdlePage);
 		});
 		
 	}

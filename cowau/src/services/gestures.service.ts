@@ -45,9 +45,6 @@ export class GesturesService {
 	
 	// constructor(public devMotion:DeviceMotion, public gyro:Gyroscope, public platform:Platform, public events:Events) {
 	constructor(public devMotion:DeviceMotion, public platform:Platform, public events:Events) {
-		// console.log('Constructo: Events ', JSON.stringify(this.watchForEvents));
-
-
 		let motionOpts:DeviceMotionAccelerometerOptions = {
 			frequency: this.frequency
 		}
@@ -60,34 +57,41 @@ export class GesturesService {
 		let timeOutOfIdle = 500;
 		let arraySizeIdleOut = timeOutOfIdle / motionOpts.frequency;
 
-		this.countAccelerationDataForIdle = 0;
-		this.countAccelerationDataForMedian = 0;
-		this.countAccelerationDataForThrow = 0;
-		this.countAccelerationDataForFlip = 0;
-		this.countAccelerationDataForNoMoreIdle = 0;
+		
+		platform.ready().then((readySource) => {
+			if(readySource == 'cordova' || readySource == 'mobile') {
+				this.countAccelerationDataForIdle = 0;
+				this.countAccelerationDataForMedian = 0;
+				this.countAccelerationDataForThrow = 0;
+				this.countAccelerationDataForFlip = 0;
+				this.countAccelerationDataForNoMoreIdle = 0;
 
-		this.devMotionSubscription = this.devMotion.watchAcceleration(motionOpts).subscribe((acceleration:DeviceMotionAccelerationData) => {
-			if(acceleration) {
-				this.getAccelerationMedianXYZ(acceleration, arraySize);
-				
-				if(this.watchForEvents.indexOf(GestureType.IDLE_OUT) != -1 && !this.idleOutTimeout) {
-					this.noIdleMode(arraySizeIdleOut, acceleration);
-				}
+				this.devMotionSubscription = this.devMotion.watchAcceleration(motionOpts).subscribe((acceleration:DeviceMotionAccelerationData) => {
+					if(acceleration) {
+						this.getAccelerationMedianXYZ(acceleration, arraySize);
+						
+						if(this.watchForEvents.indexOf(GestureType.IDLE_OUT) != -1 && !this.idleOutTimeout) {
+							this.noIdleMode(arraySizeIdleOut, acceleration);
+						}
 
-				if(this.watchForEvents.indexOf(GestureType.FLIPPED) != -1 && !this.flipTimeout) {
-					this.isFlipItGesture(arraySize, acceleration);
-				}
+						if(this.watchForEvents.indexOf(GestureType.FLIPPED) != -1 && !this.flipTimeout) {
+							this.isFlipItGesture(arraySize, acceleration);
+						}
 
-				if(this.watchForEvents.indexOf(GestureType.THROWN) != -1 && !this.throwTimeout) {
-					this.throwItGesture(arraySize, acceleration);
-				}
+						if(this.watchForEvents.indexOf(GestureType.THROWN) != -1 && !this.throwTimeout) {
+							this.throwItGesture(arraySize, acceleration);
+						}
 
-				if(this.watchForEvents.indexOf(GestureType.IDLE_IN) != -1 && !this.idleInTimeout) {
-					this.isIdleMode(arraySizeIdle, acceleration);
-				}
+						if(this.watchForEvents.indexOf(GestureType.IDLE_IN) != -1 && !this.idleInTimeout) {
+							this.isIdleMode(arraySizeIdle, acceleration);
+						}
+					}
+					
+				});
 			}
-			
-		});
+		})
+
+
 	}
 
 	public watchForGesture(watchForEvents:Array<GestureType>, timeForGesture:number = 1000, frequency:number = 50) {

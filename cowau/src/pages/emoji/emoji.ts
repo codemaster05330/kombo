@@ -32,18 +32,14 @@ import { Socket } from 'ng-socket-io';
 export class EmojiPage {
 	lookOfEvents:Array<GestureType> = [GestureType.IDLE_IN];
 
-	constructor(private navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events,
+	constructor(private navCtrl: NavController, public navParams: NavParams, private events:Events,
 			public globalVars: Variables, private gesturesService:GesturesService, private socket:Socket) {
-		platform.ready().then((readySource) => {
-			if(readySource == 'cordova' || readySource == 'mobile') {
-				this.gesturesService.watchForGesture(this.lookOfEvents);
-				events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
-					this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-					this.navCtrl.setRoot(IdlePage);
-				});
-			}
-		});
 		
+		this.gesturesService.watchForGesture(this.lookOfEvents);
+		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
+			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
+			this.navCtrl.setRoot(IdlePage);
+		});
 
 		
 		// this.initServerConnection();
