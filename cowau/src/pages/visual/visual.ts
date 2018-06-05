@@ -10,6 +10,7 @@ import { GesturesService } from '../../services/gestures.service';
 import { Observable } from 'rxjs/Observable';
 import * as soundsData from '../../assets/sounds/sounds.json';
 
+
 const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
 
@@ -36,8 +37,6 @@ export class VisualPage {
 
     ionViewDidLoad() {
 
-        // Connect to server
-        this.initServerConnection();
         this.initMetrics();
         this.observeServer().subscribe(data => {
 
@@ -61,20 +60,6 @@ export class VisualPage {
         // Start the Canvas Animation
         this.draw();
 
-    }
-
-    initServerConnection() {
-        const socket = this.socket;
-    	socket.connect();
-    	socket.emit('request');
-        // client/server handshake
-        const promise = new Promise((resolve, reject) => {
-            socket.on('acknowledge', (data) => {
-                console.log('Connected to server!');
-                resolve();
-            });
-        });
-        return promise;
     }
 
     observeServer() {
@@ -130,7 +115,7 @@ export class VisualPage {
         .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
             this.metricSync.start(sendFunction, receiveFunction).then(() => {
                 this.metricSync.addMetronome((measure, beat) => {
-                    console.log('metro:', measure, beat);
+                    // console.log('metro:', measure, beat);
                     this.soundsArray.forEach(soundArray => {
                         for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
     						if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){

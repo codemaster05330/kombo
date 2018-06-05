@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule, Popover } from 'ionic-angular';
 import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
-const config: SocketIoConfig = { url: 'http://141.28.131.26:3001', options: {} };
+const config: SocketIoConfig = { url: 'http://141.28.133.175:3001', options: {} };
 
 import { HttpModule } from '@angular/http';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -29,6 +29,7 @@ import { VisualPage } from '../pages/visual/visual';
 //services
 import { GesturesService } from '../services/gestures.service';
 import { MetricSync } from '../services/metric-sync.service';
+import { ServerConnectionService } from '../services/server-connection.service';
 
 //classes
 import { Variables } from '../classes/variables';
@@ -70,6 +71,7 @@ import { Variables } from '../classes/variables';
     Variables,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     MetricSync,
+    ServerConnectionService
   ]
 })
 export class AppModule {}
