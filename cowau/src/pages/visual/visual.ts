@@ -10,7 +10,6 @@ import { Observable } from 'rxjs/Observable';
 import * as soundsData from '../../assets/sounds/sounds.json';
 import { ServerConnectionService } from '../../services/server-connection.service';
 
-
 const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
 
@@ -21,13 +20,13 @@ const audioScheduler = audio.getScheduler();
 
 export class VisualPage {
 
-    cvs : any;                                                      // Define the Canvas Element
-    ctx : any;                                                      // Setup the Canvas to 2D
-    ratio : number          = window.devicePixelRatio               // Define the DPI of the Screen
-    fps : number            = 60;                                   // FPS of the Canvas
-    canvasWidth : number    = window.innerWidth;                    // Hight of the Canvas
-    canvasHeight : number   = window.innerHeight;                   // Width of the Canvas
-    soundsArray:Array<SequenceDraw>  = [];                          // Array of all circles
+    cvs : any;                                                                  // Define the Canvas Element
+    ctx : any;                                                                  // Setup the Canvas to 2D
+    ratio : number          = window.devicePixelRatio                           // Define the DPI of the Screen
+    fps : number            = 60;                                               // FPS of the Canvas
+    canvasWidth : number    = window.innerWidth;                                // Hight of the Canvas
+    canvasHeight : number   = window.innerHeight;                               // Width of the Canvas
+    sequenceArray:Array<SequenceDraw>  = [];                                    // Array of all circles
 
     constructor(
         public navCtrl: NavController,
@@ -51,12 +50,12 @@ export class VisualPage {
         // Create a canvas with the max size of the device
         // and create a canvas with a higher DPI as the "Max-Size"
         // so everything is sharp as fuck
-        this.cvs.width = this.canvasWidth * this.ratio;          // Multiply the width, with the DPI Scale
-        this.cvs.height = this.canvasHeight * this.ratio;        // Multiply the width, with the DPI Scal
-        this.cvs.style.width = this.canvasWidth + 'px';          // Set the width in the canvas
-        this.cvs.style.height = this.canvasHeight + 'px';        // Set the hight in the canvas
-        this.canvasWidth = this.canvasWidth * this.ratio;        // Set the widdth of the canvas
-        this.canvasHeight = this.canvasHeight * this.ratio;      // Set the hight of the canvas
+        this.cvs.width = this.canvasWidth * this.ratio;                         // Multiply the width, with the DPI Scale
+        this.cvs.height = this.canvasHeight * this.ratio;                       // Multiply the width, with the DPI Scal
+        this.cvs.style.width = this.canvasWidth + 'px';                         // Set the width in the canvas
+        this.cvs.style.height = this.canvasHeight + 'px';                       // Set the hight in the canvas
+        this.canvasWidth = this.canvasWidth * this.ratio;                       // Set the widdth of the canvas
+        this.canvasHeight = this.canvasHeight * this.ratio;                     // Set the hight of the canvas
 
         // Start the Canvas Animation
         this.draw();
@@ -66,6 +65,7 @@ export class VisualPage {
     observeServer() {
         let observable = new Observable(observer => {
             this.socket.on('new-sequence', (data)=> {
+                console.log('New Sequence');
                 let m = 0;                                                      // Mass of the Sequence Object
 
                 // Method to define the Size/Mass of the Sequence Objects
@@ -81,18 +81,18 @@ export class VisualPage {
                 let c = 0;                                                      // Count Value
                 let r = m*this.ratio*1.5;                                       // Size of the Sequence Object
 
-                for(let j = 0; j < this.soundsArray.length; j++){
+                for(let j = 0; j < this.sequenceArray.length; j++){
                     if(c >= 20) {break;}
                     c++;
-                    if(this.getDistance(x,this.soundsArray[j].x, y, this.soundsArray[j].y, r, this.soundsArray[j].radius) < 0 ){
+                    if(this.getDistance(x,this.sequenceArray[j].x, y, this.sequenceArray[j].y, r, this.sequenceArray[j].radius) < 0 ){
                         x = this.returnRandomValue(0+r,this.canvasWidth-r);
                         y = this.returnRandomValue(0+r,this.canvasHeight-r);
                         j = -1;
                     }
                 }
 
-                var newSound = new SequenceDraw(r,x,y,m,data.id,this.ctx,this.soundsArray,this.canvasWidth,this.canvasHeight,this.ratio,data.beatGrid,data.type);
-                this.soundsArray.push(newSound);
+                var newSound = new SequenceDraw(r,x,y,m,data.id,this.ctx,this.sequenceArray,this.canvasWidth,this.canvasHeight,this.ratio,data.beatGrid,data.type);
+                this.sequenceArray.push(newSound);
 
             });
         });
@@ -115,10 +115,10 @@ export class VisualPage {
             this.metricSync.start(sendFunction, receiveFunction).then(() => {
                 this.metricSync.addMetronome((measure, beat) => {
                     // console.log('metro:', measure, beat);
-                    this.soundsArray.forEach(soundArray => {
+                    this.sequenceArray.forEach(soundArray => {
                         for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
     						if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
-                            soundArray.createSoundWave();
+                                soundArray.createSoundWave();
     							this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], buffers, soundArray.returnLifeTime());
     						}
     					}
@@ -131,17 +131,15 @@ export class VisualPage {
     }
 
     // Function that plays specific sounds when needed.
-    playSound(type:SoundType,pitch:number,length:number,buffers,volume:number) {
+    playSound(type:SoundType,pitch:number,length:number,buffers,amp:number) {
         // Get Time from Server
         const time = audioScheduler.currentTime;                                // Sync Time
         const src = audioContext.createBufferSource();                          // Create Source
-        var gainNode = src.createGain();
-
+        const gain = audioContext.createGain();
+        gain.value = amp;
         // Play Audio File
-        src.connect(audioContext.destination);                                  // Connect Autio Context
-        src.connect(gainNode);
-        gainNode.connect(src.destination);
-        gainNode.gain.value = (volume/100);
+        gain.connect(audioContext.destination);                                  // Connect Autio Context
+        src.connect(gain);
         src.buffer = buffers[((type)*5)+pitch];                                 // Define witch sound the fucktion is playing
         src.start(time);                                                        // Start Sound
     }
@@ -149,8 +147,8 @@ export class VisualPage {
     // Function to update the Animation, this will draw a new Frame every 60 seconds
     draw() : void {
         this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
-        this.soundsArray.forEach(soundArray => {
-            soundArray.updateSound();
+        this.sequenceArray.forEach(sequenceArray => {
+            sequenceArray.updateSound();
         });
         requestAnimationFrame(() => {this.draw()});
     }
