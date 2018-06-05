@@ -12,14 +12,12 @@ export class SoundWave {
     yPos:number;                                                                // Y-Position
     speed:number;                                                               // Movementspeed of the Soundwave
     opacity:number;                                                             // Opacity of the Soundwave
-    soundWave:any;                                                              // Array of all Soundwaves
     ctx:any;                                                                    // Canvas Object
     canvasWidth:number;                                                         // Width of the Canvas Object
     canvasHeight:number;                                                        // Hight of the Canvas Object
     ratio:number;                                                               // Value of the px ratio of the used screen
 
-    constructor(soundWave:any,
-                radius:number,
+    constructor(radius:number,
                 speed:number,
                 xPos:number,
                 yPos:number,
@@ -45,15 +43,12 @@ export class SoundWave {
         this.radius += (this.speed * this.ratio);                               // Update the radius of this circle
         this.opacity += -0.01;                                                  // Percentage subtracted with each frame
         if(this.opacity < 0) {this.opacity = 0;}                                // Fallback to prevent a Error if the Value is negativ
+        // this.killSoundWave();
         this.drawSoundWave();
-        this.killSoundWave();
     }
 
-    public killSoundWave() {
-        // Function to delete old circles if they are out of view
-        if(this.radius >= this.canvasWidth/2 && this.radius >= this.canvasHeight/2) {
-            // this.soundWave.slice(this.soundWave.indexOf(this.soundWave),1);
-        }
+    public returnSoundWave() {
+        return this.opacity;
     }
 
     public drawSoundWave() {
