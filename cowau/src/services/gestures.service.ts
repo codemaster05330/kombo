@@ -90,7 +90,7 @@ export class GesturesService {
 		});
 	}
 
-	public watchForGesture(watchForEvents:Array<GestureType>, timeForGesture:number = 3000, frequency:number = 50) {
+	public watchForGesture(watchForEvents:Array<GestureType>, timeForGesture:number = 1000, frequency:number = 50) {
 		this.watchForEvents = watchForEvents
 		this.timeForGesture = timeForGesture;
 		this.frequency = frequency;
@@ -164,7 +164,7 @@ export class GesturesService {
 					});
 
 					// if(flipDown && flipUp && flipGyroUp && flipGyroDown && checkFlip && !this.idleOutTimeout) {
-					if(flipDown && flipUp && checkFlip && !this.idleOutTimeout) {		
+					if(flipDown && flipUp && checkFlip && !this.flipTimeout) {		
 						flipDown = flipUp = flipGyroDown = flipGyroUp = false;
 						this.sendEvent(GestureType.FLIPPED, acceleration);
 						console.log('FLIPPED');

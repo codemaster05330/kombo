@@ -37,15 +37,16 @@ export class EmojiPage {
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
 				this.gesturesService.watchForGesture(this.lookOfEvents);
+				events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
+					this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
+					this.navCtrl.setRoot(IdlePage);
+				});
 			}
 		});
-		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
-			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			this.navCtrl.setRoot(IdlePage);
-		});
+		
 
 		
-		this.initServerConnection();
+		// this.initServerConnection();
 		this.getEmojiList().subscribe(data => {});
 		this.socket.emit('get-emojis', null);
 	}
@@ -54,22 +55,22 @@ export class EmojiPage {
 		console.log('ionViewDidLoad EmojiPage');
 	}
 
-	initServerConnection() {
-        const socket = this.socket;
+	// initServerConnection() {
+ //        const socket = this.socket;
 
-    	socket.connect();
-    	socket.emit('request');
+ //    	socket.connect();
+ //    	socket.emit('request');
 
-        // client/server handshake
-        const promise = new Promise((resolve, reject) => {
-            socket.on('acknowledge', (data) => {
-                console.log('Connected to server!');
-                resolve();
-            });
-        });
+ //        // client/server handshake
+ //        const promise = new Promise((resolve, reject) => {
+ //            socket.on('acknowledge', (data) => {
+ //                console.log('Connected to server!');
+ //                resolve();
+ //            });
+ //        });
 
-        return promise;
-    }
+ //        return promise;
+ //    }
 
 	getEmojiList(){
 		let observable = new Observable(observer => {

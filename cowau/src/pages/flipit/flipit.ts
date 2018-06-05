@@ -44,21 +44,21 @@ export class FlipitPage {
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
 				this.gesturesService.watchForGesture(this.lookOfEvents);
+				events.subscribe(GestureType.FLIPPED.toString(), (acceleration) => {
+					this.popover.show(NewSoundPopoverPage, 1000);
+					this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
+					this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
+					this.navCtrl.setRoot(EditPage);
+				});
+
+				events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
+					this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
+					this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
+					this.navCtrl.setRoot(IdlePage);
+				});
 			}
 		});
 
-		events.subscribe(GestureType.FLIPPED.toString(), (acceleration) => {
-			this.popover.show(NewSoundPopoverPage, 1000);
-			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
-			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			this.navCtrl.setRoot(EditPage);
-		});
-
-		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
-			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
-			this.navCtrl.setRoot(IdlePage);
-		});
 	}
 
 	ionViewWillEnter() {

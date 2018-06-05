@@ -9,6 +9,7 @@ import { Sequence, SoundType } from '../../classes/sequence';
 import { GesturesService } from '../../services/gestures.service';
 import { Observable } from 'rxjs/Observable';
 import * as soundsData from '../../assets/sounds/sounds.json';
+import { ServerConnectionService } from '../../services/server-connection.service';
 
 const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
@@ -32,7 +33,8 @@ export class VisualPage {
         public navCtrl: NavController,
         public navParams: NavParams,
         private metricSync:MetricSync,
-        private socket:Socket) {}
+        private socket:Socket,
+        private serverCon:ServerConnectionService) {}
 
     ionViewDidLoad() {
 
@@ -125,7 +127,7 @@ export class VisualPage {
                 }, 8, 8);
             });
         }).catch(function(err) {
-            console.log("loader error:", err.message);
+            // console.log("loader error:", err.message);
         });
     }
 
