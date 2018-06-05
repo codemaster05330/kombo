@@ -45,7 +45,7 @@ export class GesturesService {
 	
 	// constructor(public devMotion:DeviceMotion, public gyro:Gyroscope, public platform:Platform, public events:Events) {
 	constructor(public devMotion:DeviceMotion, public platform:Platform, public events:Events) {
-		console.log('Constructo: Events ', JSON.stringify(this.watchForEvents));
+		// console.log('Constructo: Events ', JSON.stringify(this.watchForEvents));
 
 
 		let motionOpts:DeviceMotionAccelerometerOptions = {
@@ -94,8 +94,6 @@ export class GesturesService {
 		this.watchForEvents = watchForEvents
 		this.timeForGesture = timeForGesture;
 		this.frequency = frequency;
-
-		console.log(this.watchForEvents);
 	}
 
 	private noIdleMode(arraySize:number, acceleration:DeviceMotionAccelerationData) {
@@ -317,13 +315,10 @@ export class GesturesService {
 	}
 
 	public stopGestureWatch(ev:Events, name:GestureType) {
-		console.log('stop Events ', JSON.stringify(ev));
 		ev.unsubscribe(name.toString());
-		// this.devMotionSubscription.unsubscribe();
 	}
 
 	private sendEvent(name:GestureType, value:any) {
-		console.log('send event', name.toString());
 		this.events.publish(name.toString(), value);
 		this.resetAllArraysAndCountersForEvents();
 	}
@@ -356,8 +351,6 @@ export class GesturesService {
 		this.throwArray = new Array<any>();
 		// this.goToIdleArray= new Array<any>();
 		this.outOfIdleArray = new Array<any>();
-
-		console.log('reset');
 	}
 
 	private startThrowTimer(time:number = 2500) {

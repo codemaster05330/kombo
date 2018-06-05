@@ -8,6 +8,7 @@ import { GesturesService } from '../../services/gestures.service';
 import { EmojiPage } from '../emoji/emoji';
 
 // Import every classes
+import { Variables } from '../../classes/variables';
 import { Sequence, SoundType } from '../../classes/sequence';
 import { GestureType } from '../../classes/gesture-type';
 import { SoundWave } from '../../classes/sound-wave';
@@ -39,7 +40,12 @@ export class IdlePage {
         private events:Events,
         private socket:Socket,
     	private metricSync:MetricSync,
-        private gesturesService:GesturesService) {
+        private gesturesService:GesturesService,
+        private globalVars:Variables) {
+
+        if(globalVars.emojiID != null) {
+            socket.emit('free-emoji', globalVars.emojiID);
+        }
 
     	platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
@@ -75,9 +81,8 @@ export class IdlePage {
 
         // Start the Sync and the Audio Playback
         // this.initServerConnection().then(() => {
-            this.initMetrics();
+        this.initMetrics();
         // });
-
     }
 
     initServerConnection() {
