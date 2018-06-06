@@ -32,7 +32,7 @@ export class IdlePage {
     ratio:number;                                                               // Define the DPI of the Screen
     canvasWidth:number;                                                         // Hight of the Canvas
     canvasHeight:number;                                                        // Width of the Canvas
-    
+
     constructor(
         private navCtrl: NavController,
         public navParams: NavParams,
@@ -45,7 +45,7 @@ export class IdlePage {
         if(globalVars.emojiID != null) {
             socket.emit('free-emoji', globalVars.emojiID);
         }
-        
+
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 
     	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
@@ -72,12 +72,9 @@ export class IdlePage {
         this.canvasHeight = this.canvasHeight * this.ratio;                     // Set the hight of the canvas
 
         // Start the Canvas Animation
-        // this.draw();
+        this.draw();
+		this.initMetrics();
 
-        // Start the Sync and the Audio Playback
-        // this.initServerConnection().then(() => {
-        this.initMetrics();
-        // });
     }
 
     initServerConnection() {
@@ -108,35 +105,22 @@ export class IdlePage {
             soundsArrayString = soundsArrayString.concat(soundsData.pitches);   // New "big" Sound Array
         });
 
-
         loader.load(soundsArrayString)                                          // Load every Sound
         .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
             this.metricSync.start(sendFunction, receiveFunction).then(() => {
                 this.metricSync.addMetronome((measure, beat) => {
-                    // this.playSound(SoundType.Bass,1,1,buffers);                 // Play Sound
-                    // console.log('metro:', measure, beat);
+					// NOTE: For testing if the Metric Sync works
+					// console.log('metro:', measure, beat);
+
+					// Create a SoundWave everythime a new Sound is Playing
+					let soundWave = new SoundWave(50,5,this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
+					this.soundWaves.push(soundWave);
                 }, 8, 8);
             });
         }).catch(function(err) {
             console.log("loader error:", err.message);
         });
 
-    }
-
-    // Function that plays specific sounds when needed.
-    playSound(type:SoundType,pitch:number,length:number,buffers) {
-        // Get Time from Server
-        const time = audioScheduler.currentTime;                                // Sync Time
-        const src = audioContext.createBufferSource();                          // Create Source
-
-        // Play Audio File
-        src.connect(audioContext.destination);                                  // Connect Autio Context
-        src.buffer = buffers[((type-1)*5)+pitch];                               // Define witch sound the fucktion is playing
-        src.start(time);                                                        // Start Sound
-
-        // Create a SoundWave everythime a new Sound is Playing
-        let soundWave = new SoundWave(this.soundWaves,0,length,this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
-        this.soundWaves.push(soundWave);
     }
 
     // Function that get triggert 60 times every second

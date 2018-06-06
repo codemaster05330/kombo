@@ -37,6 +37,8 @@ export class VisualPage {
 
     ionViewDidLoad() {
 
+		// Connect Metric Sync service and
+		// observe the server if something happend
         this.initMetrics();
         this.observeServer().subscribe(data => {});
 
@@ -63,9 +65,6 @@ export class VisualPage {
     observeServer() {
         let observable = new Observable(observer => {
             this.socket.on('new-sequence', (data)=> {
-
-                console.log('New Sequence');
-
                 let m = 0;                                                      // Mass of the Sequence Object
 
                 // Method to define the Size/Mass of the Sequence Objects
@@ -76,30 +75,30 @@ export class VisualPage {
                     });
                 });
 
-                let x = this.canvasWidth/2;                                     // xPos
-                let y = this.canvasHeight/2;                                    // yPos
-                let c = 0;                                                      // Count Value
-                let r = m*this.ratio*1.5;                                       // Size of the Sequence Object
-
-                for(let j = 0; j < this.sequenceArray.length; j++){
-                    if(c >= 20) {break;}
-                    c++;
-                    if(this.getDistance(x,this.sequenceArray[j].x, y, this.sequenceArray[j].y, r, this.sequenceArray[j].radius) < 0 ){
-                        x = this.returnRandomValue(0+r,this.canvasWidth-r);
-                        y = this.returnRandomValue(0+r,this.canvasHeight-r);
-                        j = -1;
-                    }
-                }
-
-                var newSound = new SequenceDraw(r,x,y,m,data.id,this.ctx,this.sequenceArray,this.canvasWidth,this.canvasHeight,this.ratio,data.beatGrid,data.type);
-                this.sequenceArray.push(newSound);
-
+				if(m <= 0) {
+					console.log('Error: Zu wenig Sounds vorhanden.')
+				} else {
+					let x = this.canvasWidth/2;                                     // xPos
+					let y = this.canvasHeight/2;                                    // yPos
+					let c = 0;                                                      // Count Value
+					let r = m*this.ratio*1.5;                                       // Size of the Sequence Object
+					for(let j = 0; j < this.sequenceArray.length; j++){
+						if(c >= 20) { break; }
+						c++;
+						if(this.getDistance(x,this.sequenceArray[j].x, y, this.sequenceArray[j].y, r, this.sequenceArray[j].radius) < 0 ){
+							x = this.returnRandomValue(0+r,this.canvasWidth-r);
+							y = this.returnRandomValue(0+r,this.canvasHeight-r);
+							j = -1;
+						}
+					}
+					var newSound = new SequenceDraw(r,x,y,m,data.id,this.ctx,this.sequenceArray,this.canvasWidth,this.canvasHeight,this.ratio,data.beatGrid,data.type);
+					this.sequenceArray.push(newSound);
+				}
             });
         });
         return observable;
     }
 
-asdasd
     initMetrics() {
         const socket = this.socket;
         const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
@@ -115,7 +114,8 @@ asdasd
         .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
             this.metricSync.start(sendFunction, receiveFunction).then(() => {
                 this.metricSync.addMetronome((measure, beat) => {
-					console.log('metro:', measure, beat);
+					// NOTE: For testing if the Metric Sync works
+					// console.log('metro:', measure, beat);
                     this.sequenceArray.forEach(soundArray => {
                         for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
     						if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
@@ -138,6 +138,7 @@ asdasd
         const src = audioContext.createBufferSource();                          // Create Source
         const gain = audioContext.createGain();
         gain.value = amp;
+
         // Play Audio File
         gain.connect(audioContext.destination);                                  // Connect Autio Context
         src.connect(gain);

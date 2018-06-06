@@ -80,20 +80,15 @@ export class SequenceDraw {
         // Update the this.radius var to the new value
         this.newRadius = this.radius * (this.lifeTimeValue/100);
         this.mass = this.mass * (this.lifeTimeValue/100);
-        if(this.mass <= 50) {this.mass = 50;}
-
         this.soundWaves.forEach((soundwave:SoundWave) => {
-			console.log('test');
-            // if(soundwave.returnSoundWave() == 0) {
-            //     this.soundWaves.splice(this.soundWaves.indexOf(soundwave),1);
-            // }
-            soundwave.updateSoundWave();
+			soundwave.updateSoundWave();
+            if(soundwave.returnSoundWave() == 0) { this.soundWaves.splice(this.soundWaves.indexOf(soundwave),1); }
         })
 
+		this.lifeTime();                                                            // reduce lifetime
         this.borderDetectionSound();                                                // Controll if the object hits the wall
         this.moveSound();                                                           // move the object random
         this.drawSound();                                                           // draw the sequence object
-        this.lifeTime();                                                            // reduce lifetime
         this.soundDetectionSound();                                                 // Controll if the object hits another object
     }
 
@@ -111,10 +106,13 @@ export class SequenceDraw {
     // TODO: Change this to a real LifeTime calculation.
     // Calculates the lifetime for the sequence object.
     public lifeTime() {
-        if((this.lifeTimeValue/100) > 0.1) {
-            this.lifeTimeValue = this.lifeTimeValue - 0.05;
-        } else {
-            this.sequenceArray.splice(this.sequenceArray.indexOf(this),1);
+		if(this.mass <= 15){
+			this.lifeTimeValue = this.lifeTimeValue - ((0.03*this.sequenceArray.length)+(-(this.mass/5)));
+		} else {
+			this.lifeTimeValue = this.lifeTimeValue - ((0.001*(this.sequenceArray.length/(this.sequenceArray.length*5 )))*(this.mass/5));
+		}
+        if((this.lifeTimeValue/100) < 0.05) {
+			this.sequenceArray.splice(this.sequenceArray.indexOf(this),1);
         }
     }
 
@@ -199,6 +197,8 @@ export class SequenceDraw {
             // Store mass in var for better readability in collision equation
             const m1 = particle.mass;
             const m2 = otherParticle.mass;
+			if(m1 <= 50) { m1 = 50;}
+			if(m2 <= 50) { m2 = 50;}
             // Velocity before equation
             const u1 = this.rotate(particle.velocity, angle);
             const u2 = this.rotate(otherParticle.velocity, angle);

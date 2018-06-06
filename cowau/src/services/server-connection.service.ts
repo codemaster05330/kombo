@@ -15,7 +15,7 @@ export class ServerConnectionService {
         // client/server handshake
         const promise = new Promise((resolve, reject) => {
             this.socket.on('acknowledge', (data) => {
-                console.log('Connected to server!');
+                console.log('New client has connected to server!');
                 resolve();
             });
         });
