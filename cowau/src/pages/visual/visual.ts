@@ -105,9 +105,11 @@ export class VisualPage {
         const receiveFunction = (cmd, args) => socket.on(cmd, args);
         const loader = new AudioBufferLoader();
         var soundsArrayString = [];
+        var soundsLength = [];
 
         soundsData[0].forEach(soundsData => {
-			soundsArrayString = soundsArrayString.concat(soundsData.pitches);   // New "big" Sound Array
+			soundsArrayString = soundsArrayString.concat(soundsData.path);   // New "big" Sound Array
+            soundsLength = soundsLength.concat(soundsData.length);
 		});
 
         loader.load(soundsArrayString)                                          // Load every Sound
@@ -120,7 +122,7 @@ export class VisualPage {
                     var statuswave = true;
                         for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
                             if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
-    							this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], buffers, soundArray.returnLifeTime());
+    							this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], buffers, soundArray.returnLifeTime(), soundsLength);
                                 if(statuswave) {
                                     soundArray.createSoundWave();
                                     statuswave = false;
@@ -136,7 +138,7 @@ export class VisualPage {
     }
 
     // Function that plays specific sounds when needed.
-    playSound(type:SoundType,pitch:number,length:number,buffers,amp:number) {
+    playSound(type:SoundType,pitch:number,length:number,buffers,amp:number,soundsLength:number[]) {
         // Get Time from Server
         const time = audioScheduler.currentTime;                                // Sync Time
         const src = audioContext.createBufferSource();                          // Create Source
@@ -144,10 +146,10 @@ export class VisualPage {
         gain.value = amp;
 
         // Play Audio File
-        gain.connect(audioContext.destination);                                  // Connect Autio Context
+        gain.connect(audioContext.destination);                                 // Connect Autio Context
         src.connect(gain);
-        src.buffer = buffers[((type)*5)+pitch];                                 // Define witch sound the fucktion is playing
-        src.start(time);                                                        // Start Sound
+        src.buffer = buffers[type];                                             // Define witch sound the fucktion is playing
+        src.start(time, pitch * 3, Math.min(length, soundsLength[type]) * 0.25);// Start Sound
     }
 
     // Function to update the Animation, this will draw a new Frame every 60 seconds

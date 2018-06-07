@@ -67,6 +67,8 @@ export class EditPage {
 	cursor: HTMLElement;
 	cursorPosition:number = 0;
 
+	soundLengths: number[] = []
+
 	constructor(private navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, public globalVars: Variables) {
 		this.sound = new Sequence(SoundType.Drums);
@@ -81,6 +83,13 @@ export class EditPage {
 			}
 		}
 
+		//ONLY FOR TESTING PURPOSES
+		if(globalVars.emojiID == null){ 
+			globalVars.emojiID = Math.floor(Math.random() * 12); 
+			console.log("Emoji was null. Randomly generated: " + globalVars.emojiID)
+		}
+		this.sound.setType(SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]]); 
+
 		//Start Gesture Events
 		this.popover = new Popover(popoverCtrl);
 		
@@ -88,7 +97,9 @@ export class EditPage {
 		//THROW
 		this.events.subscribe(GestureType.THROWN.toString(), (value) => {
 			// what to do when thrown. TODO: remove comment when gestures are stable, remove the popover page from above
-			this.socket.emit('new-sequence', this.sound);
+			if(this.getBeatGridMagnitude() > 0){
+				this.socket.emit('new-sequence', this.sound);
+			}
 			// add a fancy animation for throwing here
 			this.clearSound();
 		});
@@ -99,6 +110,7 @@ export class EditPage {
 			this.sound.nextType();
 			this.globalVars.currentSoundType = this.sound.getType();
 			this.popover.show(NewSoundPopoverPage, 2000);
+			this.cutSoundsIfNeeded();
 		});
 
 		//IDLE IN
@@ -142,9 +154,9 @@ export class EditPage {
 
 		// debug thingy to test that the sent sequence indeed was sent to the server and can be recieved again.
 		// TODO: can be removed when the visual screen is getting it's sequences from the server correctly
-		this.getNewSequence().subscribe(data => {
+		// this.getNewSequence().subscribe(data => {
 			
-		});
+		// });
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -172,14 +184,14 @@ export class EditPage {
 
 	// debug thingy to test that the sent sequence indeed was sent to the server and can be recieved again.
 	// TODO: can be removed when the visual screen is getting it's sequences from the server correctly
-	getNewSequence(){
-		let observable = new Observable(observer => {
-			this.socket.on('new-sequence', (data) =>{
-				console.log(data);
-			});
-		});
-		return observable;
-	}
+	// getNewSequence(){
+	// 	let observable = new Observable(observer => {
+	// 		this.socket.on('new-sequence', (data) =>{
+	// 			console.log(data);
+	// 		});
+	// 	});
+	// 	return observable;
+	// }
 
 
 	// initialises MetricSync which also adds functions for the movement of the cursor and plays the sounds of the preview
@@ -188,7 +200,8 @@ export class EditPage {
 		var soundsArrayString = [];
 
 		soundsData[0].forEach(soundsData => {
-			soundsArrayString = soundsArrayString.concat(soundsData.pitches);   // New "big" Sound Array
+			soundsArrayString = soundsArrayString.concat(soundsData.path);   // New "big" Sound Array
+			this.soundLengths = this.soundLengths.concat(soundsData.length);
 		});
 
 
@@ -198,7 +211,7 @@ export class EditPage {
 			const receiveFunction = (cmd, args) => this.socket.on(cmd, args);
 			this.metricSync.start(sendFunction, receiveFunction).then(() => {
 				this.metricSync.addMetronome((measure, beat) => {
-					console.log(measure, beat);
+					// console.log(measure, beat);
 					this.moveCursorTo((measure % 4) * 8 + beat);				// Cursor Movement
 					let beatGrid = this.sound.getBeatGrid();
 
@@ -221,8 +234,8 @@ export class EditPage {
 
 		// Play Audio File
 		src.connect(audioContext.destination);                                  // Connect Autio Context
-		src.buffer = buffers[((type)*5)+pitch];                               	// Define witch sound the function is playing
-		src.start(time);                                                        // Start Sound
+		src.buffer = buffers[type];                               				// Define witch sound the function is playing
+		src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25);// Start Sound
 
 	}
 
@@ -283,12 +296,23 @@ export class EditPage {
 	clearSound(){
 		// this.sound.fillBeatGridAtRandom();
 		// this.sound.setId(1);
-		// this.socket.emit('new-sequence', this.sound);
+		if(this.getBeatGridMagnitude() > 0){
+			this.socket.emit('new-sequence', this.sound);
+		}
+		
 		this.sound.clearBeatGrid();
 		this.clearSmallGrid();
 		// this.cloneFirstMeasure();
 		this.reloadGrid();
 		// console.log(this.sound.getBeatGrid());
+	}
+
+	switchSound(){ 
+		this.sound.nextType(); 
+		this.globalVars.currentSoundType = this.sound.getType(); 
+		this.popover.show(NewSoundPopoverPage, 2000);
+
+		this.cutSoundsIfNeeded();
 	}
 
 	//removes 
@@ -429,6 +453,14 @@ export class EditPage {
 				passedTones = -y;
 			} else if (y+passedTones >= 32){
 				passedTones = 31 - y;
+			}
+
+			//make sure the tones cannot be longer than the max length of the current soundtype 
+			if(passedTones > 0 && passedTones > this.soundLengths[this.sound.getType()] - 1){
+				passedTones = this.soundLengths[this.sound.getType()] - 1;
+			}
+			if(passedTones < 0 && passedTones < -1 * this.soundLengths[this.sound.getType()] + 1){
+				passedTones = -1 * this.soundLengths[this.sound.getType()] + 1;
 			}
 
 
@@ -602,6 +634,31 @@ export class EditPage {
 			}
 		}
 
+		this.reloadGrid();
+	}
+
+	//calculate how many tones are in the grid in total
+	getBeatGridMagnitude() : number {
+		var amount: number = 0;
+		for(var i : number = 0; i < this.sound.getBeatGrid().length; i++){
+			for(var j: number = 0; j < this.sound.getBeatGrid()[0].length; j++){
+				amount += this.sound.getBeatGrid()[i][j];
+			}
+		}
+		return amount;
+	}
+
+	//cut the existing tones to the max allowed length of the sound
+	cutSoundsIfNeeded(){
+		var beatGrid = this.sound.getBeatGrid();
+
+		for(let i = 0; i < beatGrid.length; i++){
+			for(let j = 0; j < beatGrid[i].length; j++){
+				beatGrid[i][j] = Math.min(this.soundLengths[this.sound.getType()], beatGrid[i][j]);
+			}
+		}
+
+		this.clearSmallGrid();
 		this.reloadGrid();
 	}
 
