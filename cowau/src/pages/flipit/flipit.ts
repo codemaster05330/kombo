@@ -57,7 +57,7 @@ export class FlipitPage {
 	}
 
 	ionViewWillEnter() {
-		// this.playVid();
+		this.playVid();
 	}
 
 	public switchScreen() {
