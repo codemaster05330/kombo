@@ -7,7 +7,6 @@ const config: SocketIoConfig = { url: 'http://141.28.105.183:3001', options: {} 
 import { HttpModule } from '@angular/http';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-// import { Gyroscope } from '@ionic-native/gyroscope';
 import { DeviceMotion } from '@ionic-native/device-motion';
 import { HTTP } from '@ionic-native/http';
 
@@ -65,7 +64,6 @@ import { Variables } from '../classes/variables';
   providers: [
     StatusBar,
     SplashScreen,
-    // Gyroscope,
     DeviceMotion,
     GesturesService,
     Variables,

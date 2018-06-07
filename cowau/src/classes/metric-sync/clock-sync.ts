@@ -7,7 +7,7 @@ export class ClockSync {
 	_resolveRestartPromise:any;
 	_listeners:any;
 	_errorListeners:any;
-	
+
 	_doublePingInterval:number;
 	_minPingPeriod:number;
 	_maxPingPeriod:number;
@@ -98,7 +98,8 @@ export class ClockSync {
 				this._syncServerTime = 0.5 * (serverTime + this._evenPingServerTime);
 				this._pingCountAtSync = pingCount;
 
-				const offset = 0.5 * (this._syncServerTime - this._syncClientTime);
+				// BUG: Auskommentiert damit es nicht mehr "Unused" ist. 
+				// const offset = 0.5 * (this._syncServerTime - this._syncClientTime);
 				// console.log(`${(pingCount - 1) / 2}: sync! (offset: ${offset})`);
 
 				this._callListeners();
