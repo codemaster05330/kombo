@@ -3,7 +3,7 @@ import { SoundType } from "./sequence";
 export class Variables {
 
 	public emojiID : number = null;
-	public currentSoundType: SoundType;
+	public currentSoundType: SoundType = null;
 
 
 	

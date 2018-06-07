@@ -71,7 +71,10 @@ export class EditPage {
 
 	constructor(private navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, public globalVars: Variables) {
-		this.sound = new Sequence(SoundType.Drums);
+		if(globalVars.currentSoundType == null){
+			globalVars.currentSoundType = SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]];
+		}
+		this.sound = new Sequence(globalVars.currentSoundType);
 		this.sound.clearBeatGrid();
 		this.sound.setId(this.globalVars.emojiID);
 		this.beatGrid = this.sound.getBeatGrid();
@@ -157,6 +160,8 @@ export class EditPage {
 		// this.getNewSequence().subscribe(data => {
 			
 		// });
+				
+		this.cursor.style.transform = "translate(-200vw, 0px)";
 	}
 
 	//////////////////////////////////////////////////////////////////////////
