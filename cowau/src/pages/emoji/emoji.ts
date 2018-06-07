@@ -34,7 +34,9 @@ export class EmojiPage {
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			this.navCtrl.setRoot(IdlePage);
+			if(this.navCtrl.getActive().name != 'IdlePage') {
+				this.navCtrl.setRoot(IdlePage);
+			}
 		});
 
 
@@ -103,6 +105,8 @@ export class EmojiPage {
 
 		this.globalVars.emojiID = Number(elem.id);
 		this.socket.emit('take-emoji', this.globalVars.emojiID);
-    	this.navCtrl.setRoot(FlipitPage);
+		if(this.navCtrl.getActive().name != 'FlipitPage') {
+	    	this.navCtrl.setRoot(FlipitPage);
+	    }
     }
 }

@@ -84,4 +84,6 @@
     <engine name="ios" spec="~4.5.4" />
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreenDelay" value="3000" />
+    <allow-navigation href="http://141.28.130.196:8100" />
+    <plugin name="cordova-plugin-vibration" spec="^3.1.0" />
 </widget>

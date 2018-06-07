@@ -37,13 +37,16 @@ export class IdlePage {
 
         if(globalVars.emojiID != null) {
             socket.emit('free-emoji', globalVars.emojiID);
+            globalVars.emojiID = null;
         }
 
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 
     	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
     		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
-    		this.navCtrl.setRoot(EmojiPage);
+            if(this.navCtrl.getActive().name != 'EmojiPage') {
+    		    this.navCtrl.setRoot(EmojiPage);
+            }
     	});
     }
 

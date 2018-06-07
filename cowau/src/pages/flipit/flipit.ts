@@ -46,13 +46,19 @@ export class FlipitPage {
 			this.popover.show(NewSoundPopoverPage, 1000);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			this.navCtrl.setRoot(EditPage);
+			setTimeout(function(){
+				if(this.navCtrl.getActive().name != 'EditPage') {
+					this.navCtrl.setRoot(EditPage);
+				}
+			}, 200);
 		});
 
 		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
-			this.navCtrl.setRoot(IdlePage);
+			if(this.navCtrl.getActive().name != 'IdlePage') {
+				this.navCtrl.setRoot(IdlePage);
+			}
 		});
 	}
 

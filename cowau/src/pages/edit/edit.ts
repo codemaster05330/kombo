@@ -106,7 +106,9 @@ export class EditPage {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);
 			this.gesturesService.stopGestureWatch(this.events,  GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			this.navCtrl.setRoot(IdlePage);
+			if(this.navCtrl.getActive().name != 'IdlePage') {
+				this.navCtrl.setRoot(IdlePage);
+			}
 		});
 		
 	}
