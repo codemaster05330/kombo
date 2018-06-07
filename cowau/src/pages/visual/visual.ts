@@ -124,7 +124,6 @@ export class VisualPage {
                                 if(statuswave) {
                                     soundArray.createSoundWave();
                                     statuswave = false;
-                                    console.log('create Soundwave');
                                 }
     						}
     					}
