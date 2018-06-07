@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, Platform, Events } from 'ionic-angular';
+import { NavController, NavParams, Events } from 'ionic-angular';
 import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
 import { GesturesService } from '../../services/gestures.service';
@@ -9,15 +9,8 @@ import { EmojiPage } from '../emoji/emoji';
 
 // Import every classes
 import { Variables } from '../../classes/variables';
-import { Sequence, SoundType } from '../../classes/sequence';
 import { GestureType } from '../../classes/gesture-type';
 import { SoundWave } from '../../classes/sound-wave';
-import * as soundsData from '../../assets/sounds/sounds.json';
-
-import { AudioBufferLoader } from 'waves-loaders';
-import * as audio from 'waves-audio';
-const audioContext = audio.audioContext;
-const audioScheduler = audio.getScheduler();
 
 @Component({
 	selector: 'page-idle',
@@ -73,53 +66,6 @@ export class IdlePage {
 
         // Start the Canvas Animation
         this.draw();
-		this.initMetrics();
-
-    }
-
-    initServerConnection() {
-        const socket = this.socket;
-    	socket.connect();
-    	socket.emit('request');
-        // client/server handshake
-        const promise = new Promise((resolve, reject) => {
-            socket.on('acknowledge', (data) => {
-                console.log('Connected to server!');
-                resolve();
-            });
-        });
-        return promise;
-    }
-
-    initMetrics() {
-        const socket = this.socket;
-        const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
-        const receiveFunction = (cmd, args) => socket.on(cmd, args);
-
-        const loader = new AudioBufferLoader();
-        var soundsArrayString = [];
-
-        // Function that lists the sound array and
-        // creates a large array of all the objects.
-        soundsData[0].forEach(soundsData => {
-            soundsArrayString = soundsArrayString.concat(soundsData.pitches);   // New "big" Sound Array
-        });
-
-        loader.load(soundsArrayString)                                          // Load every Sound
-        .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
-            this.metricSync.start(sendFunction, receiveFunction).then(() => {
-                this.metricSync.addMetronome((measure, beat) => {
-					// NOTE: For testing if the Metric Sync works
-					// console.log('metro:', measure, beat);
-
-					// Create a SoundWave everythime a new Sound is Playing
-					let soundWave = new SoundWave(50,5,this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
-					this.soundWaves.push(soundWave);
-                }, 8, 8);
-            });
-        }).catch(function(err) {
-            console.log("loader error:", err.message);
-        });
 
     }
 
@@ -129,10 +75,27 @@ export class IdlePage {
         // This line clear the canvas every Frame,
         // without this line, every circles would stay
         this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
+		if(this.returnRandomValue(1,30) == 7) {
+			let soundWave = new SoundWave(50,this.returnRandomValue(3,5),this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
+			this.soundWaves.push(soundWave);
+		}
         this.soundWaves.forEach(soundWaves => {
+			if(soundWaves.returnSoundWave() == 0) { this.soundWaves.splice(this.soundWaves.indexOf(soundWaves),1); }
             soundWaves.updateSoundWave();
         });
         // this line request this function every frame
         requestAnimationFrame(() => {this.draw()});
     }
+
+	// Function to create a random int number
+	// with an min and max value
+	returnRandomValue(min,max) {
+		let random = Math.floor(Math.random() * (max-min + 1) + min );
+		if(random === 0){
+			return random = min;
+		} else {
+			return random;
+		}
+	}
+
 }

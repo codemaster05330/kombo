@@ -1,18 +1,16 @@
 import { Component } from '@angular/core';
-import { Platform, ViewController } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-
-// import { Socket } from 'ng-socket-io';
-
-// import { Variables } from '../classes/variables';
-
-import { FlipitPage } from '../pages/flipit/flipit';
-import { IdlePage } from '../pages/idle/idle';
-import { EditPage } from '../pages/edit/edit';
-import { EmojiPage } from '../pages/emoji/emoji';
-import { VisualPage } from '../pages/visual/visual';
 import { ServerConnectionService } from '../services/server-connection.service';
+
+// NOTE: Auskommentiert da es sonnst unused ist.
+// import { Variables } from '../classes/variables';
+// import { FlipitPage } from '../pages/flipit/flipit';
+import { IdlePage } from '../pages/idle/idle';
+// import { EditPage } from '../pages/edit/edit';
+// import { EmojiPage } from '../pages/emoji/emoji';
+// import { VisualPage } from '../pages/visual/visual';
 
 @Component({
 	templateUrl: 'app.html'
@@ -31,7 +29,6 @@ export class MyApp {
 
 			this.server.initServerConnection();
 		});
-
 
 		// viewCtrl.onDidDismiss(() => {
 		// 	if(globalVars.emojiID != null) {
