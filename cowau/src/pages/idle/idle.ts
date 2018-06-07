@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, Platform, Events } from 'ionic-angular';
+import { NavController, NavParams, Events } from 'ionic-angular';
 import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
 import { GesturesService } from '../../services/gestures.service';
@@ -9,15 +9,8 @@ import { EmojiPage } from '../emoji/emoji';
 
 // Import every classes
 import { Variables } from '../../classes/variables';
-import { Sequence, SoundType } from '../../classes/sequence';
 import { GestureType } from '../../classes/gesture-type';
 import { SoundWave } from '../../classes/sound-wave';
-import * as soundsData from '../../assets/sounds/sounds.json';
-
-import { AudioBufferLoader } from 'waves-loaders';
-import * as audio from 'waves-audio';
-const audioContext = audio.audioContext;
-const audioScheduler = audio.getScheduler();
 
 @Component({
 	selector: 'page-idle',
@@ -95,32 +88,16 @@ export class IdlePage {
         const socket = this.socket;
         const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
         const receiveFunction = (cmd, args) => socket.on(cmd, args);
+        this.metricSync.start(sendFunction, receiveFunction).then(() => {
+            this.metricSync.addMetronome((measure, beat) => {
+				// NOTE: For testing if the Metric Sync works
+				// console.log('metro:', measure, beat);
 
-        const loader = new AudioBufferLoader();
-        var soundsArrayString = [];
-
-        // Function that lists the sound array and
-        // creates a large array of all the objects.
-        soundsData[0].forEach(soundsData => {
-            soundsArrayString = soundsArrayString.concat(soundsData.pitches);   // New "big" Sound Array
+				// Create a SoundWave everythime a new Sound is Playing
+				let soundWave = new SoundWave(50,5,this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
+				this.soundWaves.push(soundWave);
+            }, 8, 8);
         });
-
-        loader.load(soundsArrayString)                                          // Load every Sound
-        .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
-            this.metricSync.start(sendFunction, receiveFunction).then(() => {
-                this.metricSync.addMetronome((measure, beat) => {
-					// NOTE: For testing if the Metric Sync works
-					// console.log('metro:', measure, beat);
-
-					// Create a SoundWave everythime a new Sound is Playing
-					let soundWave = new SoundWave(50,5,this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
-					this.soundWaves.push(soundWave);
-                }, 8, 8);
-            });
-        }).catch(function(err) {
-            console.log("loader error:", err.message);
-        });
-
     }
 
     // Function that get triggert 60 times every second

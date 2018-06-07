@@ -6,7 +6,6 @@ import { Observable } from 'rxjs/Observable';
 import { IdlePage } from '../idle/idle';
 import { FlipitPage } from '../flipit/flipit';
 
-
 //classes
 import { GestureType } from '../../classes/gesture-type';
 import { Variables } from '../../classes/variables';
@@ -17,14 +16,6 @@ import { GesturesService } from '../../services/gestures.service';
 //server
 import { Socket } from 'ng-socket-io';
 
-/**
- * Generated class for the EmojiPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
-
 @Component({
 	selector: 'page-emoji',
 	templateUrl: 'emoji.html',
@@ -32,16 +23,21 @@ import { Socket } from 'ng-socket-io';
 export class EmojiPage {
 	lookOfEvents:Array<GestureType> = [GestureType.IDLE_IN];
 
-	constructor(private navCtrl: NavController, public navParams: NavParams, private events:Events,
-			public globalVars: Variables, private gesturesService:GesturesService, private socket:Socket) {
-		
+	constructor(
+		private navCtrl: NavController,
+		public navParams: NavParams,
+		private events:Events,
+		public globalVars: Variables,
+		private gesturesService:GesturesService,
+		private socket:Socket) {
+
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			this.navCtrl.setRoot(IdlePage);
 		});
 
-		
+
 		// this.initServerConnection();
 		this.getEmojiList().subscribe(data => {});
 		this.socket.emit('get-emojis', null);
@@ -90,7 +86,7 @@ export class EmojiPage {
 
 			if(id[i] == true) {
 				emojiHtmlElement.classList.add("disabled");
-			} else { 
+			} else {
 				emojiHtmlElement.classList.remove("disabled");
 			}
 		}
@@ -107,14 +103,6 @@ export class EmojiPage {
 
 		this.globalVars.emojiID = Number(elem.id);
 		this.socket.emit('take-emoji', this.globalVars.emojiID);
-    	this.navCtrl.setRoot(FlipitPage);	
+    	this.navCtrl.setRoot(FlipitPage);
     }
 }
-
-		
-
-
-
-
-
-	
