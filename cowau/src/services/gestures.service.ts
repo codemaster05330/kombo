@@ -3,6 +3,7 @@ import { Platform, Events } from 'ionic-angular';
 
 //ionic native imports
 import { DeviceMotion, DeviceMotionAccelerationData, DeviceMotionAccelerometerOptions } from '@ionic-native/device-motion';
+import { Vibration } from '@ionic-native/vibration';
 
 //classes
 import { GestureType } from '../classes/gesture-type';
@@ -42,7 +43,7 @@ export class GesturesService {
 	timeForGesture:number = 3000;
 	frequency:number = 50;
 	
-	constructor(public devMotion:DeviceMotion, public platform:Platform, public events:Events) {
+	constructor(public devMotion:DeviceMotion, public platform:Platform, public events:Events, public vibration:Vibration) {
 		let motionOpts:DeviceMotionAccelerometerOptions = {
 			frequency: this.frequency
 		}
@@ -165,6 +166,7 @@ export class GesturesService {
 			if(flipDown && flipUp && checkFlip && !this.flipTimeout) {		
 				flipDown = flipUp = flipGyroDown = flipGyroUp = false;
 				this.sendEvent(GestureType.FLIPPED, acceleration);
+				this.vibration.vibrate(300);
 				console.log('FLIPPED');
 			}
 		}

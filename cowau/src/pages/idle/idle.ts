@@ -44,9 +44,7 @@ export class IdlePage {
 
     	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
     		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
-            if(this.navCtrl.getActive().name != 'EmojiPage') {
-    		    this.navCtrl.setRoot(EmojiPage);
-            }
+		    this.navCtrl.setRoot(EmojiPage);
     	});
     }
 

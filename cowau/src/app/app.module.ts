@@ -9,6 +9,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { DeviceMotion } from '@ionic-native/device-motion';
 import { HTTP } from '@ionic-native/http';
+import { Vibration } from '@ionic-native/vibration';
 
 import './rxjs-extensions';
 
@@ -69,7 +70,8 @@ import { Variables } from '../classes/variables';
     Variables,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     MetricSync,
-    ServerConnectionService
+    ServerConnectionService,
+    Vibration
   ]
 })
 export class AppModule {}
