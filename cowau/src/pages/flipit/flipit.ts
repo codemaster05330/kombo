@@ -15,6 +15,8 @@ import { GesturesService } from '../../services/gestures.service';
 //classes
 import { Popover } from '../../classes/popover';
 import { GestureType } from '../../classes/gesture-type';
+import { Variables } from '../../classes/variables';
+import { SoundType } from '../../classes/sequence';
 
 
 /**
@@ -38,11 +40,12 @@ export class FlipitPage {
 	@ViewChild('videoPlayer') videoplayer: any;
 
 	constructor(private navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform, 
-		public popoverCtrl:PopoverController, private events:Events) {
+		public popoverCtrl:PopoverController, private events:Events, private globalVars: Variables) {
 		this.popover = new Popover(popoverCtrl);
 		
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 		events.subscribe(GestureType.FLIPPED.toString(), (acceleration) => {
+			globalVars.emojiID = SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]];
 			this.popover.show(NewSoundPopoverPage, 1000);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);

@@ -48,8 +48,8 @@ export class Sequence {
 
 	public nextType(){
 		this.type++;
-		if (this.type >= 3){
-			this.type = SoundType.Drums;
+		if (this.type >= Object.keys(SoundType).length / 2){
+			this.type = 0;
 		}
 	}
 
@@ -115,14 +115,38 @@ export class Sequence {
 
 // Enum to hold the different types of Sounds. please add the possible sounds here.
 export enum SoundType {
-	Drums,
-	Bass,
-	Marimba
+	Bass1,
+	Bass2,
+	Bass3,
+	Drums1,
+	Drums2,
+	Drums3,
+	Harm1,
+	Harm2,
+	Harm3,
+	Lead1,
+	Lead2,
+	Lead3,
+	Mall1,
+	Mall2,
+	Mall3
 }
 
 // Enum to hold the "fancy names" of the Sounds. please add the possible soundnames here in the same order as above.
 export enum SoundName {
-	"Umpf",
-	"Brmmm",
-	"Duing"
+	"On the fly",
+	"Process of growth",
+	"Ocean Abyss",
+	"Percussion",
+	"Drumset",
+	"Drumcore",
+	"Space walk",
+	"Robot's dream",
+	"Galaxy",
+	"Cloud",
+	"Little star",
+	"Blade",
+	"Glasses",
+	"Sunray",
+	"Schneehase"
 }

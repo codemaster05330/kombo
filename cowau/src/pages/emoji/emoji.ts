@@ -47,6 +47,7 @@ export class EmojiPage {
 
 	ionViewDidLoad() {
 		console.log('ionViewDidLoad EmojiPage');
+		this.hideEmojis();
 	}
 
 	// initServerConnection() {
@@ -69,7 +70,7 @@ export class EmojiPage {
 	getEmojiList(){
 		let observable = new Observable(observer => {
 			this.socket.on('emojis-get', (data) =>{
-				console.log(data);
+				// console.log(data);
 				this.isDisabled(data);
 			});
 		});
@@ -91,6 +92,8 @@ export class EmojiPage {
 			} else {
 				emojiHtmlElement.classList.remove("disabled");
 			}
+
+			emojiHtmlElement.style.display = "block";
 		}
 	}
 
@@ -108,5 +111,13 @@ export class EmojiPage {
 		if(this.navCtrl.getActive().name != 'FlipitPage') {
 	    	this.navCtrl.setRoot(FlipitPage);
 	    }
+    }
+
+    hideEmojis(){
+    	for(var i = 0; i < 12; i++) {
+			let emojiHtmlElement = document.getElementById(i.toString());
+
+			emojiHtmlElement.style.display = "none";
+		}
     }
 }
