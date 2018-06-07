@@ -175,7 +175,7 @@ export class EditPage {
 	getNewSequence(){
 		let observable = new Observable(observer => {
 			this.socket.on('new-sequence', (data) =>{
-				console.log(data);
+				// console.log(data);
 			});
 		});
 		return observable;
@@ -198,7 +198,7 @@ export class EditPage {
 			const receiveFunction = (cmd, args) => this.socket.on(cmd, args);
 			this.metricSync.start(sendFunction, receiveFunction).then(() => {
 				this.metricSync.addMetronome((measure, beat) => {
-					console.log(measure, beat);
+					// console.log(measure, beat);
 					this.moveCursorTo((measure % 4) * 8 + beat);				// Cursor Movement
 					let beatGrid = this.sound.getBeatGrid();
 

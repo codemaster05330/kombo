@@ -19,14 +19,14 @@ import { ServerConnectionService } from '../services/server-connection.service';
 })
 
 export class MyApp {
-	rootPage:any = VisualPage;
+	rootPage:any = IdlePage;
 	// rootPage:any = ServerPage;
 
 	constructor(public server:ServerConnectionService, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
 		platform.ready().then(() => {
 			// Okay, so the platform is ready and our plugins are available.
 			// Here you can do any higher level native things you might need.
-			statusBar.styleDefault();
+			statusBar.hide();
 			splashScreen.hide();
 
 			this.server.initServerConnection();
