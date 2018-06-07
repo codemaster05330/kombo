@@ -117,10 +117,15 @@ export class VisualPage {
 					// NOTE: For testing if the Metric Sync works
 					// console.log('metro:', measure, beat);
                     this.sequenceArray.forEach(soundArray => {
+                    var statuswave = true;
                         for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
-    						if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
-                                soundArray.createSoundWave();
+                            if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
     							this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], buffers, soundArray.returnLifeTime());
+                                if(statuswave) {
+                                    soundArray.createSoundWave();
+                                    statuswave = false;
+                                    console.log('create Soundwave');
+                                }
     						}
     					}
                     });

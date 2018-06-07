@@ -106,10 +106,10 @@ export class SequenceDraw {
     // TODO: Change this to a real LifeTime calculation.
     // Calculates the lifetime for the sequence object.
     public lifeTime() {
-		if(this.mass <= 15){
-			this.lifeTimeValue = this.lifeTimeValue - ((0.03*this.sequenceArray.length)+(-(this.mass/5)));
+		if(this.mass <= 16){
+			this.lifeTimeValue = this.lifeTimeValue - 0.05;
 		} else {
-			this.lifeTimeValue = this.lifeTimeValue - ((0.001*(this.sequenceArray.length/(this.sequenceArray.length*5 )))*(this.mass/5));
+			this.lifeTimeValue = this.lifeTimeValue - 0.01;
 		}
         if((this.lifeTimeValue/100) < 0.05) {
 			this.sequenceArray.splice(this.sequenceArray.indexOf(this),1);
@@ -195,8 +195,8 @@ export class SequenceDraw {
             // Grab angle between the two colliding particles
             const angle = -Math.atan2(otherParticle.y - particle.y, otherParticle.x - particle.x);
             // Store mass in var for better readability in collision equation
-            const m1 = particle.mass;
-            const m2 = otherParticle.mass;
+            let m1 = particle.mass;
+            let m2 = otherParticle.mass;
 			if(m1 <= 50) { m1 = 50;}
 			if(m2 <= 50) { m2 = 50;}
             // Velocity before equation
