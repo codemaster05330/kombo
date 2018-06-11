@@ -42,8 +42,6 @@ export class MyApp {
 			platform.resume.subscribe(() => {
 				if(this.navCtrl.getActive().name != 'IdlePage') {
 					this.navCtrl.setRoot(IdlePage);
-				} else {
-					console.log('test ' + this.navCtrl.getActive().name);
 				}
 			});
 		});
