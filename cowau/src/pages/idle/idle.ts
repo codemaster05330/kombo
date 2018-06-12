@@ -36,6 +36,7 @@ export class IdlePage {
         private globalVars:Variables) {
 
         if(globalVars.emojiID != null) {
+            console.log(globalVars.emojiID);
             socket.emit('free-emoji', globalVars.emojiID);
             globalVars.emojiID = null;
         }

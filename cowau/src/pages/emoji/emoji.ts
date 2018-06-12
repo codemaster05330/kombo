@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { NavController, NavParams, Platform, Events } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 
@@ -22,6 +22,7 @@ import { Socket } from 'ng-socket-io';
 })
 export class EmojiPage {
 	lookOfEvents:Array<GestureType> = [GestureType.IDLE_IN];
+	emoji_list:Array<any>;
 
 	constructor(
 		private navCtrl: NavController,
@@ -39,13 +40,13 @@ export class EmojiPage {
 
 
 		// this.initServerConnection();
-		this.getEmojiList().subscribe(data => {});
 		this.socket.emit('get-emojis', null);
+		this.getEmojiList();
 	}
 
 	ionViewDidLoad() {
-		console.log('ionViewDidLoad EmojiPage');
-		this.hideEmojis();
+		// console.log('ionViewDidLoad EmojiPage');
+		// this.hideEmojis();
 	}
 
 	// initServerConnection() {
@@ -66,54 +67,46 @@ export class EmojiPage {
  //    }
 
 	getEmojiList(){
-		let observable = new Observable(observer => {
-			this.socket.on('emojis-get', (data) =>{
-				// console.log(data);
-				this.isDisabled(data);
+		// let observable = new Observable(observer => {
+			this.socket.on('emojis-get', (data) => {
+				this.emoji_list = data;
 			});
-		});
+		// });
 
-		return observable;
+		// return observable;
 	}
 
 	//simulates server information
 	//id : boolean[] = [true, true, false, false, true, true, false, false, false, false, false, true];
 
 	//checks if emojis are occupied
-	isDisabled (id: boolean[]) {
+	// isDisabled (id: boolean[]) {
+	// 	console.log('disabling emojis');
+	// 	for(var i = 0; i < id.length; i++) {
+	// 		let emojiHtmlElement = document.getElementById(i.toString());
 
-		for(var i = 0; i < id.length; i++) {
-			let emojiHtmlElement = document.getElementById(i.toString());
+	// 		if(id[i] == true) {
+	// 			emojiHtmlElement.classList.add("disabled");
+	// 		} else {
+	// 			emojiHtmlElement.classList.remove("disabled");
+	// 		}
 
-			if(id[i] == true) {
-				emojiHtmlElement.classList.add("disabled");
-			} else {
-				emojiHtmlElement.classList.remove("disabled");
-			}
-
-			emojiHtmlElement.style.display = "block";
-		}
-	}
+	// 		emojiHtmlElement.style.display = "block";
+	// 	}
+	// }
 
 	//click event
 	clickMe(evt: MouseEvent){
-		// console.log(evt.currentTarget);
 		var elem: HTMLDivElement = <HTMLDivElement> evt.currentTarget;
 
 		if(elem.classList.contains("disabled")){
     		return;
     	}
 
-		this.globalVars.emojiID = Number(elem.id);
+		this.globalVars.emojiID = parseInt(elem.id);
+		console.log(this.globalVars.emojiID);
 		this.socket.emit('take-emoji', this.globalVars.emojiID);
     	this.navCtrl.setRoot(FlipitPage);
     }
 
-    hideEmojis(){
-    	for(var i = 0; i < 12; i++) {
-			let emojiHtmlElement = document.getElementById(i.toString());
-
-			emojiHtmlElement.style.display = "none";
-		}
-    }
 }

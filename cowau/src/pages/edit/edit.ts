@@ -70,7 +70,8 @@ export class EditPage {
 	soundLengths: number[] = []
 
 	constructor(private navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
-		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, public globalVars: Variables) {
+		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables) {
+		console.log(globalVars.emojiID);
 		if(globalVars.currentSoundType == null){
 			globalVars.currentSoundType = SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]];
 		}

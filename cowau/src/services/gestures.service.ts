@@ -40,7 +40,7 @@ export class GesturesService {
 	stillStandingTreshold:number = 3;
 
 	watchForEvents:Array<GestureType> = new Array<GestureType>();
-	timeForGesture:number = 3000;
+	timeForGesture:number = 1500;
 	frequency:number = 50;
 	
 	constructor(public devMotion:DeviceMotion, public platform:Platform, public events:Events, public vibration:Vibration) {
@@ -50,7 +50,7 @@ export class GesturesService {
 
 		let arraySize = this.timeForGesture / motionOpts.frequency;
 
-		let timeTillIdle = 2000; //later 10000
+		let timeTillIdle = 5000; //later 10000
 		let arraySizeIdle = timeTillIdle / motionOpts.frequency;
 
 		let timeOutOfIdle = 500;
@@ -132,8 +132,6 @@ export class GesturesService {
 		let dCheckFlipDown:boolean = true;
 		let dCheckFlipUp:boolean = true;
 
-
-		// foreach mehrfach aufrufen wie bei throwit - und die nächste immer ab dem true der vorherigen starten und beenden sobald gefunden!
 		let stopForDown = false;
 		let stopForUp = false;
 
@@ -143,11 +141,11 @@ export class GesturesService {
 
 		if(acceleration.z < (this.acMedianZ - this.stillStandingTreshold) || acceleration.z > (this.acMedianZ + this.stillStandingTreshold)) {
 			for(let i=0; i<this.flipArray.length; i++) {
-				// console.log('first flip for');
+
 				if(!stopForDown) {
 					//check acceleration state
 					if(this.flipArray[i].devmo.z < -6) {
-						console.log('first? ' + this.flipArray[i].devmo.z);
+						// console.log('first? ' + this.flipArray[i].devmo.z);
 						flipDown = true;
 						startPosUp = i;
 						stopForDown = true;
@@ -164,7 +162,7 @@ export class GesturesService {
 				for(let i = startPosUp; i<this.flipArray.length; i++) {
 					if(!stopForUp) {
 						if(this.flipArray[i].devmo.z > 7.5) {
-							console.log('second? ' + this.flipArray[i].devmo.z);
+							// console.log('second? ' + this.flipArray[i].devmo.z);
 							stopForUp = true;
 							flipUp = true;
 						}
@@ -212,9 +210,6 @@ export class GesturesService {
 
 		if(this.throwArray.length > 0) {
 			let startIndex = -1;
-			let startIndexBack = -1;
-			let gyroRightRotate = false;
-			let gyroLeftRotate = false;
 
 			let backAccRight = false;
 			let backAccLeft = false;
@@ -248,9 +243,6 @@ export class GesturesService {
 							this.startThrowTimer(1000);
 							
 							startIndex = -1;
-							startIndexBack = -1;
-							gyroRightRotate = false;
-							gyroLeftRotate = false;
 							backAccRight = false;
 							backAccLeft = false;
 
@@ -261,9 +253,6 @@ export class GesturesService {
 							this.startThrowTimer(1000);
 							
 							startIndex = -1;
-							startIndexBack = -1;
-							gyroRightRotate = false;
-							gyroLeftRotate = false;
 							backAccRight = false;
 							backAccLeft = false;
 
