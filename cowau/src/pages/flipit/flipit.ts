@@ -41,7 +41,7 @@ export class FlipitPage {
 
 	constructor(private navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform,
 		public popoverCtrl:PopoverController, private events:Events, private globalVars: Variables) {
-		console.log(globalVars.emojiID);
+		console.log('constructor flipit');
 
 		this.popover = new Popover(popoverCtrl);
 		
@@ -52,14 +52,14 @@ export class FlipitPage {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			// setTimeout(function(){
-				this.navCtrl.setRoot(EditPage);	
+				navCtrl.setRoot(EditPage);	
 			// }, 200);
 		});
 
 		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
-			this.navCtrl.setRoot(IdlePage);
+			navCtrl.setRoot(EditPage);
 		});
 	}
 
@@ -76,5 +76,13 @@ export class FlipitPage {
 		this.videoplayer.nativeElement.play();
 		this.videoplayer.nativeElement.loop = true;
 	}
+
+	ionViewWillLeave() {
+        console.log('will close flipit');
+    }
+
+    ionViewDidLeave() {
+        console.log('closed flipit');
+    }
 
 }

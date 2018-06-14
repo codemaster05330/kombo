@@ -32,10 +32,12 @@ export class EmojiPage {
 		private gesturesService:GesturesService,
 		private socket:Socket) {
 
+		console.log('emoji constructor');
+
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			this.navCtrl.setRoot(IdlePage);
+			navCtrl.setRoot(IdlePage);
 		});
 
 
@@ -107,6 +109,14 @@ export class EmojiPage {
 		console.log(this.globalVars.emojiID);
 		this.socket.emit('take-emoji', this.globalVars.emojiID);
     	this.navCtrl.setRoot(FlipitPage);
+    }
+
+    ionViewWillLeave() {
+        console.log('will close emoji');
+    }
+
+    ionViewDidLeave() {
+        console.log('closed emoji');
     }
 
 }

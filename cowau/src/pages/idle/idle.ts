@@ -35,6 +35,8 @@ export class IdlePage {
         private gesturesService:GesturesService,
         private globalVars:Variables) {
 
+        console.log('idle constructor');
+
         if(globalVars.emojiID != null) {
             console.log(globalVars.emojiID);
             socket.emit('free-emoji', globalVars.emojiID);
@@ -45,7 +47,7 @@ export class IdlePage {
 
     	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
     		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
-		    this.navCtrl.setRoot(EmojiPage);
+		    navCtrl.setRoot(EmojiPage);
     	});
     }
 
@@ -100,4 +102,11 @@ export class IdlePage {
 		}
 	}
 
+    ionViewWillLeave() {
+        console.log('will close idle');
+    }
+
+    ionViewDidLeave() {
+        console.log('closed idle');
+    }
 }

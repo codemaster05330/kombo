@@ -63,15 +63,16 @@ export class EditPage {
 
 	popover:Popover;
 
-	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN, GestureType.IDLE_IN];
+	// lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN, GestureType.IDLE_IN];
+	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN];
 	cursor: HTMLElement;
 	cursorPosition:number = 0;
 
-	soundLengths: number[] = []
+	soundLengths: number[] = [];
 
 	constructor(private navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables) {
-		console.log(globalVars.emojiID);
+		console.log('constructor edit');
 		if(globalVars.currentSoundType == null){
 			globalVars.currentSoundType = SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]];
 		}
@@ -122,7 +123,7 @@ export class EditPage {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);
 			this.gesturesService.stopGestureWatch(this.events,  GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			this.navCtrl.setRoot(IdlePage);
+			navCtrl.setRoot(IdlePage);
 		});
 		
 	}
@@ -667,5 +668,13 @@ export class EditPage {
 		this.clearSmallGrid();
 		this.reloadGrid();
 	}
+
+	ionViewWillLeave() {
+        console.log('will close edit');
+    }
+
+    ionViewDidLeave() {
+        console.log('closed edit');
+    }
 
 }

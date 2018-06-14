@@ -55,7 +55,6 @@ export class GesturesService {
 
 		let timeOutOfIdle = 500;
 		let arraySizeIdleOut = timeOutOfIdle / motionOpts.frequency;
-
 		
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
@@ -190,10 +189,6 @@ export class GesturesService {
 					this.flipArray = new Array<any>();
 				}
 			}
-
-
-
-			
 		}
 	}
 
