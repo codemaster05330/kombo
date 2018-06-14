@@ -37,13 +37,15 @@ export class VisualPage {
     canvasWidth : number    = window.innerWidth;                                // Hight of the Canvas
     canvasHeight : number   = window.innerHeight;                               // Width of the Canvas
     sequenceArray:Array<SequenceDraw>  = [];                                    // Array of all circles
+    soundLengths : number[];
 
     constructor(
         public navCtrl: NavController,
         public navParams: NavParams,
         private metricSync:MetricSync,
         private socket:Socket,
-        private serverCon:ServerConnectionService) {}
+        private serverCon:ServerConnectionService,
+        private globalVars: Variables) {}
 
     ionViewDidLoad() {
 
@@ -56,7 +58,7 @@ export class VisualPage {
         // this part of the code can be removed in the final version
         this.cvs = document.getElementById('canvas');
         this.ctx = this.cvs.getContext('2d');
-		this.soundLengths = globalVars.soundLengths;
+		this.soundLengths = this.globalVars.soundLengths;
 
         // Create a canvas with the max size of the device
         // and create a canvas with a higher DPI as the "Max-Size"
@@ -116,7 +118,7 @@ export class VisualPage {
 			var statuswave = true;
 				for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
 					if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
-						this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], buffers, soundArray.returnLifeTime(), soundsLength);
+						this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], soundArray.returnLifeTime());
 						if(statuswave) {
 							soundArray.createSoundWave();
 							statuswave = false;
@@ -167,7 +169,7 @@ export class VisualPage {
     // }
 
     // Function that plays specific sounds when needed.
-    playSound(type:SoundType,pitch:number,length:number,buffers ,amp:number,soundsLength:number[]) {
+    playSound(type:SoundType,pitch:number,length:number,amp:number) {
         // Get Time from Server
         const time = audioScheduler.currentTime;                                // Sync Time
         const src = audioContext.createBufferSource();                          // Create Source
