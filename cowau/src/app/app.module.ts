@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule, Popover } from 'ionic-angular';
 import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
-const config: SocketIoConfig = { url: 'http://141.28.132.59:3001', options: {} };
+const config: SocketIoConfig = { url: 'http://141.28.105.183:3001', options: {} };
 
 import { HttpModule } from '@angular/http';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -19,6 +19,7 @@ import { FlipitPage } from '../pages/flipit/flipit';
 import { IdlePage } from '../pages/idle/idle';
 import { EmojiPage } from '../pages/emoji/emoji';
 import { EditPage } from '../pages/edit/edit';
+import { LoadingPage } from '../pages/load/load';
 
 //popovers
 import { NewSoundPopoverPage } from '../newsound-popover/newsound-popover';
@@ -44,6 +45,7 @@ import { Variables } from '../classes/variables';
     VisualPage,
     NewSoundPopoverPage,
     ThrowItPopoverPage,
+    LoadingPage
   ],
   imports: [
     BrowserModule,
@@ -61,6 +63,7 @@ import { Variables } from '../classes/variables';
     VisualPage,
     NewSoundPopoverPage,
     ThrowItPopoverPage,
+    LoadingPage
   ],
   providers: [
     StatusBar,

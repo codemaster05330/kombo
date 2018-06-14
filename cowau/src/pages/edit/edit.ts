@@ -70,6 +70,8 @@ export class EditPage {
 
 	soundLengths: number[] = [];
 
+	callback: any;
+
 	constructor(private navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables, private zone:NgZone) {
 		console.log('constructor edit');
@@ -87,6 +89,8 @@ export class EditPage {
 				this.tmpBeatGrid[i][j] = 0;
 			}
 		}
+
+		this.soundLengths = globalVars.soundLengths;
 
 		//ONLY FOR TESTING PURPOSES
 		if(globalVars.emojiID == null){ 
@@ -123,6 +127,7 @@ export class EditPage {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);
 			this.gesturesService.stopGestureWatch(this.events,  GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
+			this.metricSync.removeMetronome(this.callback);
 			zone.run(() => {
 				navCtrl.setRoot(IdlePage);
 			});
@@ -154,10 +159,13 @@ export class EditPage {
 		this.beatgrid.style.transform = "translate( -5vw , 0)";
 
 
+		// this.metricSync.removeMetronome((measure, beat) => {});
 		// init metric sync
 		// this.initServerConnection().then(() => {
-			this.initMetrics();
+			// this.initMetrics();
 		// });
+
+		this.runMetronome();
 
 		// debug thingy to test that the sent sequence indeed was sent to the server and can be recieved again.
 		// TODO: can be removed when the visual screen is getting it's sequences from the server correctly
@@ -204,46 +212,32 @@ export class EditPage {
 
 
 	// initialises MetricSync which also adds functions for the movement of the cursor and plays the sounds of the preview
-	initMetrics() {
-		const loader = new AudioBufferLoader();
-		var soundsArrayString = [];
+	runMetronome() {
+		this.callback = (measure, beat) => {
+			this.moveCursorTo((measure % 4) * 8 + beat);				// Cursor Movement //@Johannes: Hier stürzt es ab.
+			let beatGrid = this.sound.getBeatGrid();
 
-		soundsData[0].forEach(soundsData => {
-			soundsArrayString = soundsArrayString.concat(soundsData.path);   // New "big" Sound Array
-			this.soundLengths = this.soundLengths.concat(soundsData.length);
-		});
+			for(let i: number = 0; i < beatGrid.length; i++){			// Shift through the beatgrid
+				if(beatGrid[i][(measure % 4) * 8 + beat] > 0){			// Play sound if there is one in the grid at the next beat.
+																		// (measure % maxMeasures) * beatsPerMeasure
+					this.playSound(this.sound.type, 4 - i, beatGrid[i][(measure % 4) * 8 + beat]); // 4 - i because lowest row is highest number
+				}
+			}
+		};
 
-
-		loader.load(soundsArrayString)                                          // Load every Sound
-		.then((buffers) => {
-			const sendFunction = (cmd, ...args) => this.socket.emit(cmd, ...args);
-			const receiveFunction = (cmd, args) => this.socket.on(cmd, args);
-			this.metricSync.start(sendFunction, receiveFunction).then(() => {
-				this.metricSync.addMetronome((measure, beat) => {
-					// console.log(measure, beat);
-					this.moveCursorTo((measure % 4) * 8 + beat);				// Cursor Movement
-					let beatGrid = this.sound.getBeatGrid();
-
-					for(let i: number = 0; i < beatGrid.length; i++){			// Shift through the beatgrid
-						if(beatGrid[i][(measure % 4) * 8 + beat] > 0){			// Play sound if there is one in the grid at the next beat.
-																				// (measure % maxMeasures) * beatsPerMeasure
-							this.playSound(this.sound.type, 4 - i, beatGrid[i][(measure % 4) * 8 + beat], buffers); // 4 - i because lowest row is highest number
-						}
-					}
-				}, 8, 8);
-			});
-		});
+		this.metricSync.addMetronome(this.callback, 8, 8, 2);
 	}
 
+
 	// Function that plays specific sounds when needed.
-	playSound(type:SoundType,pitch:number,length:number,buffers) {
+	playSound(type:SoundType,pitch:number,length:number) {
 		// Get Time from Server
-		const time = audioScheduler.currentTime;                                // Sync Time
+		const time = audioScheduler.currentTime;	                            // Sync Time
 		const src = audioContext.createBufferSource();                          // Create Source
 
 		// Play Audio File
 		src.connect(audioContext.destination);                                  // Connect Autio Context
-		src.buffer = buffers[type];                               				// Define witch sound the function is playing
+		src.buffer = this.globalVars.buffers[type];                             // Define witch sound the function is playing
 		src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25);// Start Sound
 
 	}
@@ -347,15 +341,15 @@ export class EditPage {
 		var elem : HTMLDivElement = <HTMLDivElement> evt.target;
 
 		if(elem.classList.contains("tone")){							// clicked element is an empty tone: create tone with length 1
-			var x: number = +elem.id.split("-")[0];
-			var y: number = +elem.id.split("-")[1];
+			let x: number = +elem.id.split("-")[0];
+			let y: number = +elem.id.split("-")[1];
 			this.sound.setBeatGridAtPos(x, y, 1);
 			this.setPreview(x, y, 1);
 			elem.appendChild(this.createLongTone());
 
 		} else if (elem.classList.contains("tone-long")) {				// clicked element is an existing tone: remove the tone
-			var x: number = +elem.parentElement.id.split("-")[0];
-			var y: number = +elem.parentElement.id.split("-")[1];
+			let x: number = +elem.parentElement.id.split("-")[0];
+			let y: number = +elem.parentElement.id.split("-")[1];
 			this.sound.setBeatGridAtPos(x, y, 0);
 			this.setPreview(parseInt(elem.parentElement.id.split("-")[0]), parseInt(elem.parentElement.id.split("-")[1]),0);
 			elem.parentElement.removeChild(elem);
@@ -432,7 +426,7 @@ export class EditPage {
 
 			//move the preview as well
 			var prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
-			var x: number = -1 * ( ( ( translate + 5) / 314 ) * (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) + prevXMin;		//again, 319 and 5 are the empirical numbers from above.
+			let x: number = -1 * ( ( ( translate + 5) / 314 ) * (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) + prevXMin;		//again, 319 and 5 are the empirical numbers from above.
 			var prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 
 			this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
@@ -443,8 +437,8 @@ export class EditPage {
 		else {						
 			
 			//calculate how many tones have been passed
-			var y: number = +this.originalTarget.id.split("-")[1];
-			var x: number = +this.originalTarget.id.split("-")[0];
+			let y: number = +this.originalTarget.id.split("-")[1];
+			let x: number = +this.originalTarget.id.split("-")[0];
 			var passedTones = Math.floor(((this.relativeX + evt.deltaX) / this.vw) / 11.1);	//11.1vw is the width of one tone + one side of the margin (.1 because of the border)	
 			if(passedTones < 0)
 				passedTones++;							// account for an error in the upper calculation if the drawing gesture is to the left
