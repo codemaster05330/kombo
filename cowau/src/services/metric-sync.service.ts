@@ -36,7 +36,7 @@ export class MetricSync {
 		return this._clockSync.restart();
 	}
 
-	addMetronome(callback, numBeats = 4, metricDiv = 4, tempoScale = 2, startPosition = 0, startOnBeat = false) {
+	addMetronome(callback, numBeats = 4, metricDiv = 4, tempoScale = 1, startPosition = 0, startOnBeat = false) {
 		this._metricScheduler.addMetronome(callback, numBeats, metricDiv, tempoScale, startPosition, startOnBeat);
 	}
 

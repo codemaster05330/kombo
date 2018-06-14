@@ -127,7 +127,7 @@ export class VisualPage {
 				}
 			});
 		};
-		this.metricSync.addMetronome(this.callback, 8, 8);
+		this.metricSync.addMetronome(this.callback, 8, 8, 2);
 	}
 
     // initMetrics() {
