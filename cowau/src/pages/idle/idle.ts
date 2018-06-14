@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { NavController, NavParams, Events } from 'ionic-angular';
 import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
@@ -27,6 +27,7 @@ export class IdlePage {
     canvasHeight:number;                                                        // Width of the Canvas
 
     constructor(
+        private zone: NgZone,
         private navCtrl: NavController,
         public navParams: NavParams,
         private events:Events,
@@ -47,7 +48,9 @@ export class IdlePage {
 
     	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
     		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
-		    navCtrl.setRoot(EmojiPage);
+            zone.run(() => {
+		        navCtrl.setRoot(EmojiPage);
+            });
     	});
     }
 

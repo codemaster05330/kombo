@@ -1,4 +1,4 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { NavController, NavParams, Platform, Events } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 
@@ -20,11 +20,13 @@ import { Socket } from 'ng-socket-io';
 	selector: 'page-emoji',
 	templateUrl: 'emoji.html',
 })
+
 export class EmojiPage {
 	lookOfEvents:Array<GestureType> = [GestureType.IDLE_IN];
 	emoji_list:Array<any>;
 
 	constructor(
+		private zone:NgZone,
 		private navCtrl: NavController,
 		public navParams: NavParams,
 		private events:Events,
@@ -37,7 +39,9 @@ export class EmojiPage {
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			navCtrl.setRoot(IdlePage);
+			zone.run(() => {
+				navCtrl.setRoot(IdlePage);
+			});
 		});
 
 
@@ -45,28 +49,6 @@ export class EmojiPage {
 		this.socket.emit('get-emojis', null);
 		this.getEmojiList();
 	}
-
-	ionViewDidLoad() {
-		// console.log('ionViewDidLoad EmojiPage');
-		// this.hideEmojis();
-	}
-
-	// initServerConnection() {
- //        const socket = this.socket;
-
- //    	socket.connect();
- //    	socket.emit('request');
-
- //        // client/server handshake
- //        const promise = new Promise((resolve, reject) => {
- //            socket.on('acknowledge', (data) => {
- //                console.log('Connected to server!');
- //                resolve();
- //            });
- //        });
-
- //        return promise;
- //    }
 
 	getEmojiList(){
 		// let observable = new Observable(observer => {
@@ -77,25 +59,6 @@ export class EmojiPage {
 
 		// return observable;
 	}
-
-	//simulates server information
-	//id : boolean[] = [true, true, false, false, true, true, false, false, false, false, false, true];
-
-	//checks if emojis are occupied
-	// isDisabled (id: boolean[]) {
-	// 	console.log('disabling emojis');
-	// 	for(var i = 0; i < id.length; i++) {
-	// 		let emojiHtmlElement = document.getElementById(i.toString());
-
-	// 		if(id[i] == true) {
-	// 			emojiHtmlElement.classList.add("disabled");
-	// 		} else {
-	// 			emojiHtmlElement.classList.remove("disabled");
-	// 		}
-
-	// 		emojiHtmlElement.style.display = "block";
-	// 	}
-	// }
 
 	//click event
 	clickMe(evt: MouseEvent){
@@ -108,7 +71,9 @@ export class EmojiPage {
 		this.globalVars.emojiID = parseInt(elem.id);
 		console.log(this.globalVars.emojiID);
 		this.socket.emit('take-emoji', this.globalVars.emojiID);
-    	this.navCtrl.setRoot(FlipitPage);
+		this.zone.run(() => {
+    		this.navCtrl.setRoot(FlipitPage);
+		});
     }
 
     ionViewWillLeave() {

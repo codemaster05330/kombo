@@ -25,6 +25,7 @@ export class MyApp {
 
 	constructor(public server:ServerConnectionService, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, socket:Socket,
 		globalVars:Variables) {
+
 		platform.ready().then(() => {
 			// Okay, so the platform is ready and our plugins are available.
 			// Here you can do any higher level native things you might need.

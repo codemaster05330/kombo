@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, NgZone } from '@angular/core';
 import { NavController, NavParams, Platform, PopoverController, Events} from 'ionic-angular';
 
 //pages
@@ -40,7 +40,7 @@ export class FlipitPage {
 	@ViewChild('videoPlayer') videoplayer: any;
 
 	constructor(private navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform,
-		public popoverCtrl:PopoverController, private events:Events, private globalVars: Variables) {
+		public popoverCtrl:PopoverController, private events:Events, private globalVars: Variables, private zone:NgZone) {
 		console.log('constructor flipit');
 
 		this.popover = new Popover(popoverCtrl);
@@ -52,14 +52,18 @@ export class FlipitPage {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			// setTimeout(function(){
-				navCtrl.setRoot(EditPage);	
+				zone.run(() => {
+					navCtrl.setRoot(EditPage);	
+				});
 			// }, 200);
 		});
 
 		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
-			navCtrl.setRoot(EditPage);
+			zone.run(() => {
+				navCtrl.setRoot(IdlePage);
+			});
 		});
 	}
 
@@ -68,7 +72,9 @@ export class FlipitPage {
 	}
 
 	public switchScreen() {
-        this.navCtrl.setRoot(EditPage);
+		this.zone.run(() => {
+        	this.navCtrl.setRoot(EditPage);
+		});
 	}
 
 	public playVid() {

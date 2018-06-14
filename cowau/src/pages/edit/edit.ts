@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { NgForOf } from '@angular/common';
 import { NavController, NavParams, PopoverController, Platform, Events } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
@@ -63,15 +63,15 @@ export class EditPage {
 
 	popover:Popover;
 
-	// lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN, GestureType.IDLE_IN];
-	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN];
+	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN, GestureType.IDLE_IN];
+	// lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN];
 	cursor: HTMLElement;
 	cursorPosition:number = 0;
 
 	soundLengths: number[] = [];
 
 	constructor(private navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
-		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables) {
+		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables, private zone:NgZone) {
 		console.log('constructor edit');
 		if(globalVars.currentSoundType == null){
 			globalVars.currentSoundType = SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]];
@@ -123,7 +123,9 @@ export class EditPage {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);
 			this.gesturesService.stopGestureWatch(this.events,  GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			navCtrl.setRoot(IdlePage);
+			zone.run(() => {
+				navCtrl.setRoot(IdlePage);
+			});
 		});
 		
 	}
