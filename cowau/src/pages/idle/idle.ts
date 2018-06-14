@@ -79,8 +79,8 @@ export class IdlePage {
         // This line clear the canvas every Frame,
         // without this line, every circles would stay
         this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
-		if(this.returnRandomValue(1,30) == 7) {
-			let soundWave = new SoundWave(50,this.returnRandomValue(3,5),this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
+		if(this.returnRandomValue(1,50) == 7) {
+			let soundWave = new SoundWave(50,this.returnRandomValue(1,7),this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
 			this.soundWaves.push(soundWave);
 		}
         this.soundWaves.forEach(soundWaves => {

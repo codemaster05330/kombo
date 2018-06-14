@@ -1,14 +1,23 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+
+//services
+import { MetricSync } from '../../services/metric-sync.service';
+import { ServerConnectionService } from '../../services/server-connection.service';
+
+//classes
+import { Sequence, SoundType } from '../../classes/sequence';
 import { SequenceDraw } from '../../classes/sequence-draw';
+import { Variables } from '../../classes/variables';
+
+// Server
+import { Socket } from 'ng-socket-io';
+import { Observable } from 'rxjs/Observable';
+
+// Audio Files & Stuff
 import { AudioBufferLoader } from 'waves-loaders';
 import * as audio from 'waves-audio';
-import { MetricSync } from '../../services/metric-sync.service';
-import { Socket } from 'ng-socket-io';
-import { Sequence, SoundType } from '../../classes/sequence';
-import { Observable } from 'rxjs/Observable';
 import * as soundsData from '../../assets/sounds/sounds.json';
-import { ServerConnectionService } from '../../services/server-connection.service';
 
 const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
@@ -20,6 +29,7 @@ const audioScheduler = audio.getScheduler();
 
 export class VisualPage {
 
+	callback: any;																//
     cvs : any;                                                                  // Define the Canvas Element
     ctx : any;                                                                  // Setup the Canvas to 2D
     ratio : number          = window.devicePixelRatio                           // Define the DPI of the Screen
@@ -39,13 +49,14 @@ export class VisualPage {
 
 		// Connect Metric Sync service and
 		// observe the server if something happend
-        this.initMetrics();
+        this.runMetronome();
         this.observeServer().subscribe(data => {});
 
         // Create a new sound element just for testing
         // this part of the code can be removed in the final version
         this.cvs = document.getElementById('canvas');
         this.ctx = this.cvs.getContext('2d');
+		this.soundLengths = globalVars.soundLengths;
 
         // Create a canvas with the max size of the device
         // and create a canvas with a higher DPI as the "Max-Size"
@@ -99,46 +110,64 @@ export class VisualPage {
         return observable;
     }
 
-    initMetrics() {
-        const socket = this.socket;
-        const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
-        const receiveFunction = (cmd, args) => socket.on(cmd, args);
-        const loader = new AudioBufferLoader();
-        var soundsArrayString = [];
-        var soundsLength = [];
+	runMetronome() {
+		this.callback = (measure, beat) => {
+			this.sequenceArray.forEach(soundArray => {
+			var statuswave = true;
+				for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
+					if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
+						this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], buffers, soundArray.returnLifeTime(), soundsLength);
+						if(statuswave) {
+							soundArray.createSoundWave();
+							statuswave = false;
+						}
+					}
+				}
+			});
+		};
+		this.metricSync.addMetronome(this.callback, 8, 8);
+	}
 
-        soundsData[0].forEach(soundsData => {
-			soundsArrayString = soundsArrayString.concat(soundsData.path);   // New "big" Sound Array
-            soundsLength = soundsLength.concat(soundsData.length);
-		});
-
-        loader.load(soundsArrayString)                                          // Load every Sound
-        .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
-            this.metricSync.start(sendFunction, receiveFunction).then(() => {
-                this.metricSync.addMetronome((measure, beat) => {
-					// NOTE: For testing if the Metric Sync works
-					// console.log('metro:', measure, beat);
-                    this.sequenceArray.forEach(soundArray => {
-                    var statuswave = true;
-                        for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
-                            if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
-    							this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], buffers, soundArray.returnLifeTime(), soundsLength);
-                                if(statuswave) {
-                                    soundArray.createSoundWave();
-                                    statuswave = false;
-                                }
-    						}
-    					}
-                    });
-                }, 8, 8);
-            });
-        }).catch(function(err) {
-            console.log("loader error:", err.message);
-        });
-    }
+    // initMetrics() {
+    //     const socket = this.socket;
+    //     const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
+    //     const receiveFunction = (cmd, args) => socket.on(cmd, args);
+    //     const loader = new AudioBufferLoader();
+    //     var soundsArrayString = [];
+    //     var soundsLength = [];
+	//
+    //     soundsData[0].forEach(soundsData => {
+	// 		soundsArrayString = soundsArrayString.concat(soundsData.path);   // New "big" Sound Array
+    //         soundsLength = soundsLength.concat(soundsData.length);
+	// 	});
+	//
+    //     loader.load(soundsArrayString)                                          // Load every Sound
+    //     .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
+    //         this.metricSync.start(sendFunction, receiveFunction).then(() => {
+    //             this.metricSync.addMetronome((measure, beat) => {
+	// 				// NOTE: For testing if the Metric Sync works
+	// 				// console.log('metro:', measure, beat);
+    //                 this.sequenceArray.forEach(soundArray => {
+    //                 var statuswave = true;
+    //                     for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
+    //                         if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
+    // 							this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], buffers, soundArray.returnLifeTime(), soundsLength);
+    //                             if(statuswave) {
+    //                                 soundArray.createSoundWave();
+    //                                 statuswave = false;
+    //                             }
+    // 						}
+    // 					}
+    //                 });
+    //             }, 8, 8);
+    //         });
+    //     }).catch(function(err) {
+    //         console.log("loader error:", err.message);
+    //     });
+    // }
 
     // Function that plays specific sounds when needed.
-    playSound(type:SoundType,pitch:number,length:number,buffers,amp:number,soundsLength:number[]) {
+    playSound(type:SoundType,pitch:number,length:number,buffers ,amp:number,soundsLength:number[]) {
         // Get Time from Server
         const time = audioScheduler.currentTime;                                // Sync Time
         const src = audioContext.createBufferSource();                          // Create Source
@@ -148,8 +177,8 @@ export class VisualPage {
         // Play Audio File
         gain.connect(audioContext.destination);                                 // Connect Autio Context
         src.connect(gain);
-        src.buffer = buffers[type];                                             // Define witch sound the fucktion is playing
-        src.start(time, pitch * 3, Math.min(length, soundsLength[type]) * 0.25);// Start Sound
+        src.buffer = this.globalVars.buffers[type];                             // Define witch sound the fucktion is playing
+        src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25);// Start Sound
     }
 
     // Function to update the Animation, this will draw a new Frame every 60 seconds
