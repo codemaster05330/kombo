@@ -90,6 +90,8 @@ export class EditPage {
 			}
 		}
 
+		this.soundLengths = globalVars.soundLengths;
+
 		//ONLY FOR TESTING PURPOSES
 		if(globalVars.emojiID == null){ 
 			globalVars.emojiID = Math.floor(Math.random() * 12); 
@@ -210,10 +212,8 @@ export class EditPage {
 
 	// initialises MetricSync which also adds functions for the movement of the cursor and plays the sounds of the preview
 	runMetronome() {
-		this.callback = function testMetronome(measure, beat){
-			console.log(measure, beat);
+		this.callback = (measure, beat) => {
 			this.moveCursorTo((measure % 4) * 8 + beat);				// Cursor Movement //@Johannes: Hier stürzt es ab.
-			console.log("movedCursor");
 			let beatGrid = this.sound.getBeatGrid();
 
 			for(let i: number = 0; i < beatGrid.length; i++){			// Shift through the beatgrid
@@ -225,7 +225,6 @@ export class EditPage {
 		};
 
 		this.metricSync.addMetronome(this.callback, 8, 8);
-		console.log("Callback:", this.callback);
 	}
 
 
