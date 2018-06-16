@@ -398,7 +398,7 @@ export class EditPage {
 			if (evt.target.classList.contains("tone-long")){
 				this.wasEmpty = false;
 				this.originalTarget = this.originalTarget.parentElement;			//move the saved target up the hierarchy so it is the empty tone, not the filled one
-				if(this.sound.getBeatGrid()[this.originalTarget.id.split("-")[0]][this.originalTarget.id.split("-")[0]] == 1){
+				if(this.sound.getBeatGrid()[this.originalTarget.id.split("-")[0]][this.originalTarget.id.split("-")[1]] == 1){
 					//if clicked tone is a single long tone, remove that tone and revert to standard "new tone" procedure
 					this.wasEmpty = true;
 					this.sound.setBeatGridAtPos(+this.originalTarget.id.split("-")[0], +this.originalTarget.id.split("-")[0], 0);
