@@ -2,7 +2,6 @@ import { Component, ViewChild, NgZone } from '@angular/core';
 import { NavController, NavParams, Events } from 'ionic-angular';
 import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
-import { GesturesService } from '../../services/gestures.service';
 import { ServerConnectionService } from '../../services/server-connection.service';
 import { AudioBufferLoader } from 'waves-loaders';
 
@@ -12,8 +11,6 @@ import { EditPage } from '../edit/edit';
 
 // Import every classes
 import { Variables } from '../../classes/variables';
-import { GestureType } from '../../classes/gesture-type';
-import { SoundWave } from '../../classes/sound-wave';
 
 
 import * as soundsData from '../../assets/sounds/sounds.json';

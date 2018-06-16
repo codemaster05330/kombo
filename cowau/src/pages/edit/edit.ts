@@ -1,9 +1,6 @@
 import { Component, NgZone } from '@angular/core';
-import { NgForOf } from '@angular/common';
-import { NavController, NavParams, PopoverController, Platform, Events } from 'ionic-angular';
-import { Observable } from 'rxjs/Observable';
+import { NavController, NavParams, PopoverController, Events } from 'ionic-angular';
 import { audioContext } from 'waves-audio';
-import { AudioBufferLoader } from 'waves-loaders';
 
 //pages
 import { IdlePage } from '../idle/idle';
@@ -22,8 +19,6 @@ import { MetricSync } from '../../services/metric-sync.service';
 
 //server
 import { Socket } from 'ng-socket-io';
-
-import * as soundsData from '../../assets/sounds/sounds.json';
 
 import * as audio from 'waves-audio';
 const audioContext = audio.audioContext;
@@ -72,7 +67,9 @@ export class EditPage {
 
 	callback: any;
 
-	constructor(private navCtrl: NavController, public navParams: NavParams, private platform:Platform, private events:Events, private gesturesService:GesturesService,
+	throwPopoverInterval:any;
+
+	constructor(private navCtrl: NavController, public navParams: NavParams, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables, private zone:NgZone) {
 		console.log('constructor edit');
 		if(globalVars.currentSoundType == null){
@@ -83,9 +80,9 @@ export class EditPage {
 		this.sound.setId(this.globalVars.emojiID);
 		this.beatGrid = this.sound.getBeatGrid();
 
-		for (var i : number = 0; i < 5; i++){
+		for (let i : number = 0; i < 5; i++){
 			this.tmpBeatGrid[i] = [];
-			for (var j: number = 0; j < 32; j++){
+			for (let j: number = 0; j < 32; j++){
 				this.tmpBeatGrid[i][j] = 0;
 			}
 		}
@@ -100,7 +97,7 @@ export class EditPage {
 		this.sound.setType(SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]]); 
 
 		//Start Gesture Events
-		this.popover = new Popover(popoverCtrl);
+		this.popover = new Popover(this.popoverCtrl);
 		
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 		//THROW
@@ -128,10 +125,14 @@ export class EditPage {
 			this.gesturesService.stopGestureWatch(this.events,  GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			this.metricSync.removeMetronome(this.callback);
-			zone.run(() => {
-				navCtrl.setRoot(IdlePage);
+			this.zone.run(() => {
+				this.navCtrl.setRoot(IdlePage);
 			});
 		});
+
+		this.throwPopoverInterval = setInterval(() => {
+			this.popover.show(ThrowItPopoverPage, 3000);
+		}, 10000);
 		
 	}
 
@@ -257,7 +258,7 @@ export class EditPage {
 		if (pos < 0 || pos >= 32) return;										// Don't do anything if the position is out of bounds
 		this.cursorPosition = pos;
 
-		var translation: number = this.cursorPosition * 12;						// move cursor over by 12vw per passed tone (tone-width 10vw + 1vw margin each side)
+		let translation: number = this.cursorPosition * 12;						// move cursor over by 12vw per passed tone (tone-width 10vw + 1vw margin each side)
 		translation += Math.floor((this.cursorPosition) / 8) * 8;				// add an additional 8vw for each passed measure to bridge the gap (left-margin 1vw -> 9vw)
 
 		this.cursor.style.transform = "translate(" + translation + "vw, 0px)";	// actually move the cursor
@@ -273,19 +274,19 @@ export class EditPage {
 	// probably not used in production
 	// also fills the small grid, but doesn't clear the small one previously
 	reloadGrid(){
-		var cvs: HTMLCollectionOf<Element> = document.getElementsByClassName('tone');
-		for(var i: number=0; i < cvs.length; i++){
-			var x = +cvs[i].id.split("-")[0];
-			var y = +cvs[i].id.split("-")[1];
+		let cvs: HTMLCollectionOf<Element> = document.getElementsByClassName('tone');
+		for(let i: number=0; i < cvs.length; i++){
+			let x = +cvs[i].id.split("-")[0];
+			let y = +cvs[i].id.split("-")[1];
 
 			if(cvs[i].children.length > 0){
 				cvs[i].removeChild(cvs[i].children[0]);							// remove every longtone on the visual grid
 			}
 
-			var num: number = this.sound.getBeatGrid()[x][y];
+			let num: number = this.sound.getBeatGrid()[x][y];
 
 			if(num > 0){
-				var tone : HTMLElement = this.createLongTone(this.calculateLongToneWidth(num - 1,y));
+				let tone : HTMLElement = this.createLongTone(this.calculateLongToneWidth(num - 1,y));
 				cvs[i].appendChild(tone);										// add new tone in the grid
 				this.setPreview(x, y, num);										// add new tone in the preview
 			}
@@ -320,7 +321,7 @@ export class EditPage {
 
 	//removes 
 	clearSmallGrid(){
-		for(var i = 0; i < this.beatgridPreview.length; i++){
+		for(let i = 0; i < this.beatgridPreview.length; i++){
 			if(this.beatgridPreview[i] != null){
 				this.beatgridPreview[i].classList.remove("tone-selected-preview");
 				if (this.beatgridPreview[i].children.length > 0){
@@ -337,10 +338,15 @@ export class EditPage {
 	//////////////////////////////////////////////////////////////////////////
 
 
+	// function called when a tone is pressed for longer than 200ms to run a short vibration
+	longPress(){
+		console.log("longpress");
+	}
+
 	// function called when a tone is clicked
 	clickedTone(evt: MouseEvent){
 
-		var elem : HTMLDivElement = <HTMLDivElement> evt.target;
+		let elem : HTMLDivElement = <HTMLDivElement> evt.target;
 		if(elem != null)
 		{
 			if(elem.classList.contains("tone")){							// clicked element is an empty tone: create tone with length 1
@@ -384,9 +390,9 @@ export class EditPage {
 				//this is used to make the drawing of new tones while panning more consistent
 
 				//get middle x coordinate of the parent element1
-				var middleX: number = evt.target.getBoundingClientRect().left + (evt.target.offsetWidth / 2);
+				let middleX: number = evt.target.getBoundingClientRect().left + (evt.target.offsetWidth / 2);
 				//get starting point of the users click
-				var startX: number = evt.center.x - evt.deltaX;
+				let startX: number = evt.center.x - evt.deltaX;
 
 				this.relativeX = startX - middleX;
 
@@ -423,15 +429,15 @@ export class EditPage {
 
 		//if the current pan gesture is a scroll gesture, move the screen
 		if(this.isScrolling){
-			var translate: number = (this.translation * this.vw + evt.deltaX) / this.vw;
+			let translate: number = (this.translation * this.vw + evt.deltaX) / this.vw;
 			translate = Math.max(Math.min(-5,translate),-319);						//319 & 5 are an empirical number. if there is a better source for a more accurate number, it should be entered here.
 
 			this.beatgrid.style.transform = "translate( " + translate + "vw , 0)";
 
 			//move the preview as well
-			var prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
+			let prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
 			let x: number = -1 * ( ( ( translate + 5) / 314 ) * (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) + prevXMin;		//again, 319 and 5 are the empirical numbers from above.
-			var prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
+			let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 
 			this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
 		} 
@@ -443,7 +449,7 @@ export class EditPage {
 			//calculate how many tones have been passed
 			let y: number = +this.originalTarget.id.split("-")[1];
 			let x: number = +this.originalTarget.id.split("-")[0];
-			var passedTones = Math.floor(((this.relativeX + evt.deltaX) / this.vw) / 11.1);	//11.1vw is the width of one tone + one side of the margin (.1 because of the border)	
+			let passedTones = Math.floor(((this.relativeX + evt.deltaX) / this.vw) / 11.1);	//11.1vw is the width of one tone + one side of the margin (.1 because of the border)	
 			if(passedTones < 0)
 				passedTones++;							// account for an error in the upper calculation if the drawing gesture is to the left
 
@@ -473,8 +479,8 @@ export class EditPage {
 
 			//remove obsolete divs from the left that are leftover from creating new ones when drawing to the left
 			if(this.previousPassedTones < 0){
-				var target: HTMLElement = this.originalTarget;
-				for(var i: number = this.previousPassedTones; i < 0; i++){
+				let target: HTMLElement = this.originalTarget;
+				for(let i: number = this.previousPassedTones; i < 0; i++){
 					if(target.previousElementSibling != null){
 						target = <HTMLElement> target.previousElementSibling;
 						if(target.children.length > 0 && target.classList.contains("tone")){
@@ -490,7 +496,7 @@ export class EditPage {
 			// if it was an empty one originally we draw new tones
 			if(this.wasEmpty){
 
-				var target: HTMLElement = this.originalTarget;
+				let target: HTMLElement = this.originalTarget;
 				if(target.children.length > 0){
 					target.removeChild(target.children[0]);
 				}
@@ -499,8 +505,8 @@ export class EditPage {
 
 				//prevent drawing over notes to the left
 				if(passedTones < 0){
-					var beatGrid = this.sound.getBeatGrid();
-					for(var i: number = 0; i < y; i++){
+					let beatGrid = this.sound.getBeatGrid();
+					for(let i: number = 0; i < y; i++){
 						if(i + beatGrid[x][i] > y + passedTones && beatGrid[x][i] > 0){
 							passedTones = (y - (beatGrid[x][i] + i)) * -1;
 							//set previous Passed Tones so it won't get removed anyway in the next iteration
@@ -510,7 +516,7 @@ export class EditPage {
 				}
 
 				//remove additionally added tones & move target to the left if passedTones is negative
-				for(var i: number = passedTones; i < 0; i++){
+				for(let i: number = passedTones; i < 0; i++){
 					if(target.previousElementSibling != null){
 						target = <HTMLElement> target.previousElementSibling;
 						if(target.children.length > 0){
@@ -520,8 +526,8 @@ export class EditPage {
 				}
 
 				//prevent drawing over notes to the right
-				var tmp: HTMLElement = target; 
-				for(var i: number = 0; i < passedTones; i++){
+				let tmp: HTMLElement = target; 
+				for(let i: number = 0; i < passedTones; i++){
 					if(tmp.nextElementSibling != null){
 						tmp = <HTMLElement> tmp.nextElementSibling;
 						if(tmp.children.length > 0){
@@ -553,7 +559,7 @@ export class EditPage {
 
 	//handle creation of a new tone element with a defined width. 10 is the width of a single tone
 	createLongTone(width :number = 10): HTMLElement{
-		var longtone :HTMLElement = document.createElement("div");
+		let longtone :HTMLElement = document.createElement("div");
 		longtone.classList.add("tone-long");
 		longtone.style.width =  width+"vw";
 		return longtone;
@@ -561,7 +567,7 @@ export class EditPage {
 
 	//calculate the width of a tone according to the amount of passed tones (which is the length - 1) and the y position
 	calculateLongToneWidth(passedTones:number, y: number){
-		var width = 10 + 12 * Math.abs(passedTones);					//10 vw per tone, 12 per additional tone (10 + 1 margin on each side)
+		let width = 10 + 12 * Math.abs(passedTones);					//10 vw per tone, 12 per additional tone (10 + 1 margin on each side)
 		if ((Math.floor(y / 8) != Math.floor((y+passedTones)/ 8) || ((passedTones) / 8 >= 1))){
 			width += 8;													//8 additional if a measure gap is crossed (additional 8vw margin on the left of a tone)
 		}
@@ -575,9 +581,9 @@ export class EditPage {
 	//called when the slider on the preview is pulled, moves the slider to the clicking position & the beatgrid to the according position
 	panPreview(evt: any){
 		
-		var x: number = evt.srcEvent.clientX - (this.beatPreviewSlider.offsetWidth/2);
-		var prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
-		var prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
+		let x: number = evt.srcEvent.clientX - (this.beatPreviewSlider.offsetWidth/2);
+		let prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
+		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 
 		this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
 		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 314) - 5) + "vw , 0)";
@@ -585,9 +591,9 @@ export class EditPage {
 
 	//called, when the slider or the preview itself is clicked, moves the slider to the correct position as well as the beatgrid
 	clickPreview(evt: any){
-		var x: number = evt.x - (this.beatPreviewSlider.offsetWidth/2);
-		var prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
-		var prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
+		let x: number = evt.x - (this.beatPreviewSlider.offsetWidth/2);
+		let prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
+		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 
 		this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
 		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 314) - 5) + "vw , 0)";
@@ -596,9 +602,9 @@ export class EditPage {
 
 	//sets a tone inside the preview grid
 	setPreview(x: number, y: number, length: number){
-		for(var i = 0; i < this.beatgridPreview.length; i++){
-			var xp:number = +this.beatgridPreview[i].id.split("-")[0];
-			var yp:number = +this.beatgridPreview[i].id.split("-")[1];
+		for(let i = 0; i < this.beatgridPreview.length; i++){
+			let xp:number = +this.beatgridPreview[i].id.split("-")[0];
+			let yp:number = +this.beatgridPreview[i].id.split("-")[1];
 			if (xp == x && yp == y){
 				if (this.beatgridPreview[i].children.length > 0){
 					this.beatgridPreview[i].removeChild(this.beatgridPreview[i].children[0])
@@ -612,9 +618,9 @@ export class EditPage {
 						break;
 					} else if (length > 1){
 						this.beatgridPreview[i].classList.remove("tone-selected-preview");
-						var longtonePrev: HTMLElement = document.createElement("div");
+						let longtonePrev: HTMLElement = document.createElement("div");
 						longtonePrev.classList.add("tone-long-preview");
-						var divLength = 2 + 2.6 * (length-1);
+						let divLength = 2 + 2.6 * (length-1);
 						if (Math.floor(y / 8) != Math.floor((y+length-1)/ 8)){
 							divLength += 0.8;
 						}
@@ -647,9 +653,9 @@ export class EditPage {
 
 	//calculate how many tones are in the grid in total
 	getBeatGridMagnitude() : number {
-		var amount: number = 0;
-		for(var i : number = 0; i < this.sound.getBeatGrid().length; i++){
-			for(var j: number = 0; j < this.sound.getBeatGrid()[0].length; j++){
+		let amount: number = 0;
+		for(let i : number = 0; i < this.sound.getBeatGrid().length; i++){
+			for(let j: number = 0; j < this.sound.getBeatGrid()[0].length; j++){
 				amount += this.sound.getBeatGrid()[i][j];
 			}
 		}
@@ -658,7 +664,7 @@ export class EditPage {
 
 	//cut the existing tones to the max allowed length of the sound
 	cutSoundsIfNeeded(){
-		var beatGrid = this.sound.getBeatGrid();
+		let beatGrid = this.sound.getBeatGrid();
 
 		for(let i = 0; i < beatGrid.length; i++){
 			for(let j = 0; j < beatGrid[i].length; j++){
@@ -672,6 +678,7 @@ export class EditPage {
 
 	ionViewWillLeave() {
         console.log('will close edit');
+        clearInterval(this.throwPopoverInterval);
     }
 
     ionViewDidLeave() {

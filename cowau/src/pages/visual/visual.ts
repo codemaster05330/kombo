@@ -3,10 +3,10 @@ import { NavController, NavParams } from 'ionic-angular';
 
 //services
 import { MetricSync } from '../../services/metric-sync.service';
-import { ServerConnectionService } from '../../services/server-connection.service';
+// import { ServerConnectionService } from '../../services/server-connection.service';
 
 //classes
-import { Sequence, SoundType } from '../../classes/sequence';
+import { SoundType } from '../../classes/sequence';
 import { SequenceDraw } from '../../classes/sequence-draw';
 import { Variables } from '../../classes/variables';
 
@@ -15,9 +15,9 @@ import { Socket } from 'ng-socket-io';
 import { Observable } from 'rxjs/Observable';
 
 // Audio Files & Stuff
-import { AudioBufferLoader } from 'waves-loaders';
+// import { AudioBufferLoader } from 'waves-loaders';
 import * as audio from 'waves-audio';
-import * as soundsData from '../../assets/sounds/sounds.json';
+// import * as soundsData from '../../assets/sounds/sounds.json';
 
 const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
@@ -44,7 +44,6 @@ export class VisualPage {
         public navParams: NavParams,
         private metricSync:MetricSync,
         private socket:Socket,
-        private serverCon:ServerConnectionService,
         private globalVars: Variables) {}
 
     ionViewDidLoad() {

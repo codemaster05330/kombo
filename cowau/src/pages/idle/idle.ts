@@ -35,22 +35,23 @@ export class IdlePage {
         public navParams: NavParams,
         private events:Events,
         private socket:Socket,
-    	private metricSync:MetricSync,
         private gesturesService:GesturesService,
         private globalVars:Variables) {
 
-        if(globalVars.emojiID != null) {
+        console.log('idle constructor');
+
+        if(this.globalVars.emojiID != null) {
             console.log(globalVars.emojiID);
-            socket.emit('free-emoji', globalVars.emojiID);
-            globalVars.emojiID = null;
+            this.socket.emit('free-emoji', globalVars.emojiID);
+            this.globalVars.emojiID = null;
         }
 
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 
     	events.subscribe(GestureType.IDLE_OUT.toString(), (acceleration) => {
     		this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_OUT);
-            zone.run(() => {
-		        navCtrl.setRoot(EmojiPage);
+            this.zone.run(() => {
+		        this.navCtrl.setRoot(EmojiPage);
             });
     	});
 

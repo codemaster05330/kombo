@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PopoverController } from 'ionic-angular';
-import { SoundType, SoundName } from '../classes/sequence';
+import { SoundName } from '../classes/sequence';
 import { Variables } from '../classes/variables'; 
 
 @Component({
@@ -9,8 +9,8 @@ import { Variables } from '../classes/variables';
 })
 
  export class NewSoundPopoverPage {
-	constructor(public popoverCtrl: PopoverController, public globalVars: Variables) {}
-
-	soundname: String = SoundName[this.globalVars.currentSoundType];
-
+ 	soundname:string;
+	constructor(public popoverCtrl: PopoverController, public globalVars: Variables) {
+		this.soundname = SoundName[this.globalVars.currentSoundType];
+	}
 }

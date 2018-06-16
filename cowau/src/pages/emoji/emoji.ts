@@ -1,7 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, Platform, Events } from 'ionic-angular';
-import { Observable } from 'rxjs/Observable';
-
+import { NavController, NavParams, Events } from 'ionic-angular';
 //pages
 import { IdlePage } from '../idle/idle';
 import { FlipitPage } from '../flipit/flipit';
