@@ -1,15 +1,18 @@
 page-flipit {
+	.headline-container {
+		position: absolute;
+		z-index: 1000;
+		width: 100%;
+	}
 
-}
+	.video-wrapper {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
+	}
 
-.background-pattern-dark {
-    background: $dark;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-    width: 100%;
-    height: 100%;
+	.how-to-flip {
+		object-fit: cover !important;
+	}
 }

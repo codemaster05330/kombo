@@ -1,0 +1,20 @@
+<div class="headline-container">
+	<div class="headline">
+		Who are you?
+	</div>
+	<div class="subline">
+		Pick your Emoji. 
+	</div>
+</div>
+
+<div class="emoji-list" >
+	<div class="flex-container" *ngIf="emoji_list">
+		<div class="emoji-container {{emoji ? 'disabled' : ''}}" *ngFor="let emoji of emoji_list; let i = index" (click)="clickMe($event)" id="{{i}}">
+			<img src="assets/imgs/{{i}}.svg" alt="svg-{{i}}" />
+		</div>
+	</div>
+</div>
+
+<div class="bottom-bar"></div>
+
+<div class="background-pattern-dark"></div>

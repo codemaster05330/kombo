@@ -22,7 +22,7 @@ $app-direction: ltr;
 // http://ionicframework.com/docs/theming/overriding-ionic-variables/
 
 body, html {
-    font-size: 10px;
+	font-size: 10px;
 }
 
 // Named Color Variables
@@ -32,6 +32,13 @@ body, html {
 // to match your app's branding. Ionic uses a Sass map of
 // colors so you can add, rename and remove colors as needed.
 // The "primary" color is the only required color in the map.
+$colors: (
+	primary:		#fe8965,
+	secondary:		#ff65a5,
+	primary-dark:	#FE7982,
+	secondary-dark:	#24242F,
+	font: 			#000
+);
 
 $primary: #fe8965;
 $secondary: #ff65a5;
@@ -50,14 +57,14 @@ $bggradient: linear-gradient(to bottom right, $primary 0%, $secondary 100%);
 @import "ionic.theme.default";
 
 .bottom-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 10;
-    height: 1.5vh;
-    background: $bggradient;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	z-index: 1;
+	height: 1.5vh;
+	background: $bggradient;
 }
 
 // Ionicons
@@ -77,26 +84,25 @@ $bggradient: linear-gradient(to bottom right, $primary 0%, $secondary 100%);
 // --------------------------------------------------
 // All informaitons for the used typography are stored here
 
+.headline-container {
+	padding: 8vh 5vw;
+}
+
 .headline {
-    position: absolute;
-    top: 10vh;
-    left: 0;
-    width: 100%;
-    color: $text;
-    font-size: 5rem;
-    text-align: center;
-    font-weight: bold;
-    z-index: 10;
+	width: 100%;
+	color: $text;
+	font-size: 4.7rem;
+	text-align: center;
+	font-weight: bold;
+	z-index: 10;
 }
 
 .subline {
-    position: absolute;
-    top: 19vh;
-    left: 0;
-    width: 100%;
-    color: $light;
-    font-size: 2rem;
-    text-align: center;
-    font-weight: bold;
-    z-index: 10;
+	width: 100%;
+	color: $light;
+	font-size: 2rem;
+	text-align: center;
+	font-weight: bold;
+	z-index: 10;
+	padding-top: 3vh;
 }
