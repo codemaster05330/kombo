@@ -71,14 +71,13 @@ export class FlipitPage {
 		this.playVid();
 	}
 
-	public switchScreen() {
-		this.zone.run(() => {
-        	this.navCtrl.setRoot(EditPage);
-		});
-	}
+	// public switchScreen() {
+	// 	this.zone.run(() => {
+ //        	this.navCtrl.setRoot(EditPage);
+	// 	});
+	// }
 
 	public playVid() {
-		// console.log("video");
 		this.videoplayer.nativeElement.play();
 		this.videoplayer.nativeElement.loop = true;
 	}
