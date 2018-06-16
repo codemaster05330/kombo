@@ -39,12 +39,19 @@ export class FlipitPage {
 
 	@ViewChild('videoPlayer') videoplayer: any;
 
-	constructor(private navCtrl: NavController, public navParams: NavParams, private gesturesService:GesturesService, public platform:Platform,
-		public popoverCtrl:PopoverController, private events:Events, private globalVars: Variables, private zone:NgZone) {
+	constructor(
+		private navCtrl: NavController,
+		public navParams: NavParams,
+		private gesturesService:GesturesService,
+		public platform:Platform,
+		public popoverCtrl:PopoverController,
+		private events:Events,
+		private globalVars: Variables,
+		private zone:NgZone) {
 		console.log('constructor flipit');
 
 		this.popover = new Popover(popoverCtrl);
-		
+
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 		events.subscribe(GestureType.FLIPPED.toString(), (acceleration) => {
 			this.globalVars.currentSoundType = SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]];
@@ -53,7 +60,7 @@ export class FlipitPage {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			// setTimeout(function(){
 				zone.run(() => {
-					navCtrl.setRoot(EditPage);	
+					navCtrl.setRoot(EditPage);
 				});
 			// }, 200);
 		});
@@ -67,7 +74,7 @@ export class FlipitPage {
 		});
 	}
 
-	ionViewWillEnter() {
+	ionViewDidLoad() {
 		this.playVid();
 	}
 

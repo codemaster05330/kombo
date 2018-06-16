@@ -41,9 +41,9 @@ export class SoundWave {
     // indipendent from other circles
     public updateSoundWave() {
 		if(this.radius >= this.radius*10) {
-			this.radius = this.radius * 10;										// Performance Upgrade
+			this.radius = this.radius*10;										// Performance Upgrade
 		} else {
-			this.radius += (this.speed * this.ratio);                           // Update the radius of this circle
+			this.radius += (this.speed*this.ratio);                             // Update the radius of this circle
 		}
         this.opacity += -0.01;                                                  // Percentage subtracted with each frame
         if(this.opacity < 0) {this.opacity = 0;}                                // Fallback to prevent a Error if the Value is negativ
