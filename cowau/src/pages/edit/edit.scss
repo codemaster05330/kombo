@@ -32,7 +32,7 @@ page-edit {
 						height: 9vh;
 						width: 10vw;
 						margin: 1vw;
-						border: 0.1rem solid rgba(255,255,255,0.1);
+						border: 0.1rem solid rgba(255,255,255,0.3);
 						border-radius:3vw;
 						//background:#fff;
 						.tone-long{
@@ -159,4 +159,14 @@ page-edit {
 		z-index:-2;
 	}
 		
+
+	.background-emoji{
+		z-index:-1;
+		width: 100%;
+		height: auto;
+		position: absolute;
+		top: 0;
+
+		opacity: 0.08;
+	}
 }
