@@ -1,4 +1,4 @@
-import { Component, ViewChild} from '@angular/core';
+import { Component, ViewChild, NgZone } from '@angular/core';
 import { NavController, NavParams, Events } from 'ionic-angular';
 import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
@@ -7,7 +7,7 @@ import { ServerConnectionService } from '../../services/server-connection.servic
 import { AudioBufferLoader } from 'waves-loaders';
 
 // Import the pages, that are needed for this page
-// import { EmojiPage } from '../emoji/emoji';
+import { IdlePage } from '../idle/idle';
 import { EditPage } from '../edit/edit';
 
 // Import every classes
@@ -28,7 +28,7 @@ export class LoadingPage {
 	isLoading: boolean = false;
 
     constructor(private navCtrl: NavController, private socket:Socket, private globalVars:Variables, 
-    	private metricSync:MetricSync, private server: ServerConnectionService) {
+    	private metricSync:MetricSync, private server: ServerConnectionService, private zone:NgZone) {
         console.log("Loading Page");
     }
 
@@ -51,9 +51,12 @@ export class LoadingPage {
 					const sendFunction = (cmd, ...args) => this.socket.emit(cmd, ...args);
 					const receiveFunction = (cmd, args) => this.socket.on(cmd, args);
 					this.globalVars.buffers = buffers;
-					this.metricSync.start(sendFunction, receiveFunction).then(() => {
+					this.metricSync.start(sendFunction, receiveFunction).then((data) => {
+						console.log(data);
 						console.log("metricSyncStarted");
-						this.navCtrl.setRoot(EditPage);
+						this.zone.run(() => {
+							this.navCtrl.setRoot(IdlePage);
+						})
 					});
 				});
 

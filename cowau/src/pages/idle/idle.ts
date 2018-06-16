@@ -1,7 +1,8 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { NavController, NavParams, Events } from 'ionic-angular';
-import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
+
+import { MetricSync } from '../../services/metric-sync.service';
 import { GesturesService } from '../../services/gestures.service';
 
 // Import the pages, that are needed for this page
@@ -36,8 +37,6 @@ export class IdlePage {
         private gesturesService:GesturesService,
         private globalVars:Variables) {
 
-        console.log('idle constructor');
-
         if(globalVars.emojiID != null) {
             console.log(globalVars.emojiID);
             socket.emit('free-emoji', globalVars.emojiID);
@@ -58,7 +57,7 @@ export class IdlePage {
         this.ratio = window.devicePixelRatio;                                   // Define the Pixel Ratio of the Device
         this.canvasWidth = window.innerWidth;                                   // Define the Width of the Device
         this.canvasHeight = window.innerHeight;                                 // Define the Hight of the Device
-        this.cvs = document.getElementById('canvas');                           // Define the canvas tag
+        this.cvs = document.getElementById('idle-canvas');                      // Define the canvas tag
         this.ctx = this.cvs.getContext('2d');                                   // Define the canvas context
 
         // Create a canvas with the max size of the device
@@ -71,9 +70,10 @@ export class IdlePage {
         this.canvasWidth = this.canvasWidth * this.ratio;                       // Set the widdth of the canvas
         this.canvasHeight = this.canvasHeight * this.ratio;                     // Set the hight of the canvas
 
+        // console.log(this.cvs.style);
+
         // Start the Canvas Animation
         this.draw();
-
     }
 
     // Function that get triggert 60 times every second
