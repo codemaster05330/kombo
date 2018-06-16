@@ -87,4 +87,5 @@
     <allow-navigation href="http://141.28.130.196:8100" />
     <plugin name="cordova-plugin-vibration" spec="^3.1.0" />
     <allow-navigation href="http://192.3.2.165:8100" />
+    <allow-navigation href="http://141.28.128.139:8100" />
 </widget>
