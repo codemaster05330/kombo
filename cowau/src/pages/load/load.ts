@@ -1,7 +1,6 @@
 import { Component, ViewChild, NgZone } from '@angular/core';
 import { NavController, NavParams, Events } from 'ionic-angular';
 import { MetricSync } from '../../services/metric-sync.service';
-import { NavController } from 'ionic-angular';
 import { Socket } from 'ng-socket-io';
 import { ServerConnectionService } from '../../services/server-connection.service';
 import { AudioBufferLoader } from 'waves-loaders';
