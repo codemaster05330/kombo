@@ -1,14 +1,14 @@
 import { Component, ViewChild } from '@angular/core';
 import { Platform, NavController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
 
 // NOTE: Auskommentiert da es sonnst unused ist.
+
 import { Variables } from '../classes/variables';
 // import { FlipitPage } from '../pages/flipit/flipit';
 import { IdlePage } from '../pages/idle/idle';
 import { LoadingPage } from '../pages/load/load';
-import { EditPage } from '../pages/edit/edit';
+// import { EditPage } from '../pages/edit/edit';
 // import { EmojiPage } from '../pages/emoji/emoji';
 // import { VisualPage } from '../pages/visual/visual';
 import { Socket } from 'ng-socket-io';

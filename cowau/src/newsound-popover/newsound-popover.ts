@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PopoverController } from 'ionic-angular';
-import { SoundType, SoundName } from '../classes/sequence';
+import { SoundName } from '../classes/sequence';
 import { Variables } from '../classes/variables'; 
 
 @Component({
