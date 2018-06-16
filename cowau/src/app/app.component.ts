@@ -7,7 +7,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { Variables } from '../classes/variables';
 import { IdlePage } from '../pages/idle/idle';
 import { LoadingPage } from '../pages/load/load';
-// import { VisualPage } from '../pages/visual/visual';
+import { VisualPage } from '../pages/visual/visual';
 import { Socket } from 'ng-socket-io';
 
 
