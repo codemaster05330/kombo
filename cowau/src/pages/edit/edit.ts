@@ -5,7 +5,7 @@ import { audioContext } from 'waves-audio';
 //pages
 import { IdlePage } from '../idle/idle';
 import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
-// import { ThrowItPopoverPage } from '../../throwit-popover/throwit-popover';
+import { ThrowItPopoverPage } from '../../throwit-popover/throwit-popover';
 
 //classes
 import { Sequence, SoundType } from '../../classes/sequence';
@@ -67,6 +67,8 @@ export class EditPage {
 
 	callback: any;
 
+	throwPopoverInterval:any;
+
 	constructor(private navCtrl: NavController, public navParams: NavParams, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables, private zone:NgZone) {
 		console.log('constructor edit');
@@ -127,6 +129,10 @@ export class EditPage {
 				this.navCtrl.setRoot(IdlePage);
 			});
 		});
+
+		this.throwPopoverInterval = setInterval(() => {
+			this.popover.show(ThrowItPopoverPage, 3000);
+		}, 10000);
 		
 	}
 
@@ -672,6 +678,7 @@ export class EditPage {
 
 	ionViewWillLeave() {
         console.log('will close edit');
+        clearInterval(this.throwPopoverInterval);
     }
 
     ionViewDidLeave() {
