@@ -132,7 +132,7 @@ export class EditPage {
 
 		this.throwPopoverInterval = setInterval(() => {
 			this.popover.show(ThrowItPopoverPage, 3000);
-		}, 10000);
+		}, 30000);
 		
 	}
 
@@ -300,9 +300,9 @@ export class EditPage {
 	clearSound(){
 		// this.sound.fillBeatGridAtRandom();
 		// this.sound.setId(1);
-		if(this.getBeatGridMagnitude() > 0){
-			this.socket.emit('new-sequence', this.sound);
-		}
+		// if(this.getBeatGridMagnitude() > 0){
+		// 	this.socket.emit('new-sequence', this.sound);
+		// }
 		
 		this.sound.clearBeatGrid();
 		this.clearSmallGrid();

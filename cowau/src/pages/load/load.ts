@@ -7,6 +7,7 @@ import { AudioBufferLoader } from 'waves-loaders';
 
 // Import the pages, that are needed for this page
 import { IdlePage } from '../idle/idle';
+import { VisualPage } from '../visual/visual';
 import { EditPage } from '../edit/edit';
 
 // Import every classes

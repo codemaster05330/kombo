@@ -5,11 +5,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 // NOTE: Auskommentiert da es sonnst unused ist.
 
 import { Variables } from '../classes/variables';
-// import { FlipitPage } from '../pages/flipit/flipit';
 import { IdlePage } from '../pages/idle/idle';
 import { LoadingPage } from '../pages/load/load';
-// import { EditPage } from '../pages/edit/edit';
-// import { EmojiPage } from '../pages/emoji/emoji';
 // import { VisualPage } from '../pages/visual/visual';
 import { Socket } from 'ng-socket-io';
 
@@ -20,7 +17,7 @@ import { Socket } from 'ng-socket-io';
 
 export class MyApp {
 	rootPage:any = LoadingPage;
-	// rootPage:any = ServerPage;
+	// rootPage:any = VisualPage;
 
 	@ViewChild('navCtrl') navCtrl:NavController;
 
