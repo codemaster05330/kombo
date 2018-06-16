@@ -64,9 +64,8 @@ export class EmojiPage {
 	clickMe(evt: MouseEvent){
 		var elem: HTMLDivElement = <HTMLDivElement> evt.currentTarget;
 
-		if(elem.classList.contains("disabled")){
-    		return;
-    	}
+		if(elem == null) { return; }
+		if(elem.classList.contains("disabled")) { return; }
 
 		this.globalVars.emojiID = parseInt(elem.id);
 		console.log(this.globalVars.emojiID);

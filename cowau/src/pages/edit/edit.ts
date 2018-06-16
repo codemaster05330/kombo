@@ -321,9 +321,11 @@ export class EditPage {
 	//removes 
 	clearSmallGrid(){
 		for(var i = 0; i < this.beatgridPreview.length; i++){
-			this.beatgridPreview[i].classList.remove("tone-selected-preview");
-			if (this.beatgridPreview[i].children.length > 0){
-				this.beatgridPreview[i].removeChild(this.beatgridPreview[i].children[0]);
+			if(this.beatgridPreview[i] != null){
+				this.beatgridPreview[i].classList.remove("tone-selected-preview");
+				if (this.beatgridPreview[i].children.length > 0){
+					this.beatgridPreview[i].removeChild(this.beatgridPreview[i].children[0]);
+				}
 			}
 		}
 	}
@@ -339,20 +341,22 @@ export class EditPage {
 	clickedTone(evt: MouseEvent){
 
 		var elem : HTMLDivElement = <HTMLDivElement> evt.target;
-
-		if(elem.classList.contains("tone")){							// clicked element is an empty tone: create tone with length 1
-			let x: number = +elem.id.split("-")[0];
-			let y: number = +elem.id.split("-")[1];
-			this.sound.setBeatGridAtPos(x, y, 1);
-			this.setPreview(x, y, 1);
-			elem.appendChild(this.createLongTone());
-
-		} else if (elem.classList.contains("tone-long")) {				// clicked element is an existing tone: remove the tone
-			let x: number = +elem.parentElement.id.split("-")[0];
-			let y: number = +elem.parentElement.id.split("-")[1];
-			this.sound.setBeatGridAtPos(x, y, 0);
-			this.setPreview(parseInt(elem.parentElement.id.split("-")[0]), parseInt(elem.parentElement.id.split("-")[1]),0);
-			elem.parentElement.removeChild(elem);
+		if(elem != null)
+		{
+			if(elem.classList.contains("tone")){							// clicked element is an empty tone: create tone with length 1
+				let x: number = +elem.id.split("-")[0];
+				let y: number = +elem.id.split("-")[1];
+				this.sound.setBeatGridAtPos(x, y, 1);
+				this.setPreview(x, y, 1);
+				elem.appendChild(this.createLongTone());
+	
+			} else if (elem.classList.contains("tone-long")) {				// clicked element is an existing tone: remove the tone
+				let x: number = +elem.parentElement.id.split("-")[0];
+				let y: number = +elem.parentElement.id.split("-")[1];
+				this.sound.setBeatGridAtPos(x, y, 0);
+				this.setPreview(parseInt(elem.parentElement.id.split("-")[0]), parseInt(elem.parentElement.id.split("-")[1]),0);
+				elem.parentElement.removeChild(elem);
+			}
 		}
 	}
 
@@ -362,7 +366,7 @@ export class EditPage {
 		
 		// detect if a new pan has been started and start a new (internal) event accordingly. internal because angular will thrown an event every time the finger is being moved slightly, even when inside the same pan gesture
 		//this.deltaTime holds the starttime of the event. 20 because the evt.timeStamp - evt.deltaTime sometimes fluctuates a little bit.
-		if (evt.timeStamp - evt.deltaTime - 20 > this.deltaTime){		// is entered if it's a new gesture		
+		if (evt.timeStamp - evt.deltaTime - 20 > this.deltaTime && evt.target != null){		// is entered if it's a new gesture		
 			
 			//if the delay between the click and the movement is above 200ms or the use didn't click on a tone, don't scroll but create a long tone instead.
 			//TODO: Haptic Feedback when passing the time threshold
@@ -599,23 +603,24 @@ export class EditPage {
 				if (this.beatgridPreview[i].children.length > 0){
 					this.beatgridPreview[i].removeChild(this.beatgridPreview[i].children[0])
 				}
-
-				if(length == 0){
-					this.beatgridPreview[i].classList.remove("tone-selected-preview");
-					break;
-				} else if (length == 1){
-					this.beatgridPreview[i].classList.add("tone-selected-preview");
-					break;
-				} else if (length > 1){
-					this.beatgridPreview[i].classList.remove("tone-selected-preview");
-					var longtonePrev: HTMLElement = document.createElement("div");
-					longtonePrev.classList.add("tone-long-preview");
-					var divLength = 2 + 2.6 * (length-1);
-					if (Math.floor(y / 8) != Math.floor((y+length-1)/ 8)){
-						divLength += 0.8;
+				if(this.beatgridPreview[i] != null) {
+					if(length == 0){
+						this.beatgridPreview[i].classList.remove("tone-selected-preview");
+						break;
+					} else if (length == 1){
+						this.beatgridPreview[i].classList.add("tone-selected-preview");
+						break;
+					} else if (length > 1){
+						this.beatgridPreview[i].classList.remove("tone-selected-preview");
+						var longtonePrev: HTMLElement = document.createElement("div");
+						longtonePrev.classList.add("tone-long-preview");
+						var divLength = 2 + 2.6 * (length-1);
+						if (Math.floor(y / 8) != Math.floor((y+length-1)/ 8)){
+							divLength += 0.8;
+						}
+						longtonePrev.style.width = divLength +"vw";
+						this.beatgridPreview[i].appendChild(longtonePrev);
 					}
-					longtonePrev.style.width = divLength +"vw";
-					this.beatgridPreview[i].appendChild(longtonePrev);
 				}
 			}
 		}
