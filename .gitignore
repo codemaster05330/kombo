@@ -34,7 +34,4 @@ cowau/.DS_Store
 cowau/Thumbs.db
 cowau/UserInterfaceState.xcuserstate
 
-cowau/src/pages/idle/
-
-server/node_modules/
 app/
