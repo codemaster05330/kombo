@@ -26,6 +26,8 @@ export class IdlePage {
     ratio:number;                                                               // Define the DPI of the Screen
     canvasWidth:number;                                                         // Hight of the Canvas
     canvasHeight:number;                                                        // Width of the Canvas
+	idleAnimationCanvas:any;													// Animation Frame FUnction
+	setup:any = true;
 
     constructor(
         private zone: NgZone,
@@ -51,47 +53,47 @@ export class IdlePage {
 		        navCtrl.setRoot(EmojiPage);
             });
     	});
+
     }
 
-    ionViewDidLoad() {
-        this.ratio = window.devicePixelRatio;                                   // Define the Pixel Ratio of the Device
-        this.canvasWidth = window.innerWidth;                                   // Define the Width of the Device
-        this.canvasHeight = window.innerHeight;                                 // Define the Hight of the Device
-        this.cvs = document.getElementById('idle-canvas');                      // Define the canvas tag
-        this.ctx = this.cvs.getContext('2d');                                   // Define the canvas context
-
-        // Create a canvas with the max size of the device
-        // and create a canvas with a higher DPI as the "Max-Size"
-        // so everything is sharp as fuck
-        this.cvs.width = this.canvasWidth * this.ratio;                         // Multiply the width, with the DPI Scale
-        this.cvs.height = this.canvasHeight * this.ratio;                       // Multiply the width, with the DPI Scal
-        this.cvs.style.width = this.canvasWidth + 'px';                         // Set the width in the canvas
-        this.cvs.style.height = this.canvasHeight + 'px';                       // Set the hight in the canvas
-        this.canvasWidth = this.canvasWidth * this.ratio;                       // Set the widdth of the canvas
-        this.canvasHeight = this.canvasHeight * this.ratio;                     // Set the hight of the canvas
-
-        // console.log(this.cvs.style);
-
-        // Start the Canvas Animation
-        this.draw();
-    }
+	ionViewWillEnter() {
+		this.draw();															// Start the Canvas Animation
+		console.log('Enter Idle Page');
+	}
 
     // Function that get triggert 60 times every second
     // so this function creaetes the animation in the background
     draw() {
-        // This line clear the canvas every Frame,
-        // without this line, every circles would stay
-        this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
+		this.ratio = window.devicePixelRatio;                               	// Define the Pixel Ratio of the Device
+		this.canvasWidth = window.innerWidth;                              		// Define the Width of the Device
+		this.canvasHeight = window.innerHeight;                             	// Define the Hight of the Device
+		this.cvs = document.getElementById('idle-canvas');                  	// Define the canvas tag
+		this.ctx = this.cvs.getContext('2d');                               	// Define the canvas context
+
+		// Create a canvas with the max size of the device
+		// and create a canvas with a higher DPI as the "Max-Size"
+		// so everything is sharp as fuck
+		this.cvs.width = this.canvasWidth * this.ratio;                     	// Multiply the width, with the DPI Scale
+		this.cvs.height = this.canvasHeight * this.ratio;                  	 	// Multiply the width, with the DPI Scal
+		this.cvs.style.width = this.canvasWidth + 'px';                     	// Set the width in the canvas
+		this.cvs.style.height = this.canvasHeight + 'px';                   	// Set the hight in the canvas
+		this.canvasWidth = this.canvasWidth * this.ratio;                   	// Set the widdth of the canvas
+		this.canvasHeight = this.canvasHeight * this.ratio;                 	// Set the hight of the canvas
+
+		// This line clear the canvas every Frame,
+		// without this line, every circles would stay
+		this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
 		if(this.returnRandomValue(1,50) == 7) {
-			let soundWave = new SoundWave(50,this.returnRandomValue(1,7),this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
+			let soundWave = new SoundWave(5,this.returnRandomValue(5,15),this.canvasWidth/2,this.canvasHeight/2,1,this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
 			this.soundWaves.push(soundWave);
 		}
-        this.soundWaves.forEach(soundWaves => {
+		this.soundWaves.forEach(soundWaves => {
+			soundWaves.updateSoundWave();
 			if(soundWaves.returnSoundWave() == 0) { this.soundWaves.splice(this.soundWaves.indexOf(soundWaves),1); }
-            soundWaves.updateSoundWave();
-        });
-        // this line request this function every frame
-        requestAnimationFrame(() => {this.draw()});
+		});
+
+		// this line request this function every frame
+		this.idleAnimationCanvas = window.requestAnimationFrame(() => {this.draw()});
     }
 
 	// Function to create a random int number
@@ -107,6 +109,7 @@ export class IdlePage {
 
     ionViewWillLeave() {
         console.log('will close idle');
+		window.cancelAnimationFrame(this.idleAnimationCanvas);
     }
 
     ionViewDidLeave() {

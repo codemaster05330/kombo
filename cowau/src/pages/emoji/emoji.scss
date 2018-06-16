@@ -22,22 +22,17 @@
 	.emoji-container {
 		width: 24%;
 		margin: 1%;
-		padding: 0%; 
+		padding: 0%;
 
 		&.disabled {
 		    opacity: .3
 		}
 
 		img {
-			width: 90%;
-			height: 90%;
+			width: 100%;
+            height: auto;
 		}
 	}
 
-	
+
 }
-
-
-
-
-
