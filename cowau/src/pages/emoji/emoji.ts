@@ -55,6 +55,14 @@ export class EmojiPage {
 			});
 		// });
 
+		this.socket.on('emoji-taken', (data) => {
+			this.emoji_list[data] = true;
+		});
+
+		this.socket.on('emoji-untaken', (data) => {
+			this.emoji_list[data] = false;
+		});
+
 		// return observable;
 	}
 
