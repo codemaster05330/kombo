@@ -7,7 +7,6 @@ page-edit {
 		padding: 5% 0 5% 0;
 		justify-content: space-between;
 		align-items: center;
-
 		.beatgrid-wrapper{
 			width:100%;
 			height:auto;
@@ -57,7 +56,7 @@ page-edit {
 						box-shadow: 0px 10px 20px rgba(0,0,0,0.5);
 						z-index: 100;
 					}
-					
+
 				}
 				.cursor{
 					height: 49.8vh;
@@ -86,7 +85,7 @@ page-edit {
 				background: rgba(255,255,255,0.1);
 				border-radius: 4vw;
 			}
-			
+
 			.beatgrid-wrapper-preview {
 				display: block;
 				margin: 0 auto;
@@ -114,12 +113,12 @@ page-edit {
 					.tone-preview:nth-child(8n+1){
 						position: relative;
 						margin-left: 1.1vw;
-						
+
 					}
 					.tone-selected-preview{
 						background:$bggradient;
 					}
-					
+
 				}
 
 			}
@@ -158,7 +157,7 @@ page-edit {
 	.background-pattern-dark{
 		z-index:-2;
 	}
-		
+
 
 	.background-emoji{
 		z-index:-1;
@@ -166,7 +165,22 @@ page-edit {
 		height: auto;
 		position: absolute;
 		top: 0;
-
 		opacity: 0.08;
+	}
+}
+
+.animation-throwit{
+	animation-name: throwit;
+	animation-duration: 300ms;
+	animation-fill-mode: forwards;
+}
+
+@keyframes throwit {
+	0% {
+		opacity: 1
+	}
+	100% {
+		opacity: 0;
+        transform: translate(-5px,-80px) rotate(35deg);
 	}
 }
