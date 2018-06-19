@@ -106,8 +106,14 @@ export class EditPage {
 			if(this.getBeatGridMagnitude() > 0){
 				this.socket.emit('new-sequence', this.sound);
 			}
-			// add a fancy animation for throwing here
-			this.clearSound();
+			//fancy animation
+			let divsToThrow = document.getElementsByClassName("tone-long");
+			for(let i = 0; i < divsToThrow.length; i++){
+				divsToThrow[i].classList.add("animation-throwit");
+			}
+			setTimeout(() => {
+				this.clearSound();
+			}, 700);
 		});
 		
 		//FLIPPING
@@ -309,6 +315,16 @@ export class EditPage {
 		// this.cloneFirstMeasure();
 		this.reloadGrid();
 		// console.log(this.sound.getBeatGrid());
+	}
+
+	clearSoundButton(){
+		let divsToThrow = document.getElementsByClassName("tone-long");
+		for(let i = 0; i < divsToThrow.length; i++){
+			divsToThrow[i].classList.add("animation-clear");
+		}
+		setTimeout(() => {
+			this.clearSound();
+		}, 500);
 	}
 
 	switchSound(){ 
@@ -560,6 +576,8 @@ export class EditPage {
 	//handle creation of a new tone element with a defined width. 10 is the width of a single tone
 	createLongTone(width :number = 10): HTMLElement{
 		let longtone :HTMLElement = document.createElement("div");
+		longtone.setAttribute("style", "animation-delay: " + Math.floor(Math.random() * 200).toString() + "ms;");
+		// console.log(longtone.style.animationDelay);
 		longtone.classList.add("tone-long");
 		longtone.style.width =  width+"vw";
 		return longtone;

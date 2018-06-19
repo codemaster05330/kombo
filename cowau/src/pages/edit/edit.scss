@@ -171,7 +171,7 @@ page-edit {
 
 .animation-throwit{
 	animation-name: throwit;
-	animation-duration: 300ms;
+	animation-duration: 500ms;
 	animation-fill-mode: forwards;
 }
 
@@ -181,6 +181,23 @@ page-edit {
 	}
 	100% {
 		opacity: 0;
-        transform: translate(-1rem,-12rem) rotate(35deg);
+        transform: translate(-1rem,-20rem) rotate(35deg) scale(1.2);
+	}
+}
+
+.animation-clear{
+	animation-name: clear;
+	animation-duration: 500ms;
+	animation-fill-mode: forwards;
+	animation-delay: 0ms !important;
+}
+
+@keyframes clear {
+	0% {
+		opacity: 1
+	}
+	100% {
+		opacity: 0;
+        transform: scale(0);
 	}
 }
