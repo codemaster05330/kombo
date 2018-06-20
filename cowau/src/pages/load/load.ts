@@ -4,6 +4,7 @@ import { MetricSync } from '../../services/metric-sync.service';
 import { Socket } from 'ng-socket-io';
 import { ServerConnectionService } from '../../services/server-connection.service';
 import { AudioBufferLoader } from 'waves-loaders';
+import { audioContext } from 'waves-audio';
 
 // Import the pages, that are needed for this page
 import { IdlePage } from '../idle/idle';
@@ -13,8 +14,18 @@ import { EditPage } from '../edit/edit';
 // Import every classes
 import { Variables } from '../../classes/variables';
 
-
 import * as soundsData from '../../assets/sounds/sounds.json';
+
+function activateAudioContext() {
+  const g = audioContext.createGain();
+  g.connect(audioContext.destination);
+  g.gain.value = 0;
+
+  const o = audioContext.createOscillator();
+  o.connect(g);
+  o.frequency.value = 20;
+  o.start(0);
+}
 
 @Component({
 	selector: 'page-load',
@@ -34,6 +45,8 @@ export class LoadingPage {
     	if(!this.isLoading){
     		this.isLoading = true;
     		this.text = "Loading...";
+
+        activateAudioContext();
 
     		this.server.initServerConnection().then(() => {
 				this.globalVars.audioBufferLoader = new AudioBufferLoader();
