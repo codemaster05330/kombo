@@ -241,9 +241,11 @@ export class EditPage {
 		// Get Time from Server
 		const time = audioScheduler.currentTime;	                            // Sync Time
 		const src = audioContext.createBufferSource();                          // Create Source
+		const gain = audioContext.createGain();
 
 		// Play Audio File
-		src.connect(audioContext.destination);                                  // Connect Autio Context
+		gain.connect(audioContext.destination);
+		src.connect(gain);                                  					// Connect Audio Context
 		src.buffer = this.globalVars.buffers[type];                             // Define witch sound the function is playing
 		src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25);// Start Sound
 
