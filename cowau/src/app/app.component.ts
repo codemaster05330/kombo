@@ -15,6 +15,7 @@ import { Socket } from 'ng-socket-io';
 	templateUrl: 'app.html'
 })
 
+
 export class MyApp {
 	rootPage:any = LoadingPage;
 	// rootPage:any = VisualPage;

@@ -49,6 +49,7 @@ export class EditPage {
 
 	isScrolling: boolean = false;
 	deltaTime: number = 1000000;
+	timeStamp: number = 0;
 	translation: number;
 	relativeX: number;
 
@@ -138,7 +139,7 @@ export class EditPage {
 
 		this.throwPopoverInterval = setInterval(() => {
 			this.popover.show(ThrowItPopoverPage, 3000);
-		}, 30000);
+		}, 120000);
 		
 	}
 
@@ -363,8 +364,8 @@ export class EditPage {
 
 	// function called when a tone is clicked
 	clickedTone(evt: MouseEvent){
-
 		let elem : HTMLDivElement = <HTMLDivElement> evt.target;
+		if (evt.timeStamp - this.timeStamp < 100) return;
 		if(elem != null)
 		{
 			if(elem.classList.contains("tone")){							// clicked element is an empty tone: create tone with length 1
@@ -387,6 +388,7 @@ export class EditPage {
 
 	// function called when a pan gesture happening (aka moving your finger left/right)
 	panTone(evt: any){
+		this.timeStamp = evt.timeStamp;
 		
 		// detect if a new pan has been started and start a new (internal) event accordingly. internal because angular will thrown an event every time the finger is being moved slightly, even when inside the same pan gesture
 		//this.deltaTime holds the starttime of the event. 20 because the evt.timeStamp - evt.deltaTime sometimes fluctuates a little bit.

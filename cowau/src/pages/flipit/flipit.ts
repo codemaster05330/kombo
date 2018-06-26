@@ -75,7 +75,7 @@ export class FlipitPage {
 	}
 
 	ionViewDidLoad() {
-		this.playVid();
+		// this.playVid();
 	}
 
 	// public switchScreen() {
