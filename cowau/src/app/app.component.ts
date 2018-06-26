@@ -35,11 +35,11 @@ export class MyApp {
 				}
 			});
 
-			platform.resume.subscribe(() => {
-				if(this.navCtrl.getActive().name != 'IdlePage') {
-					this.navCtrl.setRoot(IdlePage);
-				}
-			});
+			// platform.resume.subscribe(() => {
+			// 	if(this.navCtrl.getActive().name != 'IdlePage') {
+			// 		this.navCtrl.setRoot(IdlePage);
+			// 	}
+			// });
 		});
 	}
 }

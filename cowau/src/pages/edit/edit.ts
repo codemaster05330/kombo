@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, PopoverController, Events } from 'ionic-angular';
+import { NavController, NavParams, PopoverController, Events, Platform } from 'ionic-angular';
 import { audioContext } from 'waves-audio';
 
 //pages
@@ -49,6 +49,7 @@ export class EditPage {
 
 	isScrolling: boolean = false;
 	deltaTime: number = 1000000;
+	timeStamp: number = 0;
 	translation: number;
 	relativeX: number;
 
@@ -70,7 +71,8 @@ export class EditPage {
 	throwPopoverInterval:any;
 
 	constructor(private navCtrl: NavController, public navParams: NavParams, private events:Events, private gesturesService:GesturesService,
-		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables, private zone:NgZone) {
+		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables,
+		private zone:NgZone, private platform: Platform) {
 		console.log('constructor edit');
 		if(globalVars.currentSoundType == null){
 			globalVars.currentSoundType = SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]];
@@ -363,8 +365,8 @@ export class EditPage {
 
 	// function called when a tone is clicked
 	clickedTone(evt: MouseEvent){
-
 		let elem : HTMLDivElement = <HTMLDivElement> evt.target;
+		if(this.platform.is("ios") && evt.timeStamp - this.timeStamp < 100) return;
 		if(elem != null)
 		{
 			if(elem.classList.contains("tone")){							// clicked element is an empty tone: create tone with length 1
@@ -387,6 +389,7 @@ export class EditPage {
 
 	// function called when a pan gesture happening (aka moving your finger left/right)
 	panTone(evt: any){
+		this.timeStamp = evt.timeStamp;
 		
 		// detect if a new pan has been started and start a new (internal) event accordingly. internal because angular will thrown an event every time the finger is being moved slightly, even when inside the same pan gesture
 		//this.deltaTime holds the starttime of the event. 20 because the evt.timeStamp - evt.deltaTime sometimes fluctuates a little bit.
@@ -600,8 +603,12 @@ export class EditPage {
 
 	//called when the slider on the preview is pulled, moves the slider to the clicking position & the beatgrid to the according position
 	panPreview(evt: any){
-		
-		let x: number = evt.srcEvent.clientX - (this.beatPreviewSlider.offsetWidth/2);
+		let x: number;
+		if (evt.srcEvent.clientX > 0) {
+			x = evt.srcEvent.clientX - (this.beatPreviewSlider.offsetWidth/2);
+		} else {
+			x = evt.center.x - (this.beatPreviewSlider.offsetWidth/2);
+		}
 		let prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
 		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 

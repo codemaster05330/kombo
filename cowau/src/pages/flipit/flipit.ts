@@ -37,8 +37,6 @@ export class FlipitPage {
 	videoSource:string = 'assets/anim/flipit_android.mp4';
 	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.IDLE_IN];
 
-	@ViewChild('videoPlayer') videoplayer: any;
-
 	constructor(
 		private navCtrl: NavController,
 		public navParams: NavParams,
@@ -83,11 +81,6 @@ export class FlipitPage {
  //        	this.navCtrl.setRoot(EditPage);
 	// 	});
 	// }
-
-	public playVid() {
-		this.videoplayer.nativeElement.play();
-		this.videoplayer.nativeElement.loop = true;
-	}
 
 	ionViewWillLeave() {
         console.log('will close flipit');
