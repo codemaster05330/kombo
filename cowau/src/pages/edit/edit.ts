@@ -602,8 +602,12 @@ export class EditPage {
 
 	//called when the slider on the preview is pulled, moves the slider to the clicking position & the beatgrid to the according position
 	panPreview(evt: any){
-		
-		let x: number = evt.srcEvent.clientX - (this.beatPreviewSlider.offsetWidth/2);
+		let x: number;
+		if (evt.srcEvent.clientX > 0) {
+			x = evt.srcEvent.clientX - (this.beatPreviewSlider.offsetWidth/2);
+		} else {
+			x = evt.center.x - (this.beatPreviewSlider.offsetWidth/2);
+		}
 		let prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
 		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 
