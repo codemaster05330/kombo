@@ -9,13 +9,9 @@ import { PopoverController } from 'ionic-angular';
 export class ThrowItPopoverPage {
 	videoSource:string;
 	@ViewChild('videoPlayer') videoplayer: any;
-	
+
 	constructor(public popoverCtrl: PopoverController) {
 		this.videoSource = 'assets/anim/throwit_android.mp4';
-	}
-
-	ionViewWillEnter() {
-		this.playVid();
 	}
 
 	public playVid() {
