@@ -129,44 +129,6 @@ export class VisualPage {
 		this.metricSync.addMetronome(this.callback, 8, 8, 2);
 	}
 
-    // initMetrics() {
-    //     const socket = this.socket;
-    //     const sendFunction = (cmd, ...args) => socket.emit(cmd, ...args);
-    //     const receiveFunction = (cmd, args) => socket.on(cmd, args);
-    //     const loader = new AudioBufferLoader();
-    //     var soundsArrayString = [];
-    //     var soundsLength = [];
-	//
-    //     soundsData[0].forEach(soundsData => {
-	// 		soundsArrayString = soundsArrayString.concat(soundsData.path);   // New "big" Sound Array
-    //         soundsLength = soundsLength.concat(soundsData.length);
-	// 	});
-	//
-    //     loader.load(soundsArrayString)                                          // Load every Sound
-    //     .then((buffers) => {                                                    // Start the MetricSync after everything is loaded
-    //         this.metricSync.start(sendFunction, receiveFunction).then(() => {
-    //             this.metricSync.addMetronome((measure, beat) => {
-	// 				// NOTE: For testing if the Metric Sync works
-	// 				// console.log('metro:', measure, beat);
-    //                 this.sequenceArray.forEach(soundArray => {
-    //                 var statuswave = true;
-    //                     for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
-    //                         if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
-    // 							this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], buffers, soundArray.returnLifeTime(), soundsLength);
-    //                             if(statuswave) {
-    //                                 soundArray.createSoundWave();
-    //                                 statuswave = false;
-    //                             }
-    // 						}
-    // 					}
-    //                 });
-    //             }, 8, 8);
-    //         });
-    //     }).catch(function(err) {
-    //         console.log("loader error:", err.message);
-    //     });
-    // }
-
     // Function that plays specific sounds when needed.
     playSound(type:SoundType,pitch:number,length:number,amp:number) {
         // Get Time from Server
@@ -176,10 +138,10 @@ export class VisualPage {
         gain.value = amp;
 
         // Play Audio File
-        gain.connect(audioContext.destination);                                 // Connect Autio Context
+        gain.connect(audioContext.destination);                                         // Connect Autio Context
         src.connect(gain);
-        src.buffer = this.globalVars.buffers[type];                             // Define witch sound the fucktion is playing
-        src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25);// Start Sound
+        src.buffer = this.globalVars.buffers[type];                                     // Define witch sound the fucktion is playing
+        src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25);   // Start Sound
     }
 
     // Function to update the Animation, this will draw a new Frame every 60 seconds
