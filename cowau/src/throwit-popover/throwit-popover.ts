@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { PopoverController } from 'ionic-angular';
+import { PopoverController, ViewController } from 'ionic-angular';
 
 @Component({
 	selector: 'throw-it-popover',
@@ -10,7 +10,7 @@ export class ThrowItPopoverPage {
 	videoSource:string;
 	@ViewChild('videoPlayer') videoplayer: any;
 	
-	constructor(public popoverCtrl: PopoverController) {
+	constructor(public popoverCtrl: PopoverController, private viewCtrl:ViewController) {
 		this.videoSource = 'assets/anim/throwit_android.mp4';
 	}
 
@@ -21,5 +21,9 @@ export class ThrowItPopoverPage {
 	public playVid() {
 		this.videoplayer.nativeElement.play();
 		this.videoplayer.nativeElement.loop = true;
+	}
+
+	closePopover() {
+		this.viewCtrl.dismiss();
 	}
 }
