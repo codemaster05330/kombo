@@ -10,13 +10,7 @@ export class ThrowItPopoverPage {
 	videoSource:string;
 	@ViewChild('videoPlayer') videoplayer: any;
 	
-	constructor(public popoverCtrl: PopoverController, private viewCtrl:ViewController) {
-		this.videoSource = 'assets/anim/throwit_android.mp4';
-	}
-
-	ionViewWillEnter() {
-		this.playVid();
-	}
+	constructor(public popoverCtrl: PopoverController, private viewCtrl:ViewController) {}
 
 	public playVid() {
 		this.videoplayer.nativeElement.play();

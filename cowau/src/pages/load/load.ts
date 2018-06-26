@@ -36,7 +36,7 @@ export class LoadingPage {
 	text : string = "click here";
 	isLoading: boolean = false;
 
-    constructor(private navCtrl: NavController, private socket:Socket, private globalVars:Variables, 
+    constructor(private navCtrl: NavController, private socket:Socket, private globalVars:Variables,
     	private metricSync:MetricSync, private server: ServerConnectionService, private zone:NgZone) {
         console.log("Loading Page");
     }
@@ -46,9 +46,11 @@ export class LoadingPage {
     		this.isLoading = true;
     		this.text = "Loading...";
 
-        activateAudioContext();
+            activateAudioContext();
+            console.log("audio context activated");
 
     		this.server.initServerConnection().then(() => {
+                console.log("connected to server");
 				this.globalVars.audioBufferLoader = new AudioBufferLoader();
 				var soundsArrayString = [];
 
@@ -57,8 +59,11 @@ export class LoadingPage {
 					this.globalVars.soundLengths = this.globalVars.soundLengths.concat(soundsData.length);
 				});
 
+                console.log("json loaded");
+
 				this.globalVars.audioBufferLoader.load(soundsArrayString)                                          // Load every Sound
 				.then((buffers) => {
+                    console.log('Sounds loaded');
 					const sendFunction = (cmd, ...args) => this.socket.emit(cmd, ...args);
 					const receiveFunction = (cmd, args) => this.socket.on(cmd, args);
 					this.globalVars.buffers = buffers;
