@@ -37,7 +37,7 @@ export class GesturesService {
 	idleOutTimeout:boolean = false;
 	idleInTimeout:boolean = false;
 
-	stillStandingTreshold:number = 3;
+	stillStandingTreshold:number = 10;
 
 	watchForEvents:Array<GestureType> = new Array<GestureType>();
 	timeForGesture:number = 1500;
@@ -66,7 +66,7 @@ export class GesturesService {
 
 				this.devMotionSubscription = this.devMotion.watchAcceleration(motionOpts).subscribe((acceleration:DeviceMotionAccelerationData) => {
 					if(acceleration) {
-						this.getAccelerationMedianXYZ(acceleration, arraySize);
+						this.getAccelerationMedianXYZ(acceleration, 15);
 						
 						if(this.watchForEvents.indexOf(GestureType.IDLE_OUT) != -1 && !this.idleOutTimeout) {
 							this.noIdleMode(arraySizeIdleOut, acceleration);
@@ -215,13 +215,13 @@ export class GesturesService {
 
 			for(let i=0; i<this.throwArray.length; i++) {
 				if(!endFor && this.throwArray[i] != null) {
-						if(this.throwArray[i].acce.x > 8) {
+						if(this.throwArray[i].acce.x > 15) {
 							startIndex = i;
 							backAccRight = true;
 							endFor = true;
 						}
 					
-						if(this.throwArray[i].acce.x < -8) {
+						if(this.throwArray[i].acce.x < -15) {
 							startIndex = i;
 							backAccLeft = true;
 							endFor = true;
@@ -232,7 +232,7 @@ export class GesturesService {
 			if(startIndex != -1) {
 				for(let i=startIndex; i<this.throwArray.length; i++) {
 					if(!endLastFor && this.throwArray[i] != null) {
-						if(backAccRight && this.throwArray[i].acce.x < -15) {
+						if(backAccRight && this.throwArray[i].acce.x < -30) {
 							this.sendEvent(GestureType.THROWN, this.throwArray[i]);
 							console.log('THROWN RIGHT');
 							this.startThrowTimer(1000);
@@ -242,7 +242,7 @@ export class GesturesService {
 							backAccLeft = false;
 
 							endLastFor = true;
-						} else if(backAccLeft && this.throwArray[i].acce.x > 15) {
+						} else if(backAccLeft && this.throwArray[i].acce.x > 30) {
 							console.log('THROWN LEFT');
 							this.sendEvent(GestureType.THROWN, this.throwArray[i]);
 							this.startThrowTimer(1000);
@@ -342,7 +342,7 @@ export class GesturesService {
 	    }, time);
 	}
 
-	private startFlipTimer(time:number = 500) {
+	private startFlipTimer(time:number = 200) {
 		this.flipTimeout = true;
 	    setTimeout(() => {
 	    	this.flipTimeout = false;
