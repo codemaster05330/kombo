@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, PopoverController, Events } from 'ionic-angular';
+import { NavController, NavParams, PopoverController, Events, Platform } from 'ionic-angular';
 import { audioContext } from 'waves-audio';
 
 //pages
@@ -71,7 +71,8 @@ export class EditPage {
 	throwPopoverInterval:any;
 
 	constructor(private navCtrl: NavController, public navParams: NavParams, private events:Events, private gesturesService:GesturesService,
-		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables, private zone:NgZone) {
+		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables,
+		private zone:NgZone, private platform: Platform) {
 		console.log('constructor edit');
 		if(globalVars.currentSoundType == null){
 			globalVars.currentSoundType = SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]];
@@ -365,7 +366,7 @@ export class EditPage {
 	// function called when a tone is clicked
 	clickedTone(evt: MouseEvent){
 		let elem : HTMLDivElement = <HTMLDivElement> evt.target;
-		if (evt.timeStamp - this.timeStamp < 100) return;
+		if(this.platform.is("ios") && evt.timeStamp - this.timeStamp < 100) return;
 		if(elem != null)
 		{
 			if(elem.classList.contains("tone")){							// clicked element is an empty tone: create tone with length 1
