@@ -96,7 +96,7 @@ export class EditPage {
 			globalVars.emojiID = Math.floor(Math.random() * 12); 
 			console.log("Emoji was null. Randomly generated: " + globalVars.emojiID)
 		}
-		this.sound.setType(SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]]); 
+		// this.sound.setType(SoundType.Harm1); 
 
 		//Start Gesture Events
 		this.popover = new Popover(this.popoverCtrl);
@@ -243,15 +243,22 @@ export class EditPage {
 		// Get Time from Server
 		const time = audioScheduler.currentTime;	                            // Sync Time
 		const src = audioContext.createBufferSource();                          // Create Source
-		const gain = audioContext.createGain();
+		const gainC = audioContext.createGain();
 
 		// Play Audio File
-		gain.connect(audioContext.destination);
-		src.connect(gain);                                  					// Connect Audio Context
+		gainC.connect(audioContext.destination);
+		src.connect(gainC);                                  					// Connect Audio Context
 		src.buffer = this.globalVars.buffers[type];                             // Define witch sound the function is playing
-		src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25);// Start Sound
+		src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25 + 0.1);// Start Sound
+		gainC.gain.value = this.decibelToLinear(this.globalVars.soundGains[type]);
 
+		gainC.gain.setTargetAtTime(0, time + Math.min(length, this.soundLengths[type]) * 0.25 - 0.05, 0.015);
 	}
+
+	decibelToLinear(value: number){
+		return Math.pow(10, value/20);
+	}
+
 
 	// Legacy Function that moves Cursor to the next position. Used originally when there was no server available. Can probably be removed.
 	moveCursorNext(){
