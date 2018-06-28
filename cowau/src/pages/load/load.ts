@@ -71,7 +71,7 @@ export class LoadingPage {
 						console.log(data);
 						console.log("metricSyncStarted");
 						this.zone.run(() => {
-							this.navCtrl.setRoot(VisualPage);
+							this.navCtrl.setRoot(IdlePage);
 						})
 					});
 				});
