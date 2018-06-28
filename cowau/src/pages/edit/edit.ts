@@ -139,7 +139,7 @@ export class EditPage {
 		});
 
 		this.throwPopoverInterval = setInterval(() => {
-			this.popover.show(ThrowItPopoverPage, 3000);
+			this.popover.show(ThrowItPopoverPage, 2000);
 		}, 120000);
 		
 	}

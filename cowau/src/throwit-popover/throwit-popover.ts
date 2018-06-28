@@ -9,8 +9,4 @@ import { PopoverController, ViewController } from 'ionic-angular';
 export class ThrowItPopoverPage {
 	
 	constructor(public popoverCtrl: PopoverController, private viewCtrl:ViewController) {}
-
-	closePopover() {
-		this.viewCtrl.dismiss();
-	}
 }
