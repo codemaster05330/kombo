@@ -134,14 +134,19 @@ export class VisualPage {
         // Get Time from Server
         const time = audioScheduler.currentTime;                                // Sync Time
         const src = audioContext.createBufferSource();                          // Create Source
-        const gain = audioContext.createGain();
-        gain.value = amp;
+        const gainC = audioContext.createGain();
+        gainC.gain.value = this.decibelToLinear(this.globalVars.soundGains[type]) * amp;
 
         // Play Audio File
-        gain.connect(audioContext.destination);                                         // Connect Autio Context
-        src.connect(gain);
+        gainC.connect(audioContext.destination);                                         // Connect Autio Context
+        src.connect(gainC);
         src.buffer = this.globalVars.buffers[type];                                     // Define witch sound the fucktion is playing
         src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25);   // Start Sound
+        gainC.gain.setTargetAtTime(0, time + Math.min(length, this.soundLengths[type]) * 0.25 - 0.05, 0.015);
+    }
+
+    decibelToLinear(value: number){
+        return Math.pow(10, value/20);
     }
 
     // Function to update the Animation, this will draw a new Frame every 60 seconds

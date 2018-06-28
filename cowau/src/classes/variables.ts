@@ -8,6 +8,7 @@ export class Variables {
 
 	audioBufferLoader : AudioBufferLoader;
 	soundLengths: number[] = [];
+	soundGains: number[] = [];
 	buffers: any;
 	
 }

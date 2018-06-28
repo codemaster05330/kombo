@@ -57,6 +57,7 @@ export class LoadingPage {
 				soundsData[0].forEach(soundsData => {
 					soundsArrayString = soundsArrayString.concat(soundsData.path);   		// New "big" Sound Array
 					this.globalVars.soundLengths = this.globalVars.soundLengths.concat(soundsData.length);
+					this.globalVars.soundGains = this.globalVars.soundGains.concat(soundsData.gain);
 				});
 
                 console.log("json loaded");
@@ -71,7 +72,7 @@ export class LoadingPage {
 						console.log(data);
 						console.log("metricSyncStarted");
 						this.zone.run(() => {
-							this.navCtrl.setRoot(VisualPage);
+							this.navCtrl.setRoot(IdlePage);
 						})
 					});
 				});

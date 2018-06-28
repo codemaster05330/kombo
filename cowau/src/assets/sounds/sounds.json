@@ -1,48 +1,63 @@
 [
 	{
 		"path":"assets/sounds/bass-byte.wav",
-		"length":8
+		"length":8,
+		"gain":1
 	},{
 		"path":"assets/sounds/bass-detune.wav",
-		"length":8
+		"length":8,
+		"gain":1
 	},{
 		"path":"assets/sounds/bass-elec.wav",
-		"length":8
+		"length":8,
+		"gain":1
 	},{
 		"path":"assets/sounds/drums-perc.wav",
-		"length":1
+		"length":1,
+		"gain":1
 	},{
 		"path":"assets/sounds/drums-808.wav",
-		"length":1
+		"length":1,
+		"gain":1
 	},{
 		"path":"assets/sounds/drums-core.wav",
-		"length":1
+		"length":1,
+		"gain":1
 	},{
 		"path":"assets/sounds/harm-boar.wav",
-		"length":8
+		"length":8,
+		"gain":1
 	},{
 		"path":"assets/sounds/harm-saw.wav",
-		"length":8
+		"length":8,
+		"gain":1
 	},{
 		"path":"assets/sounds/harm-soft.wav",
-		"length":8
+		"length":8,
+		"gain":1
 	},{
 		"path":"assets/sounds/lead-horn.wav",
-		"length":8
+		"length":8,
+		"gain":1
 	},{
 		"path":"assets/sounds/lead-mellow.wav",
-		"length":8
+		"length":8,
+		"gain":1
 	},{
 		"path":"assets/sounds/lead-saw.wav",
-		"length":8
+		"length":8,
+		"gain":1
 	},{
 		"path":"assets/sounds/mall-bala.wav",
-		"length":8
+		"length":8,
+		"gain":1
 	},{
 		"path":"assets/sounds/mall-bell.wav",
-		"length":8
+		"length":8,
+		"gain":1
 	},{
 		"path":"assets/sounds/mall-glock.wav",
-		"length":8
+		"length":8,
+		"gain":1
 	}
 ]
