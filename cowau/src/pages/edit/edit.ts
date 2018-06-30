@@ -70,6 +70,8 @@ export class EditPage {
 
 	throwPopoverInterval:any;
 
+	ignoreInput: boolean = false;
+
 	constructor(private navCtrl: NavController, public navParams: NavParams, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables,
 		private zone:NgZone, private platform: Platform) {
@@ -113,6 +115,7 @@ export class EditPage {
 			for(let i = 0; i < divsToThrow.length; i++){
 				divsToThrow[i].classList.add("animation-throwit");
 			}
+			this.ignoreInput = true;
 			setTimeout(() => {
 				this.clearSound();
 			}, 700);
@@ -325,6 +328,7 @@ export class EditPage {
 		// 	this.socket.emit('new-sequence', this.sound);
 		// }
 		
+		this.ignoreInput = false;
 		this.sound.clearBeatGrid();
 		this.clearSmallGrid();
 		// this.cloneFirstMeasure();
@@ -333,6 +337,7 @@ export class EditPage {
 	}
 
 	clearSoundButton(){
+		this.ignoreInput = true;
 		let divsToThrow = document.getElementsByClassName("tone-long");
 		for(let i = 0; i < divsToThrow.length; i++){
 			divsToThrow[i].classList.add("animation-clear");
@@ -376,6 +381,8 @@ export class EditPage {
 
 	// function called when a tone is clicked
 	clickedTone(evt: MouseEvent){
+		if(this.ignoreInput) return;
+
 		let elem : HTMLDivElement = <HTMLDivElement> evt.target;
 		if(this.platform.is("ios") && evt.timeStamp - this.timeStamp < 100) return;
 		if(elem != null)
@@ -476,7 +483,9 @@ export class EditPage {
 
 
 		// if the current pan gesture is a drawing gesture, create the new tones
-		else {						
+		else {
+
+			if(this.ignoreInput) return;				
 			
 			//calculate how many tones have been passed
 			let y: number = +this.originalTarget.id.split("-")[1];
