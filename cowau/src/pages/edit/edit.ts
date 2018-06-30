@@ -138,6 +138,10 @@ export class EditPage {
 			});
 		});
 
+		//Throw it popover
+		setTimeout(() => {
+			this.popover.show(ThrowItPopoverPage, 5000);
+		}, 5000);
 		this.throwPopoverInterval = setInterval(() => {
 			this.popover.show(ThrowItPopoverPage, 2000);
 		}, 120000);
