@@ -61,8 +61,9 @@ export class SequenceDraw {
         this.canvasHeight   = canvasHeight;                                         // Hight of the Canvas Object
 
         // Emoji
-		if(this.emoji == null) { this.emoji = 0; }
-        this.emojiImg.src   = '../../assets/imgs/' + this.emoji + '.svg';
+        console.log(this.emoji);
+		if(this.emoji == null || typeof(this.emoji) == undefined || this.emoji < 0 || this.emoji > 11) { this.emoji = 0; }
+        this.emojiImg.src   = 'assets/imgs/' + this.emoji + '.png';
 
 	}
 
@@ -107,11 +108,11 @@ export class SequenceDraw {
     // Calculates the lifetime for the sequence object.
     public lifeTime() {
 		if(this.mass <= 16){
-			this.lifeTimeValue = this.lifeTimeValue - (0.05*(this.sequenceArray.length));
+			this.lifeTimeValue = this.lifeTimeValue - (0.025*(this.sequenceArray.length));
 		}
         if(17 < this.mass){
             console.log((0.001*(this.sequenceArray.length/20)*(this.mass/20)));
-			this.lifeTimeValue = this.lifeTimeValue - (0.001*(this.sequenceArray.length/20));
+			this.lifeTimeValue = this.lifeTimeValue - (0.0005*(this.sequenceArray.length/20));
 		}
         if((this.lifeTimeValue/100) < 0.05) {
 			this.sequenceArray.splice(this.sequenceArray.indexOf(this),1);
