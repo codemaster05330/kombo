@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, PopoverController, Events } from 'ionic-angular';
+import { NavController, NavParams, PopoverController, Events, Platform } from 'ionic-angular';
 import { audioContext } from 'waves-audio';
 
 //pages
@@ -49,6 +49,7 @@ export class EditPage {
 
 	isScrolling: boolean = false;
 	deltaTime: number = 1000000;
+	timeStamp: number = 0;
 	translation: number;
 	relativeX: number;
 
@@ -69,8 +70,11 @@ export class EditPage {
 
 	throwPopoverInterval:any;
 
+	ignoreInput: boolean = false;
+
 	constructor(private navCtrl: NavController, public navParams: NavParams, private events:Events, private gesturesService:GesturesService,
-		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables, private zone:NgZone) {
+		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables,
+		private zone:NgZone, private platform: Platform) {
 		console.log('constructor edit');
 		if(globalVars.currentSoundType == null){
 			globalVars.currentSoundType = SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]];
@@ -94,7 +98,7 @@ export class EditPage {
 			globalVars.emojiID = Math.floor(Math.random() * 12); 
 			console.log("Emoji was null. Randomly generated: " + globalVars.emojiID)
 		}
-		this.sound.setType(SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]]); 
+		// this.sound.setType(SoundType.Harm1); 
 
 		//Start Gesture Events
 		this.popover = new Popover(this.popoverCtrl);
@@ -111,6 +115,7 @@ export class EditPage {
 			for(let i = 0; i < divsToThrow.length; i++){
 				divsToThrow[i].classList.add("animation-throwit");
 			}
+			this.ignoreInput = true;
 			setTimeout(() => {
 				this.clearSound();
 			}, 700);
@@ -136,9 +141,13 @@ export class EditPage {
 			});
 		});
 
+		//Throw it popover
+		setTimeout(() => {
+			this.popover.show(ThrowItPopoverPage, 5000);
+		}, 5000);
 		this.throwPopoverInterval = setInterval(() => {
-			this.popover.show(ThrowItPopoverPage, 3000);
-		}, 30000);
+			this.popover.show(ThrowItPopoverPage, 2000);
+		}, 120000);
 		
 	}
 
@@ -241,13 +250,22 @@ export class EditPage {
 		// Get Time from Server
 		const time = audioScheduler.currentTime;	                            // Sync Time
 		const src = audioContext.createBufferSource();                          // Create Source
+		const gainC = audioContext.createGain();
 
 		// Play Audio File
-		src.connect(audioContext.destination);                                  // Connect Autio Context
+		gainC.connect(audioContext.destination);
+		src.connect(gainC);                                  					// Connect Audio Context
 		src.buffer = this.globalVars.buffers[type];                             // Define witch sound the function is playing
-		src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25);// Start Sound
+		src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25 + 0.1);// Start Sound
+		gainC.gain.value = this.decibelToLinear(this.globalVars.soundGains[type]);
 
+		gainC.gain.setTargetAtTime(0, time + Math.min(length, this.soundLengths[type]) * 0.25 - 0.05, 0.015);
 	}
+
+	decibelToLinear(value: number){
+		return Math.pow(10, value/20);
+	}
+
 
 	// Legacy Function that moves Cursor to the next position. Used originally when there was no server available. Can probably be removed.
 	moveCursorNext(){
@@ -310,6 +328,7 @@ export class EditPage {
 		// 	this.socket.emit('new-sequence', this.sound);
 		// }
 		
+		this.ignoreInput = false;
 		this.sound.clearBeatGrid();
 		this.clearSmallGrid();
 		// this.cloneFirstMeasure();
@@ -318,6 +337,7 @@ export class EditPage {
 	}
 
 	clearSoundButton(){
+		this.ignoreInput = true;
 		let divsToThrow = document.getElementsByClassName("tone-long");
 		for(let i = 0; i < divsToThrow.length; i++){
 			divsToThrow[i].classList.add("animation-clear");
@@ -361,8 +381,10 @@ export class EditPage {
 
 	// function called when a tone is clicked
 	clickedTone(evt: MouseEvent){
+		if(this.ignoreInput) return;
 
 		let elem : HTMLDivElement = <HTMLDivElement> evt.target;
+		if(this.platform.is("ios") && evt.timeStamp - this.timeStamp < 100) return;
 		if(elem != null)
 		{
 			if(elem.classList.contains("tone")){							// clicked element is an empty tone: create tone with length 1
@@ -385,6 +407,7 @@ export class EditPage {
 
 	// function called when a pan gesture happening (aka moving your finger left/right)
 	panTone(evt: any){
+		this.timeStamp = evt.timeStamp;
 		
 		// detect if a new pan has been started and start a new (internal) event accordingly. internal because angular will thrown an event every time the finger is being moved slightly, even when inside the same pan gesture
 		//this.deltaTime holds the starttime of the event. 20 because the evt.timeStamp - evt.deltaTime sometimes fluctuates a little bit.
@@ -460,7 +483,9 @@ export class EditPage {
 
 
 		// if the current pan gesture is a drawing gesture, create the new tones
-		else {						
+		else {
+
+			if(this.ignoreInput) return;				
 			
 			//calculate how many tones have been passed
 			let y: number = +this.originalTarget.id.split("-")[1];
@@ -598,8 +623,12 @@ export class EditPage {
 
 	//called when the slider on the preview is pulled, moves the slider to the clicking position & the beatgrid to the according position
 	panPreview(evt: any){
-		
-		let x: number = evt.srcEvent.clientX - (this.beatPreviewSlider.offsetWidth/2);
+		let x: number;
+		if (evt.srcEvent.clientX > 0) {
+			x = evt.srcEvent.clientX - (this.beatPreviewSlider.offsetWidth/2);
+		} else {
+			x = evt.center.x - (this.beatPreviewSlider.offsetWidth/2);
+		}
 		let prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
 		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
 
