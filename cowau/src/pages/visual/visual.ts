@@ -135,14 +135,17 @@ export class VisualPage {
         const time = audioScheduler.currentTime;                                // Sync Time
         const src = audioContext.createBufferSource();                          // Create Source
         const gainC = audioContext.createGain();
-        gainC.gain.value = this.decibelToLinear(this.globalVars.soundGains[type]) * amp;
+        const gainValue = this.decibelToLinear(this.globalVars.soundGains[type]) * amp;
+        gainC.gain.value = gainValue;
 
         // Play Audio File
         gainC.connect(audioContext.destination);                                         // Connect Autio Context
         src.connect(gainC);
         src.buffer = this.globalVars.buffers[type];                                     // Define witch sound the fucktion is playing
         src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25);   // Start Sound
-        gainC.gain.setTargetAtTime(0, time + Math.min(length, this.soundLengths[type]) * 0.25 - 0.05, 0.015);
+        const endTime = time + Math.min(length, this.soundLengths[type]) * 0.25;
+        gainC.gain.setValueAtTime(gainValue,endTime -0.05);
+        gainC.gain.linearRampToValueAtTime(0, endTime);
     }
 
     decibelToLinear(value: number){
