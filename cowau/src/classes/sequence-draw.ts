@@ -210,7 +210,6 @@ export class SequenceDraw {
             const vFinal1 = this.rotate(v1, -angle);
             const vFinal2 = this.rotate(v2, -angle);
             // Swap particle velocities for realistic bounce effect
-            console.log(vFinal1.x + ' : ' + vFinal1.y);
             if(vFinal1.x > 0.003) { vFinal1.x = 0.003;};
             if(vFinal1.y > 0.003) { vFinal1.y = 0.003;};
             particle.velocity.x = vFinal1.x;

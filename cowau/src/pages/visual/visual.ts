@@ -161,9 +161,9 @@ export class VisualPage {
             requestAnimationFrame(() => {this.draw()});
 
             // DEBUG: Here you can enable a frame counter.
-            this.calc++;
-            console.log('Frame: ' + this.calc);
-            console.log('______________________________________');
+            // this.calc++;
+            // console.log('Frame: ' + this.calc);
+            // console.log('______________________________________');
             // if(this.calc === this.fps){ this.calc = 0; }
 
             // Here is the code you like to run when a frame is drawn
