@@ -33,7 +33,6 @@ export class VisualPage {
     cvs : any;                                                                  // Define the Canvas Element
     ctx : any;                                                                  // Setup the Canvas to 2D
     ratio : number          = window.devicePixelRatio                           // Define the DPI of the Screen
-    fps : number            = 60;                                               // FPS of the Canvas
     canvasWidth : number    = window.innerWidth;                                // Hight of the Canvas
     canvasHeight : number   = window.innerHeight;                               // Width of the Canvas
     sequenceArray:Array<SequenceDraw>  = [];                                    // Array of all circles
@@ -96,6 +95,7 @@ export class VisualPage {
 					let y = this.canvasHeight/2;                                    // yPos
 					let c = 0;                                                      // Count Value
 					let r = m*this.ratio*1.5;                                       // Size of the Sequence Object
+                    if(r < 100) { r = 75; }
 					for(let j = 0; j < this.sequenceArray.length; j++){
 						if(c >= 20) { break; }
 						c++;
@@ -161,8 +161,9 @@ export class VisualPage {
             requestAnimationFrame(() => {this.draw()});
 
             // DEBUG: Here you can enable a frame counter.
-            // this.calc++;
-            // console.log('Frame: ' + this.calc);
+            this.calc++;
+            console.log('Frame: ' + this.calc);
+            console.log('______________________________________');
             // if(this.calc === this.fps){ this.calc = 0; }
 
             // Here is the code you like to run when a frame is drawn
