@@ -38,6 +38,9 @@ export class VisualPage {
     canvasHeight : number   = window.innerHeight;                               // Width of the Canvas
     sequenceArray:Array<SequenceDraw>  = [];                                    // Array of all circles
     soundLengths : number[];
+    fps: number = 60;
+    fpsInterval: number = 1000 / this.fps;
+    calc: any = 0;
 
     constructor(
         public navCtrl: NavController,
@@ -69,9 +72,8 @@ export class VisualPage {
         this.canvasWidth = this.canvasWidth * this.ratio;                       // Set the widdth of the canvas
         this.canvasHeight = this.canvasHeight * this.ratio;                     // Set the hight of the canvas
 
-        // Start the Canvas Animation
-        this.draw();
-
+        // Start the Canvas Animation & set values for this animation
+        this.draw();                            // Start the Animation function
     }
 
     observeServer() {
@@ -153,12 +155,23 @@ export class VisualPage {
     }
 
     // Function to update the Animation, this will draw a new Frame every 60 seconds
-    draw() : void {
-        this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
-        this.sequenceArray.forEach(sequenceArray => {
-            sequenceArray.updateSound();
-        });
-        requestAnimationFrame(() => {this.draw()});
+    draw() {
+        setTimeout( () => {
+            // Request new Animation Frame to draw funny stuff
+            requestAnimationFrame(() => {this.draw()});
+
+            // DEBUG: Here you can enable a frame counter.
+            // this.calc++;
+            // console.log('Frame: ' + this.calc);
+            // if(this.calc === this.fps){ this.calc = 0; }
+
+            // Here is the code you like to run when a frame is drawn
+            this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
+            this.sequenceArray.forEach(sequenceArray => {
+                sequenceArray.updateSound();
+            });
+
+        }, this.fpsInterval);
     }
 
     // Function to create a random int number

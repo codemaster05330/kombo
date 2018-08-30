@@ -47,10 +47,10 @@ export class LoadingPage {
     		this.text = "Loading...";
 
             activateAudioContext();
-            console.log("audio context activated");
+            console.log("Step 1: Audio context activated");
 
     		this.server.initServerConnection().then(() => {
-                console.log("connected to server");
+                console.log("Step 2: Connected to socket.io server");
 				this.globalVars.audioBufferLoader = new AudioBufferLoader();
 				var soundsArrayString = [];
 
@@ -60,17 +60,16 @@ export class LoadingPage {
 					this.globalVars.soundGains = this.globalVars.soundGains.concat(soundsData.gain);
 				});
 
-                console.log("json loaded");
+                console.log("Step 3: Soundfile JSON is loaded");
 
 				this.globalVars.audioBufferLoader.load(soundsArrayString)                                          // Load every Sound
 				.then((buffers) => {
-                    console.log('Sounds loaded');
+                    console.log('Step 4: Sounds files (MP3) loaded');
 					const sendFunction = (cmd, ...args) => this.socket.emit(cmd, ...args);
 					const receiveFunction = (cmd, args) => this.socket.on(cmd, args);
 					this.globalVars.buffers = buffers;
 					this.metricSync.start(sendFunction, receiveFunction).then((data) => {
-						console.log(data);
-						console.log("metricSyncStarted");
+						console.log("Step 5: Metric Sync Service is running.");
 						this.zone.run(() => {
 							this.navCtrl.setRoot(VisualPage);
 						})
