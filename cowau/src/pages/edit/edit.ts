@@ -62,6 +62,7 @@ export class EditPage {
 	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN, GestureType.IDLE_IN];
 	// lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN];
 	cursor: HTMLElement;
+	previewCursor: HTMLElement;
 	cursorPosition:number = 0;
 
 	soundLengths: number[] = [];
@@ -162,6 +163,7 @@ export class EditPage {
 		this.beatgridWrapperPreview.style.width = (this.beatrowPreview.offsetWidth +1)+"px";
 
 		this.cursor = document.getElementById('cursor');
+		this.previewCursor = document.getElementById('beatpreview-cursor');
 
 		this.beatPreviewSlider = document.getElementById('beatpreview-slider');
 		this.beatgridPreview = document.getElementsByClassName('tone-preview');
@@ -286,6 +288,14 @@ export class EditPage {
 		translation += Math.floor((this.cursorPosition) / 8) * 8;				// add an additional 8vw for each passed measure to bridge the gap (left-margin 1vw -> 9vw)
 
 		this.cursor.style.transform = "translate(" + translation + "vw, 0px)";	// actually move the cursor
+
+		this.movePreviewCursorTo(pos);
+	}
+
+	movePreviewCursorTo(pos: number = 0){
+		let translation: number = this.cursorPosition * 2.6;
+		translation += Math.floor((this.cursorPosition)/8) * 0.8;
+		this.previewCursor.style.transform = "translate(" + translation + "vw, 0px)";
 	}
 
 
@@ -365,6 +375,10 @@ export class EditPage {
 				}
 			}
 		}
+	}
+
+	changeSoundButton(){
+		console.log("Change Sound");
 	}
 
 

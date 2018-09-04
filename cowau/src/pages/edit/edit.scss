@@ -85,6 +85,16 @@ page-edit {
 				background: rgba(255,255,255,0.1);
 				border-radius: 4vw;
 			}
+			
+			.beatpreview-cursor {
+				height: 10.5vh;
+				width: 2vw;
+				background: rgba(255,255,255,0.1);
+				z-index: 1;
+				position: absolute;
+				border-radius: 0.6vw;
+				margin-left: 1vw;
+			}
 
 			.beatgrid-wrapper-preview {
 				display: block;
