@@ -1,62 +1,92 @@
 [
 	{
+		"id": 0,
 		"path":"assets/sounds/bass-byte.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":8,
 		"gain":1
 	},{
+		"id": 1,
 		"path":"assets/sounds/bass-detune.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":8,
 		"gain":1
 	},{
+		"id": 2,
 		"path":"assets/sounds/bass-elec.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":8,
 		"gain":1
 	},{
+		"id": 3,
 		"path":"assets/sounds/drums-perc.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":1,
 		"gain":1.2
 	},{
+		"id": 4,
 		"path":"assets/sounds/drums-808.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":1,
 		"gain":1.2
 	},{
+		"id": 5,
 		"path":"assets/sounds/drums-core.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":1,
 		"gain":2.5
 	},{
+		"id": 6,
 		"path":"assets/sounds/harm-boar.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":8,
 		"gain":1.4
 	},{
+		"id": 7,
 		"path":"assets/sounds/harm-saw.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":8,
 		"gain":0.7
 	},{
+		"id": 8,
 		"path":"assets/sounds/harm-soft.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":8,
 		"gain":1.1
 	},{
+		"id": 9,
 		"path":"assets/sounds/lead-horn.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":8,
 		"gain":1
 	},{
+		"id": 10,
 		"path":"assets/sounds/lead-mellow.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":8,
 		"gain":1.4
 	},{
+		"id": 11,
 		"path":"assets/sounds/lead-saw.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":8,
 		"gain":1.4
 	},{
+		"id": 12,
 		"path":"assets/sounds/mall-bala.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":8,
 		"gain":1.7
 	},{
+		"id": 13,
 		"path":"assets/sounds/mall-bell.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":8,
 		"gain":2
 	},{
+		"id": 14,
 		"path":"assets/sounds/mall-glock.wav",
+		"icon":"assets/sounds/bass-byte.png",
 		"length":8,
 		"gain":2
 	}

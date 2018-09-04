@@ -21,6 +21,7 @@ import { IdlePage } from '../pages/idle/idle';
 import { EmojiPage } from '../pages/emoji/emoji';
 import { EditPage } from '../pages/edit/edit';
 import { LoadingPage } from '../pages/load/load';
+import { SwitchSoundPage } from '../pages/switch-sound/switch-sound';
 
 //popovers
 import { NewSoundPopoverPage } from '../newsound-popover/newsound-popover';
@@ -46,7 +47,8 @@ import { Variables } from '../classes/variables';
     VisualPage,
     NewSoundPopoverPage,
     ThrowItPopoverPage,
-    LoadingPage
+    LoadingPage,
+    SwitchSoundPage
   ],
   imports: [
     BrowserModule,
@@ -64,7 +66,8 @@ import { Variables } from '../classes/variables';
     VisualPage,
     NewSoundPopoverPage,
     ThrowItPopoverPage,
-    LoadingPage
+    LoadingPage,
+    SwitchSoundPage
   ],
   providers: [
     StatusBar,

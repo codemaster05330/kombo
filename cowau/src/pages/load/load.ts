@@ -10,6 +10,7 @@ import { audioContext } from 'waves-audio';
 import { IdlePage } from '../idle/idle';
 import { VisualPage } from '../visual/visual';
 import { EditPage } from '../edit/edit';
+import { SwitchSoundPage } from '../switch-sound/switch-sound';
 
 // Import every classes
 import { Variables } from '../../classes/variables';
@@ -71,7 +72,7 @@ export class LoadingPage {
 					this.metricSync.start(sendFunction, receiveFunction).then((data) => {
 						console.log("Step 5: Metric Sync Service is running.");
 						this.zone.run(() => {
-							this.navCtrl.setRoot(VisualPage);
+							this.navCtrl.setRoot(SwitchSoundPage);
 						})
 					});
 				});
