@@ -52,8 +52,8 @@ export class SequenceDraw {
         this.beatGrid       = beatGrid;
         this.sequenceType   = sequenceType;
         this.velocity       = {
-            x: this.returnRandomValue(-5,5),                                        // velocity in the x direction
-            y: this.returnRandomValue(-5,5)                                         // velocity in the y direction
+            x: this.returnRandomValue(-1,1),                                        // velocity in the x direction
+            y: this.returnRandomValue(-1,1)                                         // velocity in the y direction
         };
         this.ctx            = ctx;                                                  // Canvas Object
         this.sequenceArray  = soundsArray;                                          // Sound Array Objects
@@ -61,7 +61,6 @@ export class SequenceDraw {
         this.canvasHeight   = canvasHeight;                                         // Hight of the Canvas Object
 
         // Emoji
-        console.log(this.emoji);
 		if(this.emoji == null || typeof(this.emoji) == undefined || this.emoji < 0 || this.emoji > 11) { this.emoji = 0; }
         this.emojiImg.src   = 'assets/imgs/' + this.emoji + '.png';
 
@@ -80,7 +79,7 @@ export class SequenceDraw {
     public updateSound() : void {
         // Update the this.radius var to the new value
         this.newRadius = this.radius * (this.lifeTimeValue/100);
-        this.mass = this.mass * (this.lifeTimeValue/100);
+        this.mass = 300;
         this.soundWaves.forEach((soundwave:SoundWave) => {
 			soundwave.updateSoundWave();
             if(soundwave.returnSoundWave() == 0) { this.soundWaves.splice(this.soundWaves.indexOf(soundwave),1); }
@@ -108,11 +107,10 @@ export class SequenceDraw {
     // Calculates the lifetime for the sequence object.
     public lifeTime() {
 		if(this.mass <= 16){
-			this.lifeTimeValue = this.lifeTimeValue - (0.025*(this.sequenceArray.length));
+			this.lifeTimeValue = this.lifeTimeValue - (0.0125*(this.sequenceArray.length));
 		}
         if(17 < this.mass){
-            console.log((0.001*(this.sequenceArray.length/20)*(this.mass/20)));
-			this.lifeTimeValue = this.lifeTimeValue - (0.0005*(this.sequenceArray.length/20));
+			this.lifeTimeValue = this.lifeTimeValue - (0.00025*(this.sequenceArray.length/20));
 		}
         if((this.lifeTimeValue/100) < 0.05) {
 			this.sequenceArray.splice(this.sequenceArray.indexOf(this),1);
@@ -212,6 +210,8 @@ export class SequenceDraw {
             const vFinal1 = this.rotate(v1, -angle);
             const vFinal2 = this.rotate(v2, -angle);
             // Swap particle velocities for realistic bounce effect
+            if(vFinal1.x > 0.003) { vFinal1.x = 0.003;};
+            if(vFinal1.y > 0.003) { vFinal1.y = 0.003;};
             particle.velocity.x = vFinal1.x;
             particle.velocity.y = vFinal1.y;
             otherParticle.velocity.x = vFinal2.x;

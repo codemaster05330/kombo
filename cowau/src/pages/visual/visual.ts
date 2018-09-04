@@ -33,11 +33,13 @@ export class VisualPage {
     cvs : any;                                                                  // Define the Canvas Element
     ctx : any;                                                                  // Setup the Canvas to 2D
     ratio : number          = window.devicePixelRatio                           // Define the DPI of the Screen
-    fps : number            = 60;                                               // FPS of the Canvas
     canvasWidth : number    = window.innerWidth;                                // Hight of the Canvas
     canvasHeight : number   = window.innerHeight;                               // Width of the Canvas
     sequenceArray:Array<SequenceDraw>  = [];                                    // Array of all circles
     soundLengths : number[];
+    fps: number = 60;
+    fpsInterval: number = 1000 / this.fps;
+    calc: any = 0;
 
     constructor(
         public navCtrl: NavController,
@@ -69,9 +71,8 @@ export class VisualPage {
         this.canvasWidth = this.canvasWidth * this.ratio;                       // Set the widdth of the canvas
         this.canvasHeight = this.canvasHeight * this.ratio;                     // Set the hight of the canvas
 
-        // Start the Canvas Animation
-        this.draw();
-
+        // Start the Canvas Animation & set values for this animation
+        this.draw();                            // Start the Animation function
     }
 
     observeServer() {
@@ -94,6 +95,7 @@ export class VisualPage {
 					let y = this.canvasHeight/2;                                    // yPos
 					let c = 0;                                                      // Count Value
 					let r = m*this.ratio*1.5;                                       // Size of the Sequence Object
+                    if(r < 100) { r = 75; }
 					for(let j = 0; j < this.sequenceArray.length; j++){
 						if(c >= 20) { break; }
 						c++;
@@ -135,14 +137,17 @@ export class VisualPage {
         const time = audioScheduler.currentTime;                                // Sync Time
         const src = audioContext.createBufferSource();                          // Create Source
         const gainC = audioContext.createGain();
-        gainC.gain.value = this.decibelToLinear(this.globalVars.soundGains[type]) * amp;
+        const gainValue = this.decibelToLinear(this.globalVars.soundGains[type]) * amp;
+        gainC.gain.value = gainValue;
 
         // Play Audio File
         gainC.connect(audioContext.destination);                                         // Connect Autio Context
         src.connect(gainC);
         src.buffer = this.globalVars.buffers[type];                                     // Define witch sound the fucktion is playing
         src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25);   // Start Sound
-        gainC.gain.setTargetAtTime(0, time + Math.min(length, this.soundLengths[type]) * 0.25 - 0.05, 0.015);
+        const endTime = time + Math.min(length, this.soundLengths[type]) * 0.25;
+        gainC.gain.setValueAtTime(gainValue,endTime -0.05);
+        gainC.gain.linearRampToValueAtTime(0, endTime);
     }
 
     decibelToLinear(value: number){
@@ -150,12 +155,24 @@ export class VisualPage {
     }
 
     // Function to update the Animation, this will draw a new Frame every 60 seconds
-    draw() : void {
-        this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
-        this.sequenceArray.forEach(sequenceArray => {
-            sequenceArray.updateSound();
-        });
-        requestAnimationFrame(() => {this.draw()});
+    draw() {
+        setTimeout( () => {
+            // Request new Animation Frame to draw funny stuff
+            requestAnimationFrame(() => {this.draw()});
+
+            // DEBUG: Here you can enable a frame counter.
+            // this.calc++;
+            // console.log('Frame: ' + this.calc);
+            // console.log('______________________________________');
+            // if(this.calc === this.fps){ this.calc = 0; }
+
+            // Here is the code you like to run when a frame is drawn
+            this.ctx.clearRect(0,0,this.canvasWidth,this.canvasHeight);
+            this.sequenceArray.forEach(sequenceArray => {
+                sequenceArray.updateSound();
+            });
+
+        }, this.fpsInterval);
     }
 
     // Function to create a random int number

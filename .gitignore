@@ -34,4 +34,5 @@ cowau/.DS_Store
 cowau/Thumbs.db
 cowau/UserInterfaceState.xcuserstate
 
-app/
+app/cowau/node_modules
+**/**/*.DS_Store
