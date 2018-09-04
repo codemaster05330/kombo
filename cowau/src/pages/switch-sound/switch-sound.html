@@ -2,7 +2,7 @@
 	<div class="flex-container" *ngIf="sound_list">
 		<div class="sound-container" *ngFor="let sound of sound_list; let i = index" id="sound-{{i}}">
 			<div class="click-container {{sound.focus ? 'highlighted' : '' }}" (click)="selectSound(sound)">
-				<img src="sound.icon" alt="sound-icon-{{i}}" />
+				<img src="{{sound.icon}}" alt="sound-icon-{{i}}" />
 			</div>
 		</div>
 	</div>
