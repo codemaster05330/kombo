@@ -118,7 +118,7 @@ export class VisualPage {
 			this.sequenceArray.forEach(soundArray => {
 			var statuswave = true;
 				for(let i: number = 0; i < soundArray.retrunBeatGrid().length; i++){
-					if(soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat] > 0){
+					if(soundArray.retrunBeatGrid()[i][(measure % 2) * 8 + beat] > 0){
 						this.playSound(soundArray.returnSoundArt(), 4 - i, soundArray.retrunBeatGrid()[i][(measure % 4) * 8 + beat], soundArray.returnLifeTime());
 						if(statuswave) {
 							soundArray.createSoundWave();
