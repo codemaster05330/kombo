@@ -62,6 +62,7 @@ export class EditPage {
 	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN, GestureType.IDLE_IN];
 	// lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN];
 	cursor: HTMLElement;
+	previewCursor: HTMLElement;
 	cursorPosition:number = 0;
 
 	soundLengths: number[] = [];
@@ -86,7 +87,7 @@ export class EditPage {
 
 		for (let i : number = 0; i < 5; i++){
 			this.tmpBeatGrid[i] = [];
-			for (let j: number = 0; j < 32; j++){
+			for (let j: number = 0; j < 16; j++){
 				this.tmpBeatGrid[i][j] = 0;
 			}
 		}
@@ -162,6 +163,7 @@ export class EditPage {
 		this.beatgridWrapperPreview.style.width = (this.beatrowPreview.offsetWidth +1)+"px";
 
 		this.cursor = document.getElementById('cursor');
+		this.previewCursor = document.getElementById('beatpreview-cursor');
 
 		this.beatPreviewSlider = document.getElementById('beatpreview-slider');
 		this.beatgridPreview = document.getElementsByClassName('tone-preview');
@@ -230,13 +232,13 @@ export class EditPage {
 	// initialises MetricSync which also adds functions for the movement of the cursor and plays the sounds of the preview
 	runMetronome() {
 		this.callback = (measure, beat) => {
-			this.moveCursorTo((measure % 4) * 8 + beat);				// Cursor Movement //@Johannes: Hier stürzt es ab.
+			this.moveCursorTo((measure % 2) * 8 + beat);				// Cursor Movement //@Johannes: Hier stürzt es ab.
 			let beatGrid = this.sound.getBeatGrid();
 
 			for(let i: number = 0; i < beatGrid.length; i++){			// Shift through the beatgrid
-				if(beatGrid[i][(measure % 4) * 8 + beat] > 0){			// Play sound if there is one in the grid at the next beat.
+				if(beatGrid[i][(measure % 2) * 8 + beat] > 0){			// Play sound if there is one in the grid at the next beat.
 																		// (measure % maxMeasures) * beatsPerMeasure
-					this.playSound(this.sound.type, 4 - i, beatGrid[i][(measure % 4) * 8 + beat]); // 4 - i because lowest row is highest number
+					this.playSound(this.sound.type, 4 - i, beatGrid[i][(measure % 2) * 8 + beat]); // 4 - i because lowest row is highest number
 				}
 			}
 		};
@@ -270,7 +272,7 @@ export class EditPage {
 	// Legacy Function that moves Cursor to the next position. Used originally when there was no server available. Can probably be removed.
 	moveCursorNext(){
 		this.cursorPosition++;
-		if (this.cursorPosition >= 32){											// Jump back to 0 if end reached
+		if (this.cursorPosition >= 16){											// Jump back to 0 if end reached
 			this.cursorPosition = 0;
 		}
 
@@ -279,13 +281,21 @@ export class EditPage {
 
 	// Function to move the cursor in the screen to the correct position using translation
 	moveCursorTo(pos: number = 0){
-		if (pos < 0 || pos >= 32) return;										// Don't do anything if the position is out of bounds
+		if (pos < 0 || pos >= 16) return;										// Don't do anything if the position is out of bounds
 		this.cursorPosition = pos;
 
 		let translation: number = this.cursorPosition * 12;						// move cursor over by 12vw per passed tone (tone-width 10vw + 1vw margin each side)
 		translation += Math.floor((this.cursorPosition) / 8) * 8;				// add an additional 8vw for each passed measure to bridge the gap (left-margin 1vw -> 9vw)
 
 		this.cursor.style.transform = "translate(" + translation + "vw, 0px)";	// actually move the cursor
+
+		this.movePreviewCursorTo(pos);
+	}
+
+	movePreviewCursorTo(pos: number = 0){
+		let translation: number = this.cursorPosition * 2.6;
+		translation += Math.floor((this.cursorPosition)/8) * 0.8;
+		this.previewCursor.style.transform = "translate(" + translation + "vw, 0px)";
 	}
 
 
@@ -365,6 +375,10 @@ export class EditPage {
 				}
 			}
 		}
+	}
+
+	changeSoundButton(){
+		console.log("Change Sound");
 	}
 
 
@@ -469,14 +483,14 @@ export class EditPage {
 		//if the current pan gesture is a scroll gesture, move the screen
 		if(this.isScrolling){
 			let translate: number = (this.translation * this.vw + evt.deltaX) / this.vw;
-			translate = Math.max(Math.min(-5,translate),-319);						//319 & 5 are an empirical number. if there is a better source for a more accurate number, it should be entered here.
+			translate = Math.max(Math.min(-5,translate),-112);						//109 & 5 are an empirical number. if there is a better source for a more accurate number, it should be entered here.
 
 			this.beatgrid.style.transform = "translate( " + translate + "vw , 0)";
 
 			//move the preview as well
 			let prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
-			let x: number = -1 * ( ( ( translate + 5) / 314 ) * (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) + prevXMin;		//again, 319 and 5 are the empirical numbers from above.
-			let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
+			let x: number = -1 * ( ( ( translate + 5) / 104 ) * (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) + prevXMin;		//again, 109 and 5 are the empirical numbers from above.
+			let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth + 4;
 
 			this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
 		} 
@@ -505,8 +519,8 @@ export class EditPage {
 			//if we are at one of the ends, cut it off if it somehow were to be bigger than the actual available tones.
 			if (y+passedTones < 0){
 				passedTones = -y;
-			} else if (y+passedTones >= 32){
-				passedTones = 31 - y;
+			} else if (y+passedTones >= 16){
+				passedTones = 15 - y;
 			}
 
 			//make sure the tones cannot be longer than the max length of the current soundtype 
@@ -630,20 +644,20 @@ export class EditPage {
 			x = evt.center.x - (this.beatPreviewSlider.offsetWidth/2);
 		}
 		let prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
-		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
+		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth + 4;
 
 		this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
-		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 314) - 5) + "vw , 0)";
+		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 104) - 5) + "vw , 0)";
 	}
 
 	//called, when the slider or the preview itself is clicked, moves the slider to the correct position as well as the beatgrid
 	clickPreview(evt: any){
 		let x: number = evt.x - (this.beatPreviewSlider.offsetWidth/2);
 		let prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
-		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth;
+		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth + 4;
 
 		this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
-		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 314) - 5) + "vw , 0)";
+		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 104) - 5) + "vw , 0)";
 
 	}
 
