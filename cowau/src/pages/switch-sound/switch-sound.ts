@@ -62,29 +62,34 @@ export class SwitchSoundPage {
 				s.focus = false;
 			});
 			sound.focus = true;
-			this.playSound(sound.id);
+			this.playSounds(sound.id);
 		}
 	}
 
-	playSound(type:number) {
+	playSounds(type:number) {
+		for(let i: number = 0; i < 5; i++){
+			this.playSound(type, i);
+		}
+	}
+
+	playSound(type: number, pitch: number){
 		// Get Time from Server
-		// const time = audioScheduler.currentTime;	                            // Sync Time
-		// const src = audioContext.createBufferSource();                          // Create Source
-		// const gainC = audioContext.createGain();
+		const time = audioScheduler.currentTime;	                            // Sync Time
+		const src = audioContext.createBufferSource();                          // Create Source
+		const gainC = audioContext.createGain();
 
-		// // Play Audio File
-		// gainC.connect(audioContext.destination);
-		// src.connect(gainC);                                  					// Connect Audio Context
-		// src.buffer = this.globalVars.buffers[type];                             // Define witch sound the function is playing
-		// console.log(time);
-		// src.start(time, 0 * 3, 1 * 0.25 + 0.1);									// Start Sound
-		// src.start(time, 1 * 3, 1 * 0.25 + 0.1);									// Start Sound
-		// src.start(time, 2 * 3, 1 * 0.25 + 0.1);									// Start Sound
-		// src.start(time, 3 * 3, 1 * 0.25 + 0.1);									// Start Sound
-		// src.start(time, 4 * 3, 1 * 0.25 + 0.1);									// Start Sound
-		// gainC.gain.value = this.decibelToLinear(this.globalVars.soundGains[type]);
+		// Play Audio File
+		gainC.connect(audioContext.destination);
+		src.connect(gainC);                                  					// Connect Audio Context
+		src.buffer = this.globalVars.buffers[type];                             // Define witch sound the function is playing
+		src.start(time + pitch * 0.25 , pitch * 3, 1 * 0.25 + 0.1);									// Start Sound
+		gainC.gain.value = this.decibelToLinear(this.globalVars.soundGains[type]);
 
-		// gainC.gain.setTargetAtTime(0, time + 1 * 0.25 - 0.05, 0.015);
+		gainC.gain.setTargetAtTime(0, time + (pitch + 1) * 0.25 - 0.05, 0.015);
+	}
+
+	decibelToLinear(value: number){
+		return Math.pow(10, value/20);
 	}
 
 
