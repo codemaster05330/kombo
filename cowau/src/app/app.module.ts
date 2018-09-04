@@ -2,8 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule/*, Popover*/ } from 'ionic-angular';
 import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
-// const config: SocketIoConfig = { url: 'http://141.28.105.183:3001', options: {} };
-const config: SocketIoConfig = { url: 'http://192.168.0.11:3001', options: {} };
+const config: SocketIoConfig = { url: 'http://141.28.105.183:3001', options: {} };
+// const config: SocketIoConfig = { url: 'http://192.168.0.11:3001', options: {} };
 
 import { HttpModule } from '@angular/http';
 import { SplashScreen } from '@ionic-native/splash-screen';
