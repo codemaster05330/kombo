@@ -1,0 +1,11 @@
+<div class="sound-list" >
+	<div class="flex-container" *ngIf="sound_list">
+		<div class="sound-container {{emoji ? 'disabled' : ''}}" *ngFor="let emoji of emoji_list; let i = index" (click)="clickMe($event)" id="{{i}}">
+			<img src="assets/imgs/sound-{{i}}.svg" alt="sound-icon-{{i}}" />
+		</div>
+	</div>
+</div>
+
+<div class="bottom-bar"></div>
+
+<div class="background-pattern-dark"></div>
