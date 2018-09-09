@@ -1,7 +1,43 @@
 page-switch-sound {
-	.sound-container {
-		.highlighted {
-			background: pink;
+	.sound-list {
+	    width: 70%;
+	    margin: 30px auto;
+	}
+
+	.flex-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+
+		.sound-container {
+		    background: $bggradient;
+		    border-radius: 50%;
+		    width: 70px;
+		    height: 70px;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		    padding: 10px;
+		    margin: 5px;
+		    filter: saturate(50%);
+
+			&.highlighted {
+				filter: saturate(100%);
+			}
+
+			.click-container {
+				width: 100%;
+				height: 100%;
+			    display: flex;
+			    justify-content: center;
+			    align-items: center;
+
+				img {
+					width: 90%;
+					height: 90%;
+				}
+			}
 		}
 	}
 }

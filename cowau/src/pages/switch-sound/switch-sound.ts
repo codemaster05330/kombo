@@ -62,7 +62,7 @@ export class SwitchSoundPage {
 				s.focus = false;
 			});
 			sound.focus = true;
-			this.playSounds(sound.id);
+			// this.playSounds(sound.id);
 		}
 	}
 
