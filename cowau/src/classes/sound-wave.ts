@@ -55,7 +55,7 @@ export class SoundWave {
     }
 
     public drawSoundWave() {
-        if(this.radius != NaN) {
+        if(this.radius != NaN && this.radius > 0 && this.radius < Infinity) {
             let gradient = this.ctx.createRadialGradient(this.xPos,this.yPos,0,this.xPos,this.yPos,this.radius);
             gradient.addColorStop(0.8, 'rgba(255,255,255,0)');
             gradient.addColorStop(1,'rgba(255,255,255,0.2)');
