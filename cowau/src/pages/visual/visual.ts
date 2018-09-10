@@ -144,8 +144,13 @@ export class VisualPage {
         gainC.connect(audioContext.destination);                                         // Connect Autio Context
         src.connect(gainC);
         src.buffer = this.globalVars.buffers[type];                                     // Define witch sound the fucktion is playing
-        src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25);   // Start Sound
-        const endTime = time + Math.min(length, this.soundLengths[type]) * 0.25;
+        let endTime;
+        if (this.globalVars.cutSound[type]){
+            endTime = time + Math.min(length, this.soundLengths[type]) * 0.25;
+        } else {
+            endTime = time + 8 * 0.25;
+        }
+        src.start(time, pitch * 3, endTime);   // Start Sound
         gainC.gain.setValueAtTime(gainValue,endTime -0.05);
         gainC.gain.linearRampToValueAtTime(0, endTime);
     }

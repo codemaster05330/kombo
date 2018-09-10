@@ -59,6 +59,7 @@ export class LoadingPage {
 					soundsArrayString = soundsArrayString.concat(soundsData.path);   		// New "big" Sound Array
 					this.globalVars.soundLengths = this.globalVars.soundLengths.concat(soundsData.length);
 					this.globalVars.soundGains = this.globalVars.soundGains.concat(soundsData.gain);
+					this.globalVars.cutSound = this.globalVars.cutSound.concat(soundsData.cut);
 				});
 
                 console.log("Step 3: Soundfile JSON is loaded");

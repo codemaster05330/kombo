@@ -258,10 +258,17 @@ export class EditPage {
 		gainC.connect(audioContext.destination);
 		src.connect(gainC);                                  					// Connect Audio Context
 		src.buffer = this.globalVars.buffers[type];                             // Define witch sound the function is playing
-		src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25 + 0.1);// Start Sound
+		
+		let endTime;
+		if (this.globalVars.cutSound[type]){
+			endTime = time + Math.min(length, this.soundLengths[type]) * 0.25;
+		} else {
+			endTime = time + 8 * 0.25;
+		}
+		
+		src.start(time, pitch * 3, endTime + 0.1);								// Start Sound
 		gainC.gain.value = this.globalVars.soundGains[type];
-
-		gainC.gain.setTargetAtTime(0, time + Math.min(length, this.soundLengths[type]) * 0.25 - 0.05, 0.015);
+		gainC.gain.setTargetAtTime(0, endTime - 0.05, 0.015);					// Fade Out
 	}
 
 	decibelToLinear(value: number){

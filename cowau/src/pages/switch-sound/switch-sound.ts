@@ -82,10 +82,16 @@ export class SwitchSoundPage {
 		gainC.connect(audioContext.destination);
 		src.connect(gainC);                                  					// Connect Audio Context
 		src.buffer = this.globalVars.buffers[type];                             // Define witch sound the function is playing
-		src.start(time + pitch * 0.25 , pitch * 3, 1 * 0.25 + 0.1);									// Start Sound
+		let endTime;
+        if (this.globalVars.cutSound[type]){
+            endTime = 1 * 0.25;
+        } else {
+            endTime = 8 * 0.25;
+        }
+		src.start(time + pitch * 0.25 , pitch * 3, endTime + 0.1);									// Start Sound
 		gainC.gain.value = this.globalVars.soundGains[type];
 
-		gainC.gain.setTargetAtTime(0, time + (pitch + 1) * 0.25 - 0.05, 0.015);
+		gainC.gain.setTargetAtTime(0, time + (pitch + endTime * 4) * 0.25 - 0.05, 0.015);
 	}
 
 	decibelToLinear(value: number){
