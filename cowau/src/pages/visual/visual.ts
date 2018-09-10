@@ -137,7 +137,7 @@ export class VisualPage {
         const time = audioScheduler.currentTime;                                // Sync Time
         const src = audioContext.createBufferSource();                          // Create Source
         const gainC = audioContext.createGain();
-        const gainValue = this.decibelToLinear(this.globalVars.soundGains[type]) * amp;
+        const gainValue = this.globalVars.soundGains[type] * amp;
         gainC.gain.value = gainValue;
 
         // Play Audio File

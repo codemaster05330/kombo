@@ -259,7 +259,7 @@ export class EditPage {
 		src.connect(gainC);                                  					// Connect Audio Context
 		src.buffer = this.globalVars.buffers[type];                             // Define witch sound the function is playing
 		src.start(time, pitch * 3, Math.min(length, this.soundLengths[type]) * 0.25 + 0.1);// Start Sound
-		gainC.gain.value = this.decibelToLinear(this.globalVars.soundGains[type]);
+		gainC.gain.value = this.globalVars.soundGains[type];
 
 		gainC.gain.setTargetAtTime(0, time + Math.min(length, this.soundLengths[type]) * 0.25 - 0.05, 0.015);
 	}
