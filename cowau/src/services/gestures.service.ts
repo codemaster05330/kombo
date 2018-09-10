@@ -22,18 +22,18 @@ export class GesturesService {
 	acMedianZ:number = 9.81;
 
 	countAccelerationDataForThrow:number = 0;
-	countAccelerationDataForFlip:number = 0;
+	// countAccelerationDataForFlip:number = 0;
 	countAccelerationDataForIdle:number = 0;
 	countAccelerationDataForNoMoreIdle:number = 0;
 	countAccelerationDataForMedian:number = 0;
 
-	flipArray:Array<any> = new Array<any>();
+	// flipArray:Array<any> = new Array<any>();
 	throwArray:Array<any> = new Array<any>();
 	goToIdleArray:Array<any> = new Array<any>();
 	outOfIdleArray:Array<any> = new Array<any>();
 
 	throwTimeout:boolean = false;
-	flipTimeout:boolean = false;
+	// flipTimeout:boolean = false;
 	idleOutTimeout:boolean = false;
 	idleInTimeout:boolean = false;
 
@@ -61,7 +61,7 @@ export class GesturesService {
 				this.countAccelerationDataForIdle = 0;
 				this.countAccelerationDataForMedian = 0;
 				this.countAccelerationDataForThrow = 0;
-				this.countAccelerationDataForFlip = 0;
+				// this.countAccelerationDataForFlip = 0;
 				this.countAccelerationDataForNoMoreIdle = 0;
 
 				this.devMotionSubscription = this.devMotion.watchAcceleration(motionOpts).subscribe((acceleration:DeviceMotionAccelerationData) => {
@@ -72,9 +72,9 @@ export class GesturesService {
 							this.noIdleMode(arraySizeIdleOut, acceleration);
 						}
 
-						if(this.watchForEvents.indexOf(GestureType.FLIPPED) != -1 && !this.flipTimeout) {
-							this.isFlipItGesture(arraySize, acceleration);
-						}
+						// if(this.watchForEvents.indexOf(GestureType.FLIPPED) != -1 && !this.flipTimeout) {
+						// 	this.isFlipItGesture(arraySize, acceleration);
+						// }
 
 						if(this.watchForEvents.indexOf(GestureType.THROWN) != -1 && !this.throwTimeout) {
 							this.throwItGesture(arraySize, acceleration);
@@ -117,80 +117,80 @@ export class GesturesService {
 		}
 	}
 
-	private isFlipItGesture(arraySize:number, acceleration:DeviceMotionAccelerationData) {
-		if(this.countAccelerationDataForFlip == (arraySize-1)) {
-			this.countAccelerationDataForFlip = 0;
-		} else {
-			if(this.flipArray[0]) {
-				this.countAccelerationDataForFlip++;
-			}
-		}
+	// private isFlipItGesture(arraySize:number, acceleration:DeviceMotionAccelerationData) {
+	// 	if(this.countAccelerationDataForFlip == (arraySize-1)) {
+	// 		this.countAccelerationDataForFlip = 0;
+	// 	} else {
+	// 		if(this.flipArray[0]) {
+	// 			this.countAccelerationDataForFlip++;
+	// 		}
+	// 	}
 
-		let flipDown:boolean = false;
-		let flipUp:boolean = false;
-		let dCheckFlipDown:boolean = true;
-		let dCheckFlipUp:boolean = true;
+	// 	let flipDown:boolean = false;
+	// 	let flipUp:boolean = false;
+	// 	let dCheckFlipDown:boolean = true;
+	// 	let dCheckFlipUp:boolean = true;
 
-		let stopForDown = false;
-		let stopForUp = false;
+	// 	let stopForDown = false;
+	// 	let stopForUp = false;
 
-		let startPosUp = -1;
+	// 	let startPosUp = -1;
 
-		this.flipArray[this.countAccelerationDataForFlip] = {devmo: acceleration};
+	// 	this.flipArray[this.countAccelerationDataForFlip] = {devmo: acceleration};
 
-		if(acceleration.z < (this.acMedianZ - this.stillStandingTreshold) || acceleration.z > (this.acMedianZ + this.stillStandingTreshold)) {
-			for(let i=0; i<this.flipArray.length; i++) {
+	// 	if(acceleration.z < (this.acMedianZ - this.stillStandingTreshold) || acceleration.z > (this.acMedianZ + this.stillStandingTreshold)) {
+	// 		for(let i=0; i<this.flipArray.length; i++) {
 
-				if(!stopForDown) {
-					//check acceleration state
-					if(this.flipArray[i].devmo.z < -6) {
-						// console.log('first? ' + this.flipArray[i].devmo.z);
-						flipDown = true;
-						startPosUp = i;
-						stopForDown = true;
-					}
-					//controll check
-					if(this.flipArray[i].devmo.y > (this.acMedianY + this.stillStandingTreshold) || this.flipArray[i].devmo.y < (this.acMedianY - this.stillStandingTreshold)) {
-						dCheckFlipDown = false;
-					}
-				}
+	// 			if(!stopForDown) {
+	// 				//check acceleration state
+	// 				if(this.flipArray[i].devmo.z < -6) {
+	// 					// console.log('first? ' + this.flipArray[i].devmo.z);
+	// 					flipDown = true;
+	// 					startPosUp = i;
+	// 					stopForDown = true;
+	// 				}
+	// 				//controll check
+	// 				if(this.flipArray[i].devmo.y > (this.acMedianY + this.stillStandingTreshold) || this.flipArray[i].devmo.y < (this.acMedianY - this.stillStandingTreshold)) {
+	// 					dCheckFlipDown = false;
+	// 				}
+	// 			}
 				
-			}
+	// 		}
 
-			if(startPosUp > -1 && flipDown) {
-				for(let i = startPosUp; i<this.flipArray.length; i++) {
-					if(!stopForUp) {
-						if(this.flipArray[i].devmo.z > 7.5) {
-							// console.log('second? ' + this.flipArray[i].devmo.z);
-							stopForUp = true;
-							flipUp = true;
-						}
+	// 		if(startPosUp > -1 && flipDown) {
+	// 			for(let i = startPosUp; i<this.flipArray.length; i++) {
+	// 				if(!stopForUp) {
+	// 					if(this.flipArray[i].devmo.z > 7.5) {
+	// 						// console.log('second? ' + this.flipArray[i].devmo.z);
+	// 						stopForUp = true;
+	// 						flipUp = true;
+	// 					}
 
-						if(this.flipArray[i].devmo.y > (this.acMedianY + this.stillStandingTreshold) || this.flipArray[i].devmo.y < (this.acMedianY - this.stillStandingTreshold)) {
-							dCheckFlipUp = false;
-						}
+	// 					if(this.flipArray[i].devmo.y > (this.acMedianY + this.stillStandingTreshold) || this.flipArray[i].devmo.y < (this.acMedianY - this.stillStandingTreshold)) {
+	// 						dCheckFlipUp = false;
+	// 					}
 
-					}
-				}
+	// 				}
+	// 			}
 				
-				if(stopForUp && flipDown && flipUp && dCheckFlipUp) {		
-					flipDown = flipUp = false;
-					dCheckFlipDown = dCheckFlipUp = true;
-					startPosUp = -1;
-					this.sendEvent(GestureType.FLIPPED, acceleration);
-					this.vibration.vibrate(300);
-					this.startFlipTimer();
-					console.log('FLIPPED');
-				} else {
-					flipDown = flipUp = false;
-					dCheckFlipDown = dCheckFlipUp = true;
-					startPosUp = -1;
-					this.countAccelerationDataForFlip = 0;
-					this.flipArray = new Array<any>();
-				}
-			}
-		}
-	}
+	// 			if(stopForUp && flipDown && flipUp && dCheckFlipUp) {		
+	// 				flipDown = flipUp = false;
+	// 				dCheckFlipDown = dCheckFlipUp = true;
+	// 				startPosUp = -1;
+	// 				this.sendEvent(GestureType.FLIPPED, acceleration);
+	// 				this.vibration.vibrate(300);
+	// 				this.startFlipTimer();
+	// 				console.log('FLIPPED');
+	// 			} else {
+	// 				flipDown = flipUp = false;
+	// 				dCheckFlipDown = dCheckFlipUp = true;
+	// 				startPosUp = -1;
+	// 				this.countAccelerationDataForFlip = 0;
+	// 				this.flipArray = new Array<any>();
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	private throwItGesture(arraySize:number, acceleration:DeviceMotionAccelerationData) {
 		if(this.countAccelerationDataForThrow == (arraySize-1)) {
@@ -328,9 +328,9 @@ export class GesturesService {
 
 	private resetAllArraysAndCountersForEvents() {
 		this.countAccelerationDataForThrow = 0;
-		this.countAccelerationDataForFlip = 0;
+		// this.countAccelerationDataForFlip = 0;
 		this.countAccelerationDataForNoMoreIdle= 0;
-		this.flipArray = new Array<any>();
+		// this.flipArray = new Array<any>();
 		this.throwArray = new Array<any>();
 		this.outOfIdleArray = new Array<any>();
 	}
@@ -342,12 +342,12 @@ export class GesturesService {
 	    }, time);
 	}
 
-	private startFlipTimer(time:number = 200) {
-		this.flipTimeout = true;
-	    setTimeout(() => {
-	    	this.flipTimeout = false;
-	    }, time);
-	}
+	// private startFlipTimer(time:number = 200) {
+	// 	this.flipTimeout = true;
+	//     setTimeout(() => {
+	//     	this.flipTimeout = false;
+	//     }, time);
+	// }
 
 	private startIdleOutTimer(time:number = 2500) {
 		this.idleOutTimeout = true;

@@ -24,8 +24,9 @@ import { LoadingPage } from '../pages/load/load';
 import { SwitchSoundPage } from '../pages/switch-sound/switch-sound';
 
 //popovers
-import { NewSoundPopoverPage } from '../newsound-popover/newsound-popover';
+// import { NewSoundPopoverPage } from '../newsound-popover/newsound-popover';
 import { ThrowItPopoverPage } from '../throwit-popover/throwit-popover';
+import { SwitchSoundPopoverPage } from '../switchsound-popover/switchsound-popover';
 
 import { VisualPage } from '../pages/visual/visual';
 
@@ -45,7 +46,7 @@ import { Variables } from '../classes/variables';
     IdlePage,
     EditPage,
     VisualPage,
-    NewSoundPopoverPage,
+    SwitchSoundPopoverPage,
     ThrowItPopoverPage,
     LoadingPage,
     SwitchSoundPage
@@ -64,7 +65,7 @@ import { Variables } from '../classes/variables';
     IdlePage,
     EditPage,
     VisualPage,
-    NewSoundPopoverPage,
+    SwitchSoundPopoverPage,
     ThrowItPopoverPage,
     LoadingPage,
     SwitchSoundPage

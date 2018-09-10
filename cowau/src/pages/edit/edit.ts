@@ -4,8 +4,9 @@ import { audioContext } from 'waves-audio';
 
 //pages
 import { IdlePage } from '../idle/idle';
-import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
+// import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
 import { ThrowItPopoverPage } from '../../throwit-popover/throwit-popover';
+import { SwitchSoundPopoverPage } from '../../switchsound-popover/switchsound-popover';
 
 //classes
 import { Sequence, SoundType } from '../../classes/sequence';
@@ -59,7 +60,8 @@ export class EditPage {
 
 	popover:Popover;
 
-	lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN, GestureType.IDLE_IN];
+	// lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN, GestureType.IDLE_IN];
+	lookOfEvents:Array<GestureType> = [GestureType.THROWN, GestureType.IDLE_IN];
 	// lookOfEvents:Array<GestureType> = [GestureType.FLIPPED, GestureType.THROWN];
 	cursor: HTMLElement;
 	previewCursor: HTMLElement;
@@ -123,13 +125,13 @@ export class EditPage {
 		});
 		
 		//FLIPPING
-		this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
-			// what to do when flipped. TODO: remove comment when gestures are stable, remove above popover call when it's been rewritten
-			this.sound.nextType();
-			this.globalVars.currentSoundType = this.sound.getType();
-			this.popover.show(NewSoundPopoverPage, 2000);
-			this.cutSoundsIfNeeded();
-		});
+		// this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
+		// 	// what to do when flipped. TODO: remove comment when gestures are stable, remove above popover call when it's been rewritten
+		// 	this.sound.nextType();
+		// 	this.globalVars.currentSoundType = this.sound.getType();
+		// 	this.popover.show(NewSoundPopoverPage, 2000);
+		// 	this.cutSoundsIfNeeded();
+		// });
 
 		//IDLE IN
 		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
@@ -149,7 +151,6 @@ export class EditPage {
 		this.throwPopoverInterval = setInterval(() => {
 			this.popover.show(ThrowItPopoverPage, 2000);
 		}, 120000);
-		
 	}
 
 	ionViewDidLoad() {
@@ -365,10 +366,9 @@ export class EditPage {
 	}
 
 	switchSound(){ 
-		this.sound.nextType(); 
-		this.globalVars.currentSoundType = this.sound.getType(); 
-		this.popover.show(NewSoundPopoverPage, 2000);
-
+		// this.sound.nextType(); 
+		// this.globalVars.currentSoundType = this.sound.getType(); 
+		this.sound.setType(this.globalVars.currentSoundType);
 		this.cutSoundsIfNeeded();
 	}
 
@@ -384,7 +384,13 @@ export class EditPage {
 		}
 	}
 
-	changeSoundButton(){
+	changeSoundButton() {
+		let switchSoundPopover = this.popoverCtrl.create(SwitchSoundPopoverPage, {
+			showBackdrop: true,
+			enableBackdropDismiss: true
+		});
+		switchSoundPopover.present();
+		switchSoundPopover.onDidDismiss(() => {this.switchSound()})
 		console.log("Change Sound");
 	}
 

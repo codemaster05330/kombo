@@ -1,62 +1,36 @@
-import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, Events } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { PopoverController, ViewController } from 'ionic-angular';
+import { Variables } from '../classes/variables'; 
 
-//pages
-import { IdlePage } from '../idle/idle';
-import { EditPage } from '../edit/edit';
- 
-//classes
-import { GestureType } from '../../classes/gesture-type';
-import { Variables } from '../../classes/variables';
-
-//json
-import * as soundsData from '../../assets/sounds/sounds.json';
-
-//services
-import { GesturesService } from '../../services/gestures.service';
-
-//server
-import { Socket } from 'ng-socket-io';
+import * as soundsData from '../assets/sounds/sounds.json';
 
 import * as audio from 'waves-audio';
 const audioContext = audio.audioContext;
 const audioScheduler = audio.getScheduler();
 
 @Component({
-	selector: 'page-switch-sound',
-	templateUrl: 'switch-sound.html'
+	selector: 'switch-sound-popover',
+	templateUrl: 'switchsound-popover.html'
 })
 
-export class SwitchSoundPage {
-	lookOfEvents:Array<GestureType> = [GestureType.IDLE_IN];
-	sound_list:Array<any>;
+ export class SwitchSoundPopoverPage {
+ 	sound_list:any;
 
-	constructor(
-		private zone:NgZone,
-		private navCtrl: NavController,
-		public navParams: NavParams,
-		private events:Events,
-		public globalVars: Variables,
-		private gesturesService:GesturesService,
-		private socket:Socket) {
-
-		this.gesturesService.watchForGesture(this.lookOfEvents);
-		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
-			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
-			zone.run(() => {
-				navCtrl.setRoot(IdlePage);
-			});
-		});
-
+	constructor(public popoverCtrl: PopoverController, public globalVars: Variables, public viewCtrl:ViewController) {
 		this.sound_list = soundsData[0];
-
+		this.sound_list.forEach(function(s, i) {
+			if(globalVars.currentSoundType == s.id) {
+				s.focus = true;
+			} else {
+				s.focus = false;
+			}
+		});
 	}
 
 	selectSound(sound) {
 		if(sound.focus) {
 			this.globalVars.currentSoundType = sound.id;
-			console.log(this.globalVars.currentSoundType);
-			this.navCtrl.setRoot(EditPage);
+			this.viewCtrl.dismiss();
 		} else {
 			this.sound_list.forEach(function(s, i) {
 				s.focus = false;
@@ -97,13 +71,4 @@ export class SwitchSoundPage {
 	decibelToLinear(value: number){
 		return Math.pow(10, value/20);
 	}
-
-    ionViewWillLeave() {
-        console.log('will close emoji');
-    }
-
-    ionViewDidLeave() {
-        console.log('closed emoji');
-    }
-
 }
