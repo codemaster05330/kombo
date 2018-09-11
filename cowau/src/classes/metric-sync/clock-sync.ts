@@ -98,9 +98,9 @@ export class ClockSync {
 				this._syncServerTime = 0.5 * (serverTime + this._evenPingServerTime);
 				this._pingCountAtSync = pingCount;
 
-				// BUG: Auskommentiert damit es nicht mehr "Unused" ist. 
-				// const offset = 0.5 * (this._syncServerTime - this._syncClientTime);
-				// console.log(`${(pingCount - 1) / 2}: sync! (offset: ${offset})`);
+				// BUG: Auskommentiert damit es nicht mehr "Unused" ist.
+				const offset = 0.5 * (this._syncServerTime - this._syncClientTime);
+				console.log(`${(pingCount - 1) / 2}: sync! (offset: ${offset})`);
 
 				this._callListeners();
 
@@ -116,16 +116,16 @@ export class ClockSync {
 
 				this._sync = true;
 			} else if (this._pingCountAtSync !== undefined) {
-				// console.log(`${(pingCount - 1) / 2}: failed to sync (since ${(this._pingCountAtSync - 1) / 2})`);
+				console.log(`${(pingCount - 1) / 2}: failed to sync (since ${(this._pingCountAtSync - 1) / 2})`);
 
 				if (!travelDurationsOk) {
 					error = 'travel';
-					// console.log(`   travel durations: ${this._evenPingTravelDuration}, ${travelDuration}`);
+					console.log(`   travel durations: ${this._evenPingTravelDuration}, ${travelDuration}`);
 				}
 
 				if (!interDiffOk){
 					error = 'diff';
-					// console.log(`   inter ping difference: ${interDiff}`);
+					console.log(`   inter ping difference: ${interDiff}`);
 				}
 
 				this._sync = false;
@@ -133,7 +133,7 @@ export class ClockSync {
 		} else {
 			error = 'diff';
 			this._sync = false;
-			// console.log(`${(pingCount - 1) / 2}: cannot sync (ping count confusion)`);
+			console.log(`${(pingCount - 1) / 2}: cannot sync (ping count confusion)`);
 		}
 
 		if (error !== null) {

@@ -115,6 +115,7 @@ export class VisualPage {
 
 	runMetronome() {
 		this.callback = (measure, beat) => {
+            // console.log(measure + ' / ' + beat);
 			this.sequenceArray.forEach(soundArray => {
 				if(soundArray.lifeTimeValue > 0){
 					var statuswave = true;
