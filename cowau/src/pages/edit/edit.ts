@@ -75,6 +75,8 @@ export class EditPage {
 
 	ignoreInput: boolean = false;
 
+	switchingSound: boolean = false;
+
 	constructor(private navCtrl: NavController, public navParams: NavParams, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables,
 		private zone:NgZone, private platform: Platform) {
@@ -234,6 +236,7 @@ export class EditPage {
 	runMetronome() {
 		this.callback = (measure, beat) => {
 			this.moveCursorTo((measure % 2) * 8 + beat);				// Cursor Movement //@Johannes: Hier stürzt es ab.
+			if(this.switchingSound) return;
 			let beatGrid = this.sound.getBeatGrid();
 
 			for(let i: number = 0; i < beatGrid.length; i++){			// Shift through the beatgrid
@@ -389,8 +392,9 @@ export class EditPage {
 			showBackdrop: true,
 			enableBackdropDismiss: true
 		});
+		this.switchingSound = true;
 		switchSoundPopover.present();
-		switchSoundPopover.onDidDismiss(() => {this.switchSound()})
+		switchSoundPopover.onDidDismiss(() => {this.switchSound(); this.switchingSound = false;})
 		console.log("Change Sound");
 	}
 
