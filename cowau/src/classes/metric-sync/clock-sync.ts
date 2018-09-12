@@ -100,7 +100,7 @@ export class ClockSync {
 
 				// BUG: Auskommentiert damit es nicht mehr "Unused" ist.
 				const offset = 0.5 * (this._syncServerTime - this._syncClientTime);
-				console.log(`${(pingCount - 1) / 2}: sync! (offset: ${offset})`);
+				// console.log(`${(pingCount - 1) / 2}: sync! (offset: ${offset})`);
 
 				this._callListeners();
 
