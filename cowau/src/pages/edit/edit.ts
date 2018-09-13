@@ -138,7 +138,6 @@ export class EditPage {
 
 		//IDLE IN
 		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
-			this.globalVars.currentSoundType = null;
 			if(this.switchingSound) {
 				this.switchSoundPopover.dismiss();
 			}

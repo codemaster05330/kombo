@@ -4,7 +4,7 @@ import { NavController, NavParams, Events } from 'ionic-angular';
 //pages
 import { IdlePage } from '../idle/idle';
 import { EditPage } from '../edit/edit';
- 
+
 //classes
 import { GestureType } from '../../classes/gesture-type';
 import { Variables } from '../../classes/variables';
@@ -39,7 +39,7 @@ export class SwitchSoundPage {
 		public globalVars: Variables,
 		private gesturesService:GesturesService,
 		private socket:Socket) {
-
+      console.log('sound: ' + globalVars.currentSoundType);
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 		events.subscribe(GestureType.IDLE_IN.toString(), (acceleration) => {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
@@ -49,7 +49,13 @@ export class SwitchSoundPage {
 		});
 
 		this.sound_list = soundsData[0];
-
+    this.sound_list.forEach(function(s, i) {
+			if(globalVars.currentSoundType == s.id) {
+				s.focus = true;
+			} else {
+				s.focus = false;
+			}
+		});
 	}
 
 	selectSound(sound) {
