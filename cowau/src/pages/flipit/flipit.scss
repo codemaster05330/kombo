@@ -10,9 +10,24 @@ page-flipit {
 		justify-content: center;
 		align-items: center;
 		height: 100%;
+		position: relative;
+		z-index:0;
+		
+		.block-video{
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			top:0;
+			left:0;
+			bottom:0;
+			right:0;
+			z-index: 5;
+		}
 	}
 
 	.how-to-flip {
 		object-fit: cover !important;
 	}
+
+
 }

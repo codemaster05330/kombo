@@ -2,7 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule/*, Popover*/ } from 'ionic-angular';
 import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
-const config: SocketIoConfig = { url: 'http://141.28.105.183:3001', options: {} };
+// const config: SocketIoConfig = { url: 'http://141.28.105.183:3001', options: {} };
+const config: SocketIoConfig = { url: 'http://192.168.0.11:3001', options: {} };
 
 import { HttpModule } from '@angular/http';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -20,10 +21,12 @@ import { IdlePage } from '../pages/idle/idle';
 import { EmojiPage } from '../pages/emoji/emoji';
 import { EditPage } from '../pages/edit/edit';
 import { LoadingPage } from '../pages/load/load';
+import { SwitchSoundPage } from '../pages/switch-sound/switch-sound';
 
 //popovers
-import { NewSoundPopoverPage } from '../newsound-popover/newsound-popover';
+// import { NewSoundPopoverPage } from '../newsound-popover/newsound-popover';
 import { ThrowItPopoverPage } from '../throwit-popover/throwit-popover';
+import { SwitchSoundPopoverPage } from '../switchsound-popover/switchsound-popover';
 
 import { VisualPage } from '../pages/visual/visual';
 
@@ -43,9 +46,10 @@ import { Variables } from '../classes/variables';
     IdlePage,
     EditPage,
     VisualPage,
-    NewSoundPopoverPage,
+    SwitchSoundPopoverPage,
     ThrowItPopoverPage,
-    LoadingPage
+    LoadingPage,
+    SwitchSoundPage
   ],
   imports: [
     BrowserModule,
@@ -61,9 +65,10 @@ import { Variables } from '../classes/variables';
     IdlePage,
     EditPage,
     VisualPage,
-    NewSoundPopoverPage,
+    SwitchSoundPopoverPage,
     ThrowItPopoverPage,
-    LoadingPage
+    LoadingPage,
+    SwitchSoundPage
   ],
   providers: [
     StatusBar,

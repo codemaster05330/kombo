@@ -23,7 +23,7 @@ export class Sequence {
 		//initialise the beat grid with 0s
 		for (var i : number = 0; i < _toneheights; i++){
 			this.beatGrid[i] = [];
-			for (var j: number = 0; j < 32; j++){
+			for (var j: number = 0; j < 16; j++){
 				this.beatGrid[i][j] = 0;
 			}
 		}
@@ -82,7 +82,7 @@ export class Sequence {
 
 		for (var i : number = 0; i < x; i++){
 			this.beatGrid[i] = [];
-			for (var j: number = 0; j < 32; j++){
+			for (var j: number = 0; j < 16; j++){
 				this.beatGrid[i][j] = 0;
 			}
 		}
@@ -93,14 +93,14 @@ export class Sequence {
 
 		var x: number = this.beatGrid.length;
 		for(var i: number = 0; i < x; i++){
-			for (var j = 0; j < 32; j++) {
+			for (var j = 0; j < 16; j++) {
 				var rand:number = Math.random();
 				if(rand>0.75){
 					this.beatGrid[i][j] = 1;
 				} else if (rand > 0.7){
 					var l = Math.floor(Math.random()*7) + 1;
-					if(j + l > 32){
-						l = 32 - j;
+					if(j + l > 16){
+						l = 16 - j;
 					}
 					this.beatGrid[i][j] = l;
 					j += l;

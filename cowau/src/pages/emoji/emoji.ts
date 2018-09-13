@@ -2,7 +2,8 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, NavParams, Events } from 'ionic-angular';
 //pages
 import { IdlePage } from '../idle/idle';
-import { FlipitPage } from '../flipit/flipit';
+// import { FlipitPage } from '../flipit/flipit';
+import { SwitchSoundPage } from '../switch-sound/switch-sound';
 
 //classes
 import { GestureType } from '../../classes/gesture-type';
@@ -55,6 +56,14 @@ export class EmojiPage {
 			});
 		// });
 
+		this.socket.on('emoji-taken', (data) => {
+			this.emoji_list[data] = true;
+		});
+
+		this.socket.on('emoji-untaken', (data) => {
+			this.emoji_list[data] = false;
+		});
+
 		// return observable;
 	}
 
@@ -69,7 +78,7 @@ export class EmojiPage {
 		console.log(this.globalVars.emojiID);
 		this.socket.emit('take-emoji', this.globalVars.emojiID);
 		this.zone.run(() => {
-    		this.navCtrl.setRoot(FlipitPage);
+    		this.navCtrl.setRoot(SwitchSoundPage);
 		});
     }
 

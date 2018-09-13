@@ -22,21 +22,24 @@
 		<div class="beatpreview-slider" id="beatpreview-slider">
 			
 		</div>
+		
 		<div class="beatgrid-wrapper-preview" id="beatgrid-wrapper-preview">
-				<div *ngFor="let cell of tmpBeatGrid; let i = index" class="beatrow-preview" id="beatrow-preview">
-					<div *ngFor="let cell of tmpBeatGrid[i]; let j = index" id="{{i}}-{{j}}" class="tone-preview">
-						
-					</div>
+			<div class="beatpreview-cursor" id="beatpreview-cursor">
+			
+			</div>
+			<div *ngFor="let cell of tmpBeatGrid; let i = index" class="beatrow-preview" id="beatrow-preview">
+				<div *ngFor="let cell of tmpBeatGrid[i]; let j = index" id="{{i}}-{{j}}" class="tone-preview">
+					
 				</div>
+			</div>
 		</div>
 	</div>
 	<div class="clearsound-container">
-		<div (click)="clearSound()" class="clearsound">Throw & clear sound</div> 
-    </div> 
- 
-    <div class="clearsound-container"> 
-        <div (click)="switchSound()" class="clearsound">Switch sound</div> 
-	</div>
+		<div (click)="changeSoundButton()" class="clearsound">change sound</div> 
+    </div>
+	<div class="clearsound-container">
+		<div (click)="clearSoundButton()" class="clearsound">clear sound</div> 
+    </div>
 </div>
 
 <div class="bottom-bar"></div>

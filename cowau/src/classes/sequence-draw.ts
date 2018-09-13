@@ -24,7 +24,7 @@ export class SequenceDraw {
     canvasWidth:number;                                                             // Width of the Canvas Object
     canvasHeight:number;                                                            // Hight of the Canvas Object
     ratio:number;                                                                   // Value of the Screen Ratio
-    beatGrid:number[];                                                              // Beatgrid Array
+    beatGrid:number[][];                                                            // Beatgrid Array
     sequenceType:number;                                                            // Sound Type
 
 	constructor(radius:number,
@@ -37,7 +37,7 @@ export class SequenceDraw {
                 canvasWidth:any,
                 canvasHeight:any,
                 ratio:number,
-                beatGrid:number[],
+                beatGrid:number[][],
                 sequenceType:number){
         this.radius         = radius;                                               // radius of the sequence
         this.newRadius;                                                             // radius with lifetime value
@@ -49,11 +49,11 @@ export class SequenceDraw {
         this.soundWaves     = [];                                                   // The Soundwaves from this object
         this.emojiImg       = new Image();                                          // Create new object
         this.ratio          = ratio;
-        this.beatGrid       = beatGrid;
+		this.beatGrid       = beatGrid;
         this.sequenceType   = sequenceType;
         this.velocity       = {
-            x: this.returnRandomValue(-5,5),                                        // velocity in the x direction
-            y: this.returnRandomValue(-5,5)                                         // velocity in the y direction
+            x: this.returnRandomValue(-1,1),                                        // velocity in the x direction
+            y: this.returnRandomValue(-1,1)                                         // velocity in the y direction
         };
         this.ctx            = ctx;                                                  // Canvas Object
         this.sequenceArray  = soundsArray;                                          // Sound Array Objects
@@ -61,15 +61,16 @@ export class SequenceDraw {
         this.canvasHeight   = canvasHeight;                                         // Hight of the Canvas Object
 
         // Emoji
-		if(this.emoji == null) { this.emoji = 0; }
-        this.emojiImg.src   = '../../assets/imgs/' + this.emoji + '.svg';
+		if(this.emoji == null || typeof(this.emoji) == undefined || this.emoji < 0 || this.emoji > 11) { this.emoji = 0; }
+		this.emojiImg.src   = 'assets/imgs/' + this.emoji + '.png';
 
 	}
 
     returnSoundArt() : number { return this.sequenceType; }
-    retrunBeatGrid() : number[] { return this.beatGrid; }
+    retrunBeatGrid() : number[][] { return this.beatGrid; }
     returnLifeTime() : number {
-        var amp = Math.pow(10,4*(this.lifeTimeValue/100-1));
+        // var amp = Math.pow(10,4*(this.lifeTimeValue/100-1));
+        var amp = this.lifeTimeValue/100;
         return amp;
     }
 
@@ -78,14 +79,15 @@ export class SequenceDraw {
     // movement and the drawing of the element
     public updateSound() : void {
         // Update the this.radius var to the new value
-        this.newRadius = this.radius * (this.lifeTimeValue/100);
-        this.mass = this.mass * (this.lifeTimeValue/100);
+        this.newRadius = Math.max(10,this.radius * Math.min(Math.max(0.1,this.lifeTimeValue/100 + 0.1),1));
+        // this.mass = 300;
         this.soundWaves.forEach((soundwave:SoundWave) => {
 			soundwave.updateSoundWave();
             if(soundwave.returnSoundWave() == 0) { this.soundWaves.splice(this.soundWaves.indexOf(soundwave),1); }
         })
 
-		this.lifeTime();                                                            // reduce lifetime
+        this.lifeTime();                                                            // reduce lifetime
+        if(this.lifeTimeValue <= 0) return;
         this.borderDetectionSound();                                                // Controll if the object hits the wall
         this.moveSound();                                                           // move the object random
         this.drawSound();                                                           // draw the sequence object
@@ -106,16 +108,10 @@ export class SequenceDraw {
     // TODO: Change this to a real LifeTime calculation.
     // Calculates the lifetime for the sequence object.
     public lifeTime() {
-		if(this.mass <= 16){
-			this.lifeTimeValue = this.lifeTimeValue - (0.05*(this.sequenceArray.length));
-		}
-        if(17 < this.mass){
-            console.log((0.001*(this.sequenceArray.length/20)*(this.mass/20)));
-			this.lifeTimeValue = this.lifeTimeValue - (0.001*(this.sequenceArray.length/20));
-		}
-        if((this.lifeTimeValue/100) < 0.05) {
-			this.sequenceArray.splice(this.sequenceArray.indexOf(this),1);
-        }
+		// console.log(this.sequenceArray.length, this.mass)
+		let otherSequencesFactor = (this.sequenceArray.length - 1) * 0.002;
+		let ownMassFactor = (this.mass / 80) * 0.1;
+		this.lifeTimeValue -= otherSequencesFactor + ownMassFactor;
     }
 
     // Function to move the sequence object in an
@@ -127,7 +123,7 @@ export class SequenceDraw {
 
     // Function to draw the sequence object into the canvas
     public drawSound() : void {
-        this.ctx.globalAlpha = (this.lifeTimeValue/100);
+        this.ctx.globalAlpha = Math.min(Math.max(0.3,this.lifeTimeValue/100 + 0.3),1);
         this.ctx.fillStyle = '#353847';
         this.ctx.beginPath();
         this.ctx.arc(this.x,this.y,this.newRadius,0,Math.PI*2,true);
@@ -151,7 +147,7 @@ export class SequenceDraw {
     // Function to create Soundwaves of this Sequence Object.
     public createSoundWave() : void {
         let soundWave = new SoundWave(this.newRadius,5,this.x,this.y,(this.lifeTimeValue/100),this.ctx,this.canvasWidth,this.canvasHeight,this.ratio);
-        this.soundWaves.push(soundWave);
+		this.soundWaves.push(soundWave);
     }
 
     // ###############################################################
@@ -161,7 +157,8 @@ export class SequenceDraw {
     // Function to create a random int number
     // with an min and max value
     public returnRandomValue(min,max) {
-        let random = Math.floor(Math.random() * (max-min + 1) + min );
+        let random = Math.random() * (max-min) + min;
+        console.log(random);
         if(random === 0){
             return random = min;
         } else {
@@ -211,10 +208,23 @@ export class SequenceDraw {
             const vFinal1 = this.rotate(v1, -angle);
             const vFinal2 = this.rotate(v2, -angle);
             // Swap particle velocities for realistic bounce effect
+            if(vFinal1.x > 0.003) { vFinal1.x = 0.003;};
+            if(vFinal1.y > 0.003) { vFinal1.y = 0.003;};
             particle.velocity.x = vFinal1.x;
             particle.velocity.y = vFinal1.y;
             otherParticle.velocity.x = vFinal2.x;
             otherParticle.velocity.y = vFinal2.y;
         }
     }
+
+    //Calculate Beatgrid Magnitude to know how many tones are inside it 
+    getBeatGridMagnitude() : number {
+		let amount: number = 0;
+		for(let i : number = 0; i < this.beatGrid.length; i++){
+			for(let j: number = 0; j < this.beatGrid[i].length; j++){
+				amount += this.beatGrid[i][j];
+			}
+		}
+		return amount;
+	}
 }
