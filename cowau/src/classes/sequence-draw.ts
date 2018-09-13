@@ -109,8 +109,8 @@ export class SequenceDraw {
     // Calculates the lifetime for the sequence object.
     public lifeTime() {
 		// console.log(this.sequenceArray.length, this.mass)
-		let otherSequencesFactor = (this.sequenceArray.length - 1) * 0.02;
-		let ownMassFactor = (this.mass / 80) * 0.2;
+		let otherSequencesFactor = (this.sequenceArray.length - 1) * 0.002;
+		let ownMassFactor = (this.mass / 80) * 0.1;
 		this.lifeTimeValue -= otherSequencesFactor + ownMassFactor;
     }
 
@@ -157,7 +157,8 @@ export class SequenceDraw {
     // Function to create a random int number
     // with an min and max value
     public returnRandomValue(min,max) {
-        let random = Math.floor(Math.random() * (max-min + 1) + min );
+        let random = Math.random() * (max-min) + min;
+        console.log(random);
         if(random === 0){
             return random = min;
         } else {
