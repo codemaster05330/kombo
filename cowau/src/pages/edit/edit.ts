@@ -454,7 +454,7 @@ export class EditPage {
 
 			//if the delay between the click and the movement is above 200ms or the use didn't click on a tone, don't scroll but create a long tone instead.
 			//TODO: Haptic Feedback when passing the time threshold
-			if (evt.deltaTime > 200 && !(evt.target.classList.contains("beatgrid") || evt.target.classList.contains("beatrow"))){
+			if (evt.deltaTime > 150 && !(evt.target.classList.contains("beatgrid") || evt.target.classList.contains("beatrow"))){
 				this.isScrolling = false;
 			} else {
 				this.isScrolling = true;
@@ -508,14 +508,14 @@ export class EditPage {
 		//if the current pan gesture is a scroll gesture, move the screen
 		if(this.isScrolling){
 			let translate: number = (this.translation * this.vw + evt.deltaX) / this.vw;
-			translate = Math.max(Math.min(-5,translate),-112);						//109 & 5 are an empirical number. if there is a better source for a more accurate number, it should be entered here.
+			translate = Math.max(Math.min(-5,translate),-110);						//109 & 5 are an empirical number. if there is a better source for a more accurate number, it should be entered here.
 
 			this.beatgrid.style.transform = "translate( " + translate + "vw , 0)";
 
 			//move the preview as well
 			let prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
-			let x: number = -1 * ( ( ( translate + 5) / 104 ) * (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) + prevXMin;		//again, 109 and 5 are the empirical numbers from above.
-			let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth + 4;
+			let x: number = -1 * ( ( ( translate + 5) / 102 ) * (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) + prevXMin;		//again, 109 and 5 are the empirical numbers from above.
+			let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth + 3;
 
 			this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
 		}
@@ -669,20 +669,20 @@ export class EditPage {
 			x = evt.center.x - (this.beatPreviewSlider.offsetWidth/2);
 		}
 		let prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
-		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth + 4;
+		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth + 2;
 
 		this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
-		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 104) - 5) + "vw , 0)";
+		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 102) - 5) + "vw , 0)";
 	}
 
 	//called, when the slider or the preview itself is clicked, moves the slider to the correct position as well as the beatgrid
 	clickPreview(evt: any){
 		let x: number = evt.x - (this.beatPreviewSlider.offsetWidth/2);
 		let prevXMin: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2);
-		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth + 4;
+		let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth + 2;
 
 		this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
-		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 104) - 5) + "vw , 0)";
+		this.beatgrid.style.transform = "translate( " + ((-1 * ((Math.min(Math.max(prevXMin,x),prevXMax) - prevXMin) / (this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth)) * 102) - 5) + "vw , 0)";
 
 	}
 
