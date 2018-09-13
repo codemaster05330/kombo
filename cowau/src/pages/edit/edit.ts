@@ -76,6 +76,7 @@ export class EditPage {
 	ignoreInput: boolean = false;
 
 	switchingSound: boolean = false;
+	switchSoundPopover:any;
 
 	constructor(private navCtrl: NavController, public navParams: NavParams, private events:Events, private gesturesService:GesturesService,
 		private popoverCtrl:PopoverController, private metricSync:MetricSync, private socket:Socket, private globalVars: Variables,
@@ -99,15 +100,15 @@ export class EditPage {
 		this.soundLengths = globalVars.soundLengths;
 
 		//ONLY FOR TESTING PURPOSES
-		if(globalVars.emojiID == null){ 
-			globalVars.emojiID = Math.floor(Math.random() * 12); 
+		if(globalVars.emojiID == null){
+			globalVars.emojiID = Math.floor(Math.random() * 12);
 			console.log("Emoji was null. Randomly generated: " + globalVars.emojiID)
 		}
-		// this.sound.setType(SoundType.Harm1); 
+		// this.sound.setType(SoundType.Harm1);
 
 		//Start Gesture Events
 		this.popover = new Popover(this.popoverCtrl);
-		
+
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 		//THROW
 		this.events.subscribe(GestureType.THROWN.toString(), (value) => {
@@ -125,7 +126,7 @@ export class EditPage {
 				this.clearSound();
 			}, 700);
 		});
-		
+
 		//FLIPPING
 		// this.events.subscribe(GestureType.FLIPPED.toString(), (value) => {
 		// 	// what to do when flipped. TODO: remove comment when gestures are stable, remove above popover call when it's been rewritten
@@ -138,7 +139,6 @@ export class EditPage {
 		//IDLE IN
 		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
 			this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);
-			this.gesturesService.stopGestureWatch(this.events,  GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			this.metricSync.removeMetronome(this.callback);
 			this.zone.run(() => {
@@ -174,7 +174,7 @@ export class EditPage {
 
 		// set some initial offsets/transforms
 		this.beatPreviewSlider.style.left = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + "px";
-		
+
 		this.vw = (this.beatgridWrapper.offsetWidth / 100);
 
 		this.beatgrid.style.transform = "translate( -5vw , 0)";
@@ -191,9 +191,9 @@ export class EditPage {
 		// debug thingy to test that the sent sequence indeed was sent to the server and can be recieved again.
 		// TODO: can be removed when the visual screen is getting it's sequences from the server correctly
 		// this.getNewSequence().subscribe(data => {
-			
+
 		// });
-				
+
 		this.cursor.style.transform = "translate(-200vw, 0px)";
 	}
 
@@ -262,14 +262,14 @@ export class EditPage {
 		gainC.connect(audioContext.destination);
 		src.connect(gainC);                                  					// Connect Audio Context
 		src.buffer = this.globalVars.buffers[type];                             // Define witch sound the function is playing
-		
+
 		let endTime;
 		if (this.globalVars.cutSound[type]){
 			endTime = time + Math.min(length, this.soundLengths[type]) * 0.25;
 		} else {
 			endTime = time + 8 * 0.25;
 		}
-		
+
 		src.start(time, pitch * 3, endTime + 0.1);								// Start Sound
 		gainC.gain.value = this.globalVars.soundGains[type];
 		gainC.gain.setTargetAtTime(0, endTime - 0.05, 0.015);					// Fade Out
@@ -348,7 +348,7 @@ export class EditPage {
 		// if(this.getBeatGridMagnitude() > 0){
 		// 	this.socket.emit('new-sequence', this.sound);
 		// }
-		
+
 		this.ignoreInput = false;
 		this.sound.clearBeatGrid();
 		this.clearSmallGrid();
@@ -368,14 +368,14 @@ export class EditPage {
 		}, 500);
 	}
 
-	switchSound(){ 
-		// this.sound.nextType(); 
-		// this.globalVars.currentSoundType = this.sound.getType(); 
+	switchSound(){
+		// this.sound.nextType();
+		// this.globalVars.currentSoundType = this.sound.getType();
 		this.sound.setType(this.globalVars.currentSoundType);
 		this.cutSoundsIfNeeded();
 	}
 
-	//removes 
+	//removes
 	clearSmallGrid(){
 		for(let i = 0; i < this.beatgridPreview.length; i++){
 			if(this.beatgridPreview[i] != null){
@@ -388,13 +388,16 @@ export class EditPage {
 	}
 
 	changeSoundButton() {
-		let switchSoundPopover = this.popoverCtrl.create(SwitchSoundPopoverPage, {
+		this.switchSoundPopover = this.popoverCtrl.create(SwitchSoundPopoverPage, {
 			showBackdrop: true,
 			enableBackdropDismiss: true
 		});
 		this.switchingSound = true;
-		switchSoundPopover.present();
-		switchSoundPopover.onDidDismiss(() => {this.switchSound(); this.switchingSound = false;})
+		this.switchSoundPopover.present();
+		this.switchSoundPopover.onDidDismiss(() => {
+			this.switchSound();
+			this.switchingSound = false;
+		});
 		console.log("Change Sound");
 	}
 
@@ -424,7 +427,7 @@ export class EditPage {
 				this.sound.setBeatGridAtPos(x, y, 1);
 				this.setPreview(x, y, 1);
 				elem.appendChild(this.createLongTone());
-	
+
 			} else if (elem.classList.contains("tone-long")) {				// clicked element is an existing tone: remove the tone
 				let x: number = +elem.parentElement.id.split("-")[0];
 				let y: number = +elem.parentElement.id.split("-")[1];
@@ -439,11 +442,11 @@ export class EditPage {
 	// function called when a pan gesture happening (aka moving your finger left/right)
 	panTone(evt: any){
 		this.timeStamp = evt.timeStamp;
-		
+
 		// detect if a new pan has been started and start a new (internal) event accordingly. internal because angular will thrown an event every time the finger is being moved slightly, even when inside the same pan gesture
 		//this.deltaTime holds the starttime of the event. 20 because the evt.timeStamp - evt.deltaTime sometimes fluctuates a little bit.
-		if (evt.timeStamp - evt.deltaTime - 20 > this.deltaTime && evt.target != null){		// is entered if it's a new gesture		
-			
+		if (evt.timeStamp - evt.deltaTime - 20 > this.deltaTime && evt.target != null){		// is entered if it's a new gesture
+
 			//if the delay between the click and the movement is above 200ms or the use didn't click on a tone, don't scroll but create a long tone instead.
 			//TODO: Haptic Feedback when passing the time threshold
 			if (evt.deltaTime > 200 && !(evt.target.classList.contains("beatgrid") || evt.target.classList.contains("beatrow"))){
@@ -454,7 +457,7 @@ export class EditPage {
 
 			//get the current translation of the main beatgrid at the start of the event to be able to move it accordingly later
 			this.translation = parseInt(this.beatgrid.style.transform.slice(10).split("vw")[0]);
-			
+
 			if(!this.isScrolling){
 				//save the relative X of the start of the event relative to the parent element
 				//this is used to make the drawing of new tones while panning more consistent
@@ -468,7 +471,7 @@ export class EditPage {
 
 			}
 
-			this.originalTarget = evt.target;				
+			this.originalTarget = evt.target;
 			this.wasEmpty = true;
 
 			if (evt.target.classList.contains("tone-long")){
@@ -485,9 +488,9 @@ export class EditPage {
 					//can be removed if this functionality won't be needed.
 
 					//if clicked tone is a longer longtone, calculate which part of the note you were clicking on, specifically if it was
-					//the first beat, the last beat or any beat inbetween 
+					//the first beat, the last beat or any beat inbetween
 					//Theoretical-todo: calculate which "beat" I am starting my movement at
-					
+
 				}
 			}
 
@@ -510,18 +513,18 @@ export class EditPage {
 			let prevXMax: number = ((this.beatgridWrapper.offsetWidth - this.beatgridWrapperPreview.offsetWidth)/2) + this.beatgridWrapperPreview.offsetWidth - this.beatPreviewSlider.offsetWidth + 4;
 
 			this.beatPreviewSlider.style.left = Math.min(Math.max(prevXMin,x),prevXMax) + "px";
-		} 
+		}
 
 
 		// if the current pan gesture is a drawing gesture, create the new tones
 		else {
 
-			if(this.ignoreInput) return;				
-			
+			if(this.ignoreInput) return;
+
 			//calculate how many tones have been passed
 			let y: number = +this.originalTarget.id.split("-")[1];
 			let x: number = +this.originalTarget.id.split("-")[0];
-			let passedTones = Math.floor(((this.relativeX + evt.deltaX) / this.vw) / 11.1);	//11.1vw is the width of one tone + one side of the margin (.1 because of the border)	
+			let passedTones = Math.floor(((this.relativeX + evt.deltaX) / this.vw) / 11.1);	//11.1vw is the width of one tone + one side of the margin (.1 because of the border)
 			if(passedTones < 0)
 				passedTones++;							// account for an error in the upper calculation if the drawing gesture is to the left
 
@@ -540,7 +543,7 @@ export class EditPage {
 				passedTones = 15 - y;
 			}
 
-			//make sure the tones cannot be longer than the max length of the current soundtype 
+			//make sure the tones cannot be longer than the max length of the current soundtype
 			if(passedTones > 0 && passedTones > this.soundLengths[this.sound.getType()] - 1){
 				passedTones = this.soundLengths[this.sound.getType()] - 1;
 			}
@@ -598,7 +601,7 @@ export class EditPage {
 				}
 
 				//prevent drawing over notes to the right
-				let tmp: HTMLElement = target; 
+				let tmp: HTMLElement = target;
 				for(let i: number = 0; i < passedTones; i++){
 					if(tmp.nextElementSibling != null){
 						tmp = <HTMLElement> tmp.nextElementSibling;
