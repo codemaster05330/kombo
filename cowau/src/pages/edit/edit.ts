@@ -138,6 +138,10 @@ export class EditPage {
 
 		//IDLE IN
 		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
+			console.log(this.switchingSound);
+			if(this.switchingSound) {
+				this.switchSoundPopover.dismiss();
+			}
 			this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			this.metricSync.removeMetronome(this.callback);

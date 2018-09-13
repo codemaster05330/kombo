@@ -72,8 +72,4 @@ const audioScheduler = audio.getScheduler();
 		return Math.pow(10, value/20);
 	}
 
-	close() {
-		this.globalVars.currentSoundType = null;
-		this.viewCtrl.dismiss();
-	}
 }
