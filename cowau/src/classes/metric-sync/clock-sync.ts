@@ -120,12 +120,12 @@ export class ClockSync {
 
 				if (!travelDurationsOk) {
 					error = 'travel';
-					console.log(`   travel durations: ${this._evenPingTravelDuration}, ${travelDuration}`);
+					// console.log(`   travel durations: ${this._evenPingTravelDuration}, ${travelDuration}`);
 				}
 
 				if (!interDiffOk){
 					error = 'diff';
-					console.log(`   inter ping difference: ${interDiff}`);
+					// console.log(`   inter ping difference: ${interDiff}`);
 				}
 
 				this._sync = false;
