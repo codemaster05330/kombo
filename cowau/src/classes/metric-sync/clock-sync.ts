@@ -116,7 +116,7 @@ export class ClockSync {
 
 				this._sync = true;
 			} else if (this._pingCountAtSync !== undefined) {
-				console.log(`${(pingCount - 1) / 2}: failed to sync (since ${(this._pingCountAtSync - 1) / 2})`);
+				// console.log(`${(pingCount - 1) / 2}: failed to sync (since ${(this._pingCountAtSync - 1) / 2})`);
 
 				if (!travelDurationsOk) {
 					error = 'travel';
