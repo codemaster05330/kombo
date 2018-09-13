@@ -140,6 +140,7 @@ export class EditPage {
 		this.events.subscribe(GestureType.IDLE_IN.toString(), (value) => {
 			console.log(this.switchingSound);
 			if(this.switchingSound) {
+				this.globalVars.currentSoundType = null;
 				this.switchSoundPopover.dismiss();
 			}
 			this.gesturesService.stopGestureWatch(this.events, GestureType.THROWN);

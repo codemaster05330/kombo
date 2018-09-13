@@ -1,0 +1,6 @@
+Was noch angepasst werden muss:
+	- currentSoundType = null, if go to idle		DONE
+	- ThrowIt Gesture without rotation				DONE
+	- VisualPage --> Icons movement 				DONE
+	- Time till pan event (200 --> 150) 			DONE
+	- minimap end on right to long					DONE

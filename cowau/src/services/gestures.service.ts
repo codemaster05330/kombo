@@ -208,6 +208,7 @@ export class GesturesService {
 
 			let backAccRight = false;
 			let backAccLeft = false;
+			let throwLikeNobodyDoes = false;
 
 			let endFor = false;
 			let endForRotate = false;
@@ -215,17 +216,26 @@ export class GesturesService {
 
 			for(let i=0; i<this.throwArray.length; i++) {
 				if(!endFor && this.throwArray[i] != null) {
-						if(this.throwArray[i].acce.x > 15) {
-							startIndex = i;
-							backAccRight = true;
-							endFor = true;
-						}
+					if(this.throwArray[i].acce.x > 15) {
+						startIndex = i;
+						backAccRight = true;
+						endFor = true;
+					}
+				
+					if(this.throwArray[i].acce.x < -15) {
+						startIndex = i;
+						backAccLeft = true;
+						endFor = true;
+					}
 					
-						if(this.throwArray[i].acce.x < -15) {
-							startIndex = i;
-							backAccLeft = true;
-							endFor = true;
-						}
+					if(this.throwArray[i].acce.y > 8) {
+						// this.sendEvent(GestureType.THROWN, this.throwArray[i]);
+						// console.log('THROWN Y');
+						// this.startThrowTimer(1000);
+
+						throwLikeNobodyDoes = true;
+						startIndex = i;
+					}
 				}
 			}
 
@@ -240,6 +250,7 @@ export class GesturesService {
 							startIndex = -1;
 							backAccRight = false;
 							backAccLeft = false;
+							throwLikeNobodyDoes = false;
 
 							endLastFor = true;
 						} else if(backAccLeft && this.throwArray[i].acce.x > 30) {
@@ -250,12 +261,25 @@ export class GesturesService {
 							startIndex = -1;
 							backAccRight = false;
 							backAccLeft = false;
+							throwLikeNobodyDoes = false;
+
+							endLastFor = true;
+						} else if(throwLikeNobodyDoes && this.throwArray[i].acce.y < -8) {
+							console.log('THROWN Y');
+							this.sendEvent(GestureType.THROWN, this.throwArray[i]);
+							this.startThrowTimer(1000);
+							
+							startIndex = -1;
+							backAccRight = false;
+							backAccLeft = false;
+							throwLikeNobodyDoes = false;
 
 							endLastFor = true;
 						}
 					}
 				}
 			}
+
 		}
 	}
 
