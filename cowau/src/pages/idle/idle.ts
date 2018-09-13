@@ -40,6 +40,8 @@ export class IdlePage {
 
         console.log('idle constructor');
 
+				globalVars.currentSoundType = null;
+
         if(this.globalVars.emojiID != null) {
             console.log(globalVars.emojiID);
             this.socket.emit('free-emoji', globalVars.emojiID);

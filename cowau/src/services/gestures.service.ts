@@ -7,6 +7,7 @@ import { Vibration } from '@ionic-native/vibration';
 
 //classes
 import { GestureType } from '../classes/gesture-type';
+import { Variables } from '../classes/variables';
 
 
 @Injectable()
@@ -42,8 +43,8 @@ export class GesturesService {
 	watchForEvents:Array<GestureType> = new Array<GestureType>();
 	timeForGesture:number = 1500;
 	frequency:number = 50;
-	
-	constructor(public devMotion:DeviceMotion, public platform:Platform, public events:Events, public vibration:Vibration) {
+
+	constructor(public devMotion:DeviceMotion, public platform:Platform, public events:Events, public vibration:Vibration, public globalVars:Variables) {
 		let motionOpts:DeviceMotionAccelerometerOptions = {
 			frequency: this.frequency
 		}
@@ -55,7 +56,7 @@ export class GesturesService {
 
 		let timeOutOfIdle = 500;
 		let arraySizeIdleOut = timeOutOfIdle / motionOpts.frequency;
-		
+
 		platform.ready().then((readySource) => {
 			if(readySource == 'cordova' || readySource == 'mobile') {
 				this.countAccelerationDataForIdle = 0;
@@ -67,7 +68,7 @@ export class GesturesService {
 				this.devMotionSubscription = this.devMotion.watchAcceleration(motionOpts).subscribe((acceleration:DeviceMotionAccelerationData) => {
 					if(acceleration) {
 						this.getAccelerationMedianXYZ(acceleration, 15);
-						
+
 						if(this.watchForEvents.indexOf(GestureType.IDLE_OUT) != -1 && !this.idleOutTimeout) {
 							this.noIdleMode(arraySizeIdleOut, acceleration);
 						}
@@ -84,7 +85,7 @@ export class GesturesService {
 							this.isIdleMode(arraySizeIdle, acceleration);
 						}
 					}
-					
+
 				});
 			}
 		})
@@ -154,7 +155,7 @@ export class GesturesService {
 	// 					dCheckFlipDown = false;
 	// 				}
 	// 			}
-				
+
 	// 		}
 
 	// 		if(startPosUp > -1 && flipDown) {
@@ -172,8 +173,8 @@ export class GesturesService {
 
 	// 				}
 	// 			}
-				
-	// 			if(stopForUp && flipDown && flipUp && dCheckFlipUp) {		
+
+	// 			if(stopForUp && flipDown && flipUp && dCheckFlipUp) {
 	// 				flipDown = flipUp = false;
 	// 				dCheckFlipDown = dCheckFlipUp = true;
 	// 				startPosUp = -1;
@@ -208,6 +209,7 @@ export class GesturesService {
 
 			let backAccRight = false;
 			let backAccLeft = false;
+			let throwLikeNobodyDoes = false;
 
 			let endFor = false;
 			let endForRotate = false;
@@ -215,17 +217,26 @@ export class GesturesService {
 
 			for(let i=0; i<this.throwArray.length; i++) {
 				if(!endFor && this.throwArray[i] != null) {
-						if(this.throwArray[i].acce.x > 15) {
-							startIndex = i;
-							backAccRight = true;
-							endFor = true;
-						}
-					
-						if(this.throwArray[i].acce.x < -15) {
-							startIndex = i;
-							backAccLeft = true;
-							endFor = true;
-						}
+					if(this.throwArray[i].acce.x > 15) {
+						startIndex = i;
+						backAccRight = true;
+						endFor = true;
+					}
+
+					if(this.throwArray[i].acce.x < -15) {
+						startIndex = i;
+						backAccLeft = true;
+						endFor = true;
+					}
+
+					if(this.throwArray[i].acce.y > 8) {
+						// this.sendEvent(GestureType.THROWN, this.throwArray[i]);
+						// console.log('THROWN Y');
+						// this.startThrowTimer(1000);
+
+						throwLikeNobodyDoes = true;
+						startIndex = i;
+					}
 				}
 			}
 
@@ -236,31 +247,45 @@ export class GesturesService {
 							this.sendEvent(GestureType.THROWN, this.throwArray[i]);
 							console.log('THROWN RIGHT');
 							this.startThrowTimer(1000);
-							
+
 							startIndex = -1;
 							backAccRight = false;
 							backAccLeft = false;
+							throwLikeNobodyDoes = false;
 
 							endLastFor = true;
 						} else if(backAccLeft && this.throwArray[i].acce.x > 30) {
 							console.log('THROWN LEFT');
 							this.sendEvent(GestureType.THROWN, this.throwArray[i]);
 							this.startThrowTimer(1000);
-							
+
 							startIndex = -1;
 							backAccRight = false;
 							backAccLeft = false;
+							throwLikeNobodyDoes = false;
+
+							endLastFor = true;
+						} else if(throwLikeNobodyDoes && this.throwArray[i].acce.y < -8) {
+							console.log('THROWN Y');
+							this.sendEvent(GestureType.THROWN, this.throwArray[i]);
+							this.startThrowTimer(1000);
+
+							startIndex = -1;
+							backAccRight = false;
+							backAccLeft = false;
+							throwLikeNobodyDoes = false;
 
 							endLastFor = true;
 						}
 					}
 				}
 			}
+
 		}
 	}
 
 	private isIdleMode(arraySize:number, acceleration:DeviceMotionAccelerationData) {
-		//treshold X stillstanding: +-0.03 
+		//treshold X stillstanding: +-0.03
 		//treshold Y stillstanding: +-0.07
 		//treshold Z stillstanding: +-0.08
 
@@ -287,15 +312,16 @@ export class GesturesService {
 					toIdle = false;
 				}
 			});
- 
+
 			if(toIdle) {
+				this.globalVars.currentSoundType = null;
 				this.sendEvent(GestureType.IDLE_IN, acceleration);
 				this.startIdleInTimer();
 				console.log('IDLE_IN');
 				toIdle = true;
 			}
 		}
-		
+
 	}
 
 	public stopGestureWatch(ev:Events, name:GestureType) {
@@ -317,7 +343,7 @@ export class GesturesService {
 		} else {
 			this.countAccelerationDataForMedian++;
 		}
-		
+
 		if(this.acMedianXarray.length == arraySize) {
 			this.acMedianX = medianOfArray(this.acMedianXarray);
 			this.acMedianY = medianOfArray(this.acMedianYarray);

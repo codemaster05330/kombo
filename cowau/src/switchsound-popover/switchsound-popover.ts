@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PopoverController, ViewController } from 'ionic-angular';
-import { Variables } from '../classes/variables'; 
+import { Variables } from '../classes/variables';
 
 import * as soundsData from '../assets/sounds/sounds.json';
 
@@ -71,4 +71,5 @@ const audioScheduler = audio.getScheduler();
 	decibelToLinear(value: number){
 		return Math.pow(10, value/20);
 	}
+
 }

@@ -1,4 +1,7 @@
 page-switch-sound {
+	.headline-container {
+		padding: 8vh 5vh 3vh 5vh;
+	}
 	.sound-list {
 	    width: 70%;
 	    margin: 30px auto;
@@ -13,14 +16,14 @@ page-switch-sound {
 		.sound-container {
 		    background: $bggradient;
 		    border-radius: 50%;
-		    width: 70px;
-		    height: 70px;
+		    width: 60px;
+		    height: 60px;
 		    display: flex;
 		    justify-content: center;
 		    align-items: center;
 		    padding: 10px;
 		    margin: 5px;
-		    filter: saturate(50%);
+		    filter: saturate(60%);
 
 			&.highlighted {
 				filter: saturate(100%);

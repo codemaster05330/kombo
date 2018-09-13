@@ -6,7 +6,7 @@
 		left: 0;
 		right: 0;
 	}
-	
+
 	.popover-wrapper {
 		z-index: 100;
 		position: absolute;
@@ -18,7 +18,7 @@
 		top: 0px;
 		bottom: 0px;
 	}
-	
+
 	.popover-arrow {
 		z-index: 100;
 		position: absolute;
@@ -27,7 +27,7 @@
 		top: 0px;
 		bottom: 0px;
 	}
-	
+
 	.popover-content {
 		background: $dark !important;
 		margin: 0px;
@@ -41,7 +41,7 @@
 		border-radius: 20px !important;
 		border: 1px solid $text;
 	}
-	
+
 	.popover-viewport {
 		z-index: 100;
 		position: absolute;
@@ -52,10 +52,10 @@
 	}
 
 	.sound-list {
-	    width: 70%;
+	    width: 85%;
 	    margin: 30px auto;
 	}
-	
+
 switch-sound-popover {
 	.flex-container {
 		display: flex;
@@ -73,7 +73,7 @@ switch-sound-popover {
 		    align-items: center;
 		    padding: 10px;
 		    margin: 5px;
-		    filter: saturate(50%);
+		    filter: saturate(60%);
 
 			&.highlighted {
 				filter: saturate(100%);

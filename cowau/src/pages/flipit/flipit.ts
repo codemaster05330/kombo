@@ -6,7 +6,7 @@ import { EditPage } from '../edit/edit';
 import { IdlePage } from '../idle/idle';
 
 //popovers
-import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
+//import { NewSoundPopoverPage } from '../../newsound-popover/newsound-popover';
 // import { ThrowItPopoverPage } from '../../throwit-popover/throwit-popover';
 
 //services
@@ -53,7 +53,7 @@ export class FlipitPage {
 		this.gesturesService.watchForGesture(this.lookOfEvents);
 		events.subscribe(GestureType.FLIPPED.toString(), (acceleration) => {
 			this.globalVars.currentSoundType = SoundType[SoundType[Math.floor(Math.random() * Object.keys(SoundType).length / 2)]];
-			this.popover.show(NewSoundPopoverPage, 1000);
+			// this.popover.show(NewSoundPopoverPage, 1000);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.FLIPPED);
 			this.gesturesService.stopGestureWatch(this.events, GestureType.IDLE_IN);
 			// setTimeout(function(){
